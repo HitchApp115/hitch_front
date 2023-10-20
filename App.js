@@ -1,49 +1,25 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, ScrollView } from 'react-native';
-import LoginPage from './login';
-import Account_creation_page from './account_creation_page';
-import { useState } from 'react';
+import { StatusBar } from "expo-status-bar";
+import { StyleSheet, Text, View, ScrollView } from "react-native";
+// import LoginPage from './login';
+import AccountCreationPage from "./account_create";
+import { useState } from "react";
+import HomePage from "./Home";
+import LoginPage from "./Login";
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 // import { ScrollView } from 'react-native-web';
 
-
+const Stack = createStackNavigator();
 
 export default function App() {
-  const [login_email, SetLoginEmail] = useState("bob");
-  const [login_password, SetLoginPassword] = useState("1234");
- 
-  const[login_user, setLogInUser] = useState({
-    login_email:'',
-    login_password:'',
-  });
-
-  const [createUser, setCreateUser] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    phoneNumber: '',
-    password: '',
-  });
-
   return (
-
-    <View style = {mainStyles}>
-    
-      <LoginPage login_user={login_user} setLogInUser={setLogInUser}/>
-      {/* <Account_creation_page createUser={createUser} setCreateUser={setCreateUser}/> */}
-    
-    </View>
-    
-
+    <NavigationContainer>
+    <Stack.Navigator initialRouteName="Login">
+      <Stack.Screen name="account_create" component={AccountCreationPage} />
+      <Stack.Screen name="Login" component={LoginPage} />
+      <Stack.Screen name="Home" component={HomePage} />
+    </Stack.Navigator>
+  </NavigationContainer>
   );
-
 }
-
-const mainStyles = StyleSheet.create({
-  container: {
-    flex: 1,
-    // backgroundColor: "black",
-    alignItems: "center",
-    justifyContent: "center",
-  }
-});
 
