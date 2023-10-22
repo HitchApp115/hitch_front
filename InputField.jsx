@@ -1,12 +1,13 @@
 
 import React, { useState } from 'react';
-import { View, TextInput, Text, Pressable, StyleSheet } from 'react-native';
+import { View, TextInput, Text, Pressable, StyleSheet,Image } from 'react-native';
 
 
 
 const InputField = ({ label, value, onChangeText }) => {
     const [showClearButton, setShowClearButton] = useState(false);
-  
+    const [isFocused, setIsFocused] = useState(false);
+
     const handleTextChange = (text) => {
       onChangeText(text);
       setShowClearButton(text.length > 0);
@@ -18,9 +19,11 @@ const InputField = ({ label, value, onChangeText }) => {
     };
   
     return (
-      <View style={inputStyles.inputView}>
+      <View style={[inputStyles.inputView, isFocused && inputStyles.focusedTextInput]}>
         <TextInput
-          style={inputStyles.TextInput}
+          style={[inputStyles.TextInput,]}
+          onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
           value={value}
           placeholder={label}
           placeholderTextColor="#003f5c"
@@ -31,7 +34,7 @@ const InputField = ({ label, value, onChangeText }) => {
             style={inputStyles.clearButton}
             onPress={handleClearButtonPress}
           >
-            <Text>x</Text>
+            <Image style={inputStyles.clearIcon} source={require('./assets/remove.png')} />
           </Pressable>
         )}
       </View>
@@ -58,6 +61,16 @@ const InputField = ({ label, value, onChangeText }) => {
     clearButton: {
       padding: 10,
       marginRight: 6,
+    },
+    focusedTextInput: {
+    //   borderColor: 'blue',
+      backgroundColor: 'lightgrey',
+      borderWidth: 4,
+    },
+    clearIcon: {
+      marginLeft: 19,
+      width: 20,
+      height: 20,
     },
   });
   
