@@ -6,6 +6,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Image,
+  ImageBackground
 } from "react-native";
 
 export default function HomePage({ navigation }) {
@@ -18,6 +19,7 @@ export default function HomePage({ navigation }) {
     };
   
     return (
+    <ImageBackground source={require('./assets/background.png')} style={MenuStyle.backgroundImage}>
       <View style={MenuStyle.container}>
         <View style={MenuStyle.select_box}>
           <Pressable
@@ -70,10 +72,15 @@ export default function HomePage({ navigation }) {
           </Pressable>
         </View>
       </View>
+    </ImageBackground>
     );
   }
   
   const MenuStyle = StyleSheet.create({
+    backgroundImage: {
+      flex: 1,
+      resizeMode: 'cover', // or 'stretch'
+    },
     container: {
       flex: 1,
       alignItems: "center",

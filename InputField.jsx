@@ -4,7 +4,7 @@ import { View, TextInput, Text, Pressable, StyleSheet,Image } from 'react-native
 
 
 
-const InputField = ({ label, value, onChangeText }) => {
+const InputField = ({ label, value, onChangeText, secure, extraStyles }) => {
     const [showClearButton, setShowClearButton] = useState(false);
     const [isFocused, setIsFocused] = useState(false);
 
@@ -17,9 +17,9 @@ const InputField = ({ label, value, onChangeText }) => {
       onChangeText("");
       setShowClearButton(false);
     };
-  
+    
     return (
-      <View style={[inputStyles.inputView, isFocused && inputStyles.focusedTextInput]}>
+      <View style={[inputStyles.inputView, isFocused && inputStyles.focusedTextInput, extraStyles]}>
         <TextInput
           style={[inputStyles.TextInput,]}
           onFocus={() => setIsFocused(true)}
@@ -28,6 +28,7 @@ const InputField = ({ label, value, onChangeText }) => {
           placeholder={label}
           placeholderTextColor="#003f5c"
           onChangeText={handleTextChange}
+          secureTextEntry = {secure}
         />
         {showClearButton && (
           <Pressable

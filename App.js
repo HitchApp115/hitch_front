@@ -11,6 +11,10 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 const Stack = createStackNavigator();
 
+/**
+ * The main component of the Hitch app.
+ * @returns {JSX.Element} The JSX element representing the app.
+ */
 export default function App() {
   return (
     <NavigationContainer >
