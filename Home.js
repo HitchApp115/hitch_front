@@ -15,6 +15,7 @@ export default function HomePage({ navigation }) {
     };
   
     const handlePostPress = () => {
+      navigation.navigate("Map");
       console.log("post a ride");
     };
   
@@ -87,7 +88,7 @@ export default function HomePage({ navigation }) {
       justifyContent: "center",
     },
     select_box: {
-      height: 100,
+      height: "25%",
       backgroundColor: "lightblue",
       margin: 10,
       borderRadius: 10,

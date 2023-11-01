@@ -5,6 +5,9 @@ import AccountCreationPage from "./account_create";
 import { useState } from "react";
 import HomePage from "./Home";
 import LoginPage from "./Login";
+import MapWithCurrentLocation from "./post_landing_page";
+
+
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 // import { ScrollView } from 'react-native-web';
@@ -22,6 +25,8 @@ export default function App() {
       <Stack.Screen name="account_create" component={AccountCreationPage} />
       <Stack.Screen name="Login" component={LoginPage} />
       <Stack.Screen name="Home" component={HomePage} />
+      {/* <Stack.Screen name="Post" component={PostLandingPage} /> */}
+      <Stack.Screen name="Map" component={MapWithCurrentLocation} />
     </Stack.Navigator>
   </NavigationContainer>
   );
