@@ -4,12 +4,15 @@ import MapView, { Marker, Circle } from "react-native-maps";
 import { useNavigation } from "@react-navigation/native";
 import { useIsFocused } from "@react-navigation/native";
 import stickman from "./assets/stickman.png";
+import * as Location from 'expo-location';
+
 
 import {
   requestForegroundPermissionsAsync,
   getCurrentPositionAsync,
 } from "expo-location";
 import InputField from "./InputField";
+import { NavigationContainer } from '@react-navigation/native';
 
 function Inputs() {
   const [start, setStart] = useState("");
@@ -150,9 +153,11 @@ const styles = StyleSheet.create({
 
 export default function PostLandingPage() {
   return (
-    <View style={{ flex: 1 }}>
-      <MapWithCurrentLocation />
-      {/* <Inputs /> */}
-    </View>
+    <NavigationContainer>
+      <View style={{ flex: 1 }}>
+        <MapWithCurrentLocation />
+        {/* <Inputs /> */}
+      </View>
+    </NavigationContainer>
   );
 }

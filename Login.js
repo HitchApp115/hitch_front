@@ -6,38 +6,77 @@ import {
   StyleSheet,
   ImageBackground,
   Image,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
 } from "react-native";
 import InputField from "./InputField";
 // import Video from 'react-native-video';
 import { Video } from "expo-av";
+import axios from "axios";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function LoginPage({ navigation }) {
+
+// where to find the backend
+
+function LoginPage({ setChildIdx, storeToken, page }) {
   const [login, SetLogin] = useState("");
   const [password, SetPassword] = useState("");
 
+  function checkEmpty(login, password) {
+    return login.trim() === "" || password.trim() === "";
+  }
+
+
+  const handleLogin = async () => {
+    // check if any of the fields are empty
+    if (checkEmpty(login, password)) {
+      alert("Please fill in all fields.");
+      return;
+    }
+    try {
+      const response = await axios.get(`${page}/account/login`, {
+        username: login,
+        password: password,
+      });
+
+      // if the login is successful, set the token and go to the home page
+      if (response.data.success) {
+        storeToken(response.data.loginToken);
+        setChildIdx(2);
+      } else {
+        // if the login is unsuccessful, display an error message
+        alert("Login failed. Please try again.");
+      }
+    }
+    catch (e) {
+      console.log(e);
+      // e is an object with a response property that has data and status
+  };
+
+};
+  
+
+
+
   return (
     // <ImageBackground source={require('./assets/background.png')} style={styles.backgroundImage}>
-    <View style={{ flex: 1 }}> 
-    <Video
-      ref={(ref) => (this.videoRef = ref)}
-      source={require("./assets/video_background.mp4")} // Can be a URL or a local file.
-      style={styles.backgroundVideo}
-      muted={true}
-      resizeMode={"cover"}
-      rate={1.0}
-      ignoreSilentSwitch={"obey"}
-      shouldPlay={true}
-      isLooping={true}
-    >
-      </Video>
+    <View style={{ flex: 1 }}>
+      <Video
+        ref={(ref) => (this.videoRef = ref)}
+        source={require("./assets/video_background.mp4")} // Can be a URL or a local file.
+        style={styles.backgroundVideo}
+        muted={true}
+        resizeMode={"cover"}
+        rate={1.0}
+        ignoreSilentSwitch={"obey"}
+        shouldPlay={true}
+        isLooping={true}
+      ></Video>
       {/* <View style={styles.container}> */}
       <KeyboardAvoidingView
-    style={styles.container}
-    behavior={Platform.OS === "ios" ? "padding" : "height"}
-    keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
->
-
+        style={styles.container}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
+      >
         <Image
           source={require("./assets/logo.png")}
           style={{ width: "80%", height: "40%", alignSelf: "center" }}
@@ -56,14 +95,14 @@ export default function LoginPage({ navigation }) {
 
         <TouchableOpacity
           style={styles.loginBtn}
-          onPress={() => navigation.navigate("Home")}
+          onPress= {handleLogin}
         >
           <Text style={styles.loginText}>LOGIN</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.signupBtn}
-          onPress={() => navigation.navigate("account_create")}
-        >
+            onPress={() => setChildIdx(1)}
+          >
           <Text style={styles.forgot_button}>
             Don't have an account yet{" "}
             <Text
@@ -79,9 +118,8 @@ export default function LoginPage({ navigation }) {
             </Text>
           </Text>
         </TouchableOpacity>
-      {/* </View> */}
+        {/* </View> */}
       </KeyboardAvoidingView>
-
     </View>
     // {/* // </ImageBackground> */}
   );
@@ -103,7 +141,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     // backgroundColor: '#fff',
-    position: 'absolute', 
+    position: "absolute",
     top: 0,
     left: 0,
     right: 0,
@@ -142,3 +180,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#F9F3CC",
   },
 });
+
+
+
+export default LoginPage;

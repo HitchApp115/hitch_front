@@ -6,22 +6,29 @@ import {
   StyleSheet,
   TouchableOpacity,
   Image,
-  ImageBackground
+  ImageBackground,
 } from "react-native";
 
-export default function HomePage({ navigation }) {
-    const handleHitchPress = () => {
-      console.log("hitch a ride");
-    };
-  
-    const handlePostPress = () => {
-      navigation.navigate("Map");
-      console.log("post a ride");
-    };
-  
-    return (
-    <ImageBackground source={require('./assets/background.png')} style={MenuStyle.backgroundImage}>
+export default function HomePage({ setChildIdx}) {
+  const handleHitchPress = () => {
+    console.log("hitch a ride");
+  };
+
+  const handlePostPress = () => {
+    setChildIdx(3);
+    console.log("post a ride");
+  };
+
+  return (
+    <ImageBackground
+      source={require("./assets/background.png")}
+      style={MenuStyle.backgroundImage}
+    >
+      <View></View>
       <View style={MenuStyle.container}>
+        <Pressable onPress={() => setChildIdx(0)}>
+          <Text style={{ color: "black" }}>Logout</Text>
+        </Pressable>
         <View style={MenuStyle.select_box}>
           <Pressable
             style={({ pressed }) => [
@@ -36,14 +43,17 @@ export default function HomePage({ navigation }) {
                 },
                 shadowOpacity: 0.25,
                 shadowRadius: 3.84,
-  
+
                 elevation: 5,
               },
               MenuStyle.Btn,
             ]}
             onPress={handleHitchPress}
           >
-            <Image source={require('./assets/Hitch.png')} style={{width: 50, height: 50}}/>
+            <Image
+              source={require("./assets/Hitch.png")}
+              style={{ width: 50, height: 50 }}
+            />
             <Text style={{ color: "white" }}>Hitch a Ride</Text>
           </Pressable>
         </View>
@@ -62,50 +72,53 @@ export default function HomePage({ navigation }) {
                 },
                 shadowOpacity: 0.25,
                 shadowRadius: 3.84,
-  
+
                 elevation: 5,
               },
               MenuStyle.Btn,
             ]}
-          > 
-            <Image source={require('./assets/post.png')} style={{width: 50, height: 50}}/>
+          >
+            <Image
+              source={require("./assets/post.png")}
+              style={{ width: 50, height: 50 }}
+            />
             <Text style={{ color: "white" }}>Post a Ride</Text>
           </Pressable>
         </View>
       </View>
     </ImageBackground>
-    );
-  }
-  
-  const MenuStyle = StyleSheet.create({
-    backgroundImage: {
-      flex: 1,
-      resizeMode: 'cover', // or 'stretch'
+  );
+}
+
+const MenuStyle = StyleSheet.create({
+  backgroundImage: {
+    flex: 1,
+    resizeMode: "cover", // or 'stretch'
+  },
+  container: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  select_box: {
+    height: "25%",
+    backgroundColor: "lightblue",
+    margin: 10,
+    borderRadius: 10,
+    width: "80%",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
     },
-    container: {
-      flex: 1,
-      alignItems: "center",
-      justifyContent: "center",
-    },
-    select_box: {
-      height: "25%",
-      backgroundColor: "lightblue",
-      margin: 10,
-      borderRadius: 10,
-      width: "80%",
-      shadowColor: "#000",
-      shadowOffset: {
-        width: 0,
-        height: 2,
-      },
-      shadowOpacity: 0.25,
-      shadowRadius: 3.84,
-  
-      elevation: 5,
-    },
-    Btn: {
-      flex: 1,
-      alignItems: "center",
-      justifyContent: "center",
-    },
-  });
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+
+    elevation: 5,
+  },
+  Btn: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+});

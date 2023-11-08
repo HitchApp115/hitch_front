@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -13,7 +13,11 @@ import InputField from "./InputField";
 import { Button } from "react-native-web";
 import axios from "axios";
 
-const AccountCreationPage = ({ navigation }) => {
+
+// set where the backend is running here
+
+
+const AccountCreationPage = ({ setChildIdx, storeToken, page }) => {
   const [create_first_name, SetCreateFirstName] = useState("");
   const [create_last_name, SetCreateLastName] = useState("");
   const [create_email, SetCreateEmail] = useState("");
@@ -22,7 +26,6 @@ const AccountCreationPage = ({ navigation }) => {
 
   const [create_password, SetCreatePassword] = useState("");
   const [create_password_confirm, SetCreatePasswordConfirm] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const [submitError, setSubmitError] = useState("");
 
   const stateVariables = [
@@ -36,17 +39,27 @@ const AccountCreationPage = ({ navigation }) => {
 
   console.log("111:", process.env, process.env?.ENVIORNMENT);
 
-  function notEmpty() {
+  // checks if any of the input fields are incorrect
+  function checkStateVariables() {
     for (let variable of stateVariables) {
+      // checks if any of the input fields are empty
       if (variable.trim() === "") {
         setSubmitError(true);
         console.log("empty");
       }
+      // checks if phone number is a number
       if ((variable = create_number)) {
         if (isNaN(variable)) {
           setSubmitError(true);
           SetIsNumber(false);
           console.log("not a number");
+        }
+      }
+      // checks if passwords match
+      if ((variable = create_password_confirm)) {
+        if (variable != create_password) {
+          setSubmitError(true);
+          console.log("passwords dont match");
         }
       }
     }
@@ -55,10 +68,38 @@ const AccountCreationPage = ({ navigation }) => {
     SetIsNumber(true);
   };
 
+  const [status, setStatus] = useState({});
+
   const handleSubmit = async () => {
-    Reset();
-    console.log("submitted account creation");
-    notEmpty();
+    checkStateVariables();
+    if (submitError) {
+      return;
+    }else {
+      try {
+        // getting back { status: 'success', loginToken: {TOKEN} }
+        // sends a request to the backend to create an account
+        const response = await axios.post({ page } + "/account/create", {
+          username: create_email,
+          email: create_email,
+          password: create_password,
+          phone: create_number,
+        });
+        // the backend will send back a status of success if the account was created
+        if (response.data.status === "success") {
+          setStatus(response.data.status);
+          storeToken(response.data.loginToken);
+          setChildIdx(2);
+          
+        } else {
+          {
+            console.log("error");
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching data: ", error);
+      }
+    }
+  
   };
 
   return (
