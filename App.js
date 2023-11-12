@@ -7,7 +7,7 @@ import HomePage from "./Home";
 import LoginPage from "./Login";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import MapWithCurrentLocation from "./post_landing_page";
-
+import PostLandingPage from "./post_landing_page";
 
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -73,7 +73,9 @@ export default function App() {
     <LoginPage {...{setChildIdx, storeToken, page}} />,
     <AccountCreationPage {...{setChildIdx, storeToken, page}} />,
     <HomePage setChildIdx={setChildIdx} />,
-    <MapWithCurrentLocation setChildIdx={setChildIdx} />,
+    // <MapWithCurrentLocation setChildIdx={setChildIdx} />,
+    <PostLandingPage setChildIdx={setChildIdx} />,
+
   ];
 
   return children[childIdx];

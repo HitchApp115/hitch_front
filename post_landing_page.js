@@ -4,15 +4,31 @@ import MapView, { Marker, Circle } from "react-native-maps";
 import { useNavigation } from "@react-navigation/native";
 import { useIsFocused } from "@react-navigation/native";
 import stickman from "./assets/stickman.png";
-import * as Location from 'expo-location';
+import * as Location from "expo-location";
+// import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
+// ^^^^ this is the google places autocomplete api might be too costly to use but it is a good idea to use it
+import {MapViewDirections} from "react-native-maps-directions";
+// import { GOOGLE_MAPS_APIKEY } from "./config.js";
+import { TextInput } from "react-native-gesture-handler";
 
+
+
+// UseIsFocused: used to keep track of whether the user is on the page or not if it is will update the location
+
+/* 
+MapView: displays the actual maps
+Polyline: used to draw the route between the two points
+Marker: used to mark the start and end points
+Circle: used to draw the circle around the start and end points
+
+*/
 
 import {
   requestForegroundPermissionsAsync,
   getCurrentPositionAsync,
 } from "expo-location";
 import InputField from "./InputField";
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer } from "@react-navigation/native";
 
 function Inputs() {
   const [start, setStart] = useState("");
@@ -33,12 +49,14 @@ function Inputs() {
         onChangeText={setDestination}
         secureTextEntry={true}
       />
-      <TouchableOpacity onPress={handlePostRide}>
+      <TouchableOpacity>
         <Text>Post Your Ride</Text>
       </TouchableOpacity>
     </View>
   );
 }
+
+// displays the stickman indicating the user's location
 function BlackDotMarker() {
   return (
     <View>
@@ -59,8 +77,17 @@ function BlackDotMarker() {
   );
 }
 
+// displays the map with the user's location will only update when the user is on the page
 const MapWithCurrentLocation = () => {
-  const [region, setRegion] = useState(null);
+  const [region, setRegion] = useState(null); // the user's location
+
+  const [endingRegion, setEndingRegion] = useState({
+    latitude: 36.9809503330377,
+    longitude: -122.05049376286459,
+    // latitudeDelta: 0.0922,
+    // longitudeDelta: 0.0421,
+  }); // the user's end location
+
   const isFocused = useIsFocused();
 
   useEffect(() => {
@@ -76,8 +103,8 @@ const MapWithCurrentLocation = () => {
       setRegion({
         latitude,
         longitude,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421,
+        // latitudeDelta: 0.0922,
+        // longitudeDelta: 0.0421,
       });
     };
 
@@ -94,7 +121,8 @@ const MapWithCurrentLocation = () => {
           region={region}
           // showsUserLocation={true}
         >
-          <View label="person who is getting ride">
+          {/* displays who is taking the ride witha a red circle around them */}
+          {/* <View label="person who is getting ride">
             <Circle
               center={region}
               radius={100} // in meters
@@ -112,15 +140,26 @@ const MapWithCurrentLocation = () => {
             >
               <BlackDotMarker />
             </Marker>
-          </View>
-          <View label="person who is giving ride">
+          </View> */}
+
+          <MapViewDirections
+            origin={region}
+            destination={endingRegion}
+            apikey={"AIzaSyAzaxnuhcqrHyhCKGPsekHS-VC8lGqG7GY"}
+            strokeWidth={3}
+            strokeColor="hotpink"
+            onError={(errorMessage) => {
+              console.log('GOT AN ERROR');
+            }}
+            />
+
+
+          {/* displays this destination */}
+          {/* <View label="person who is giving ride">
             <Circle
-              center={{
-                latitude: 36.9809503330377,
-                longitude: -122.05049376286459,
-                latitudeDelta: 0.0922,
-                longitudeDelta: 0.0421,
-              }}
+              center={
+               endingRegion
+              }
               radius={100} // in meters
               strokeWidth={1}
               strokeColor="black"
@@ -135,7 +174,7 @@ const MapWithCurrentLocation = () => {
             }}
           >
           </Marker> */}
-          </View>
+          {/* </View> */} */}
         </MapView>
       )}
     </View>
@@ -151,7 +190,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function PostLandingPage() {
+export default function PostLandingPage(setChildIdx) {
   return (
     <NavigationContainer>
       <View style={{ flex: 1 }}>
