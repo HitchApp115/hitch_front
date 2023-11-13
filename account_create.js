@@ -13,9 +13,7 @@ import InputField from "./InputField";
 import { Button } from "react-native-web";
 import axios from "axios";
 
-
 // set where the backend is running here
-
 
 const AccountCreationPage = ({ setChildIdx, storeToken, page }) => {
   const [create_first_name, SetCreateFirstName] = useState("");
@@ -37,7 +35,14 @@ const AccountCreationPage = ({ setChildIdx, storeToken, page }) => {
     create_password_confirm,
   ];
 
-  console.log("111:", process.env, process.env?.ENVIORNMENT);
+  const data = () => ({
+    username: create_email,
+    email: create_email,
+    password: create_password,
+    phone: create_number,
+  });
+
+  // console.log("111:", process.env, process.env?.ENVIORNMENT);
 
   // checks if any of the input fields are incorrect
   function checkStateVariables() {
@@ -74,22 +79,28 @@ const AccountCreationPage = ({ setChildIdx, storeToken, page }) => {
     checkStateVariables();
     if (submitError) {
       return;
-    }else {
+    } else {
+      // setChildIdx(2);
       try {
         // getting back { status: 'success', loginToken: {TOKEN} }
         // sends a request to the backend to create an account
-        const response = await axios.post({ page } + "/account/create", {
-          username: create_email,
-          email: create_email,
-          password: create_password,
-          phone: create_number,
-        });
+        console.log("FUCK", page + "/account/create");
+        console.log(data());
+        //const response = await axios.post(page + "/account/create", data);
+        const response = await axios.post(
+          // "http://localhost:3000/account/create",
+          page+"/account/create",
+          data()
+        );
         // the backend will send back a status of success if the account was created
         if (response.data.status === "success") {
+          console.log("account successfully created");
           setStatus(response.data.status);
-          storeToken(response.data.loginToken);
+          // storeToken(response.data.loginToken);
+          console.log(response.data);
+          console.log(response.data.status);
+          console.log(response.data.loginToken);
           setChildIdx(2);
-          
         } else {
           {
             console.log("error");
@@ -99,7 +110,6 @@ const AccountCreationPage = ({ setChildIdx, storeToken, page }) => {
         console.error("Error fetching data: ", error);
       }
     }
-  
   };
 
   return (

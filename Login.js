@@ -28,29 +28,31 @@ function LoginPage({ setChildIdx, storeToken, page }) {
 
   const handleLogin = async () => {
     // check if any of the fields are empty
+
     if (checkEmpty(login, password)) {
       alert("Please fill in all fields.");
       return;
     }
-    try {
-      const response = await axios.get(`${page}/account/login`, {
-        username: login,
-        password: password,
-      });
+    setChildIdx(2);
+  //   try {
+  //     const response = await axios.get(`${page}/account/login`, {
+  //       username: login,
+  //       password: password,
+  //     });
 
-      // if the login is successful, set the token and go to the home page
-      if (response.data.success) {
-        storeToken(response.data.loginToken);
-        setChildIdx(2);
-      } else {
-        // if the login is unsuccessful, display an error message
-        alert("Login failed. Please try again.");
-      }
-    }
-    catch (e) {
-      console.log(e);
-      // e is an object with a response property that has data and status
-  };
+  //     // if the login is successful, set the token and go to the home page
+  //     if (response.data.success) {
+  //       storeToken(response.data.loginToken);
+  //       setChildIdx(2);
+  //     } else {
+  //       // if the login is unsuccessful, display an error message
+  //       alert("Login failed. Please try again.");
+  //     }
+  //   }
+  //   catch (e) {
+  //     console.log(e);
+  //     // e is an object with a response property that has data and status
+  // };
 
 };
   

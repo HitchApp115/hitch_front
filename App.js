@@ -5,57 +5,60 @@ import AccountCreationPage from "./account_create";
 import React, { useEffect, useState } from "react";
 import HomePage from "./Home";
 import LoginPage from "./Login";
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import MapWithCurrentLocation from "./post_landing_page";
 import PostLandingPage from "./post_landing_page";
 
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
+import Constants from "expo-constants";
+const { expoConfig } = Constants;
+// const page = `http://${expoConfig.debuggerHost.split(":").shift()}:3000`;
 // import { ScrollView } from 'react-native-web';
 
 const Stack = createStackNavigator();
 
 // where to find the backend
-const page = "http://localhost:3000";
-
-
+// const page = "http://localhost:3000";
+const page = "http://10.0.0.157:3000";
+// const page = "http://169.233.224.168"
+// const page = `http://${manifest.debuggerHost.split(":").shift()}:3000`;
 
 export default function App() {
   // token used to keep track of whether the user is logged in
   const [token, setToken] = useState(null);
-  const [childIdx, setChildIdx] = useState(3);
-
+  const [childIdx, setChildIdx] = useState(0);
 
   // function that stores the token in the device's storage
   const storeToken = async (userToken) => {
     try {
-      await AsyncStorage.setItem('userToken', userToken);
+      await AsyncStorage.setItem("userToken", userToken);
       setToken(userToken); // Update the state
     } catch (error) {
       // Handle errors here
-      console.log('Error saving data', error);
+      console.log("Error saving data", error);
     }
   };
 
   // function that retrieves the token from the device's storage to the state
   const getToken = async () => {
     try {
-      const userToken = await AsyncStorage.getItem('userToken');
+      const userToken = await AsyncStorage.getItem("userToken");
       setToken(userToken); // Update the state
     } catch (error) {
       // Handle errors here
-      console.log('Error retrieving data', error);
+      console.log("Error retrieving data", error);
     }
   };
 
   // function that removes the token from the device's storage
   const removeToken = async () => {
     try {
-      await AsyncStorage.removeItem('userToken');
+      await AsyncStorage.removeItem("userToken");
       setToken(null); // Update the state
     } catch (error) {
       // Handle errors here
-      console.log('Error removing data', error);
+      console.log("Error removing data", error);
     }
   };
 
@@ -70,12 +73,15 @@ export default function App() {
   // }
 
   const children = [
-    <LoginPage {...{setChildIdx, storeToken, page}} />,
-    <AccountCreationPage {...{setChildIdx, storeToken, page}} />,
+    <LoginPage setChildIdx={setChildIdx} storeToken={storeToken} page={page} />,
+    <AccountCreationPage
+      setChildIdx={setChildIdx}
+      storeToken={storeToken}
+      page={page}
+    />,
     <HomePage setChildIdx={setChildIdx} />,
     // <MapWithCurrentLocation setChildIdx={setChildIdx} />,
     <PostLandingPage setChildIdx={setChildIdx} />,
-
   ];
 
   return children[childIdx];

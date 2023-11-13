@@ -122,7 +122,7 @@ const MapWithCurrentLocation = () => {
           // showsUserLocation={true}
         >
           {/* displays who is taking the ride witha a red circle around them */}
-          {/* <View label="person who is getting ride">
+          <View label="person who is getting ride">
             <Circle
               center={region}
               radius={100} // in meters
@@ -140,9 +140,9 @@ const MapWithCurrentLocation = () => {
             >
               <BlackDotMarker />
             </Marker>
-          </View> */}
+          </View>
 
-          <MapViewDirections
+          {/* <MapViewDirections
             origin={region}
             destination={endingRegion}
             apikey={"AIzaSyAzaxnuhcqrHyhCKGPsekHS-VC8lGqG7GY"}
@@ -151,11 +151,11 @@ const MapWithCurrentLocation = () => {
             onError={(errorMessage) => {
               console.log('GOT AN ERROR');
             }}
-            />
+            /> */}
 
 
           {/* displays this destination */}
-          {/* <View label="person who is giving ride">
+          <View label="person who is giving ride">
             <Circle
               center={
                endingRegion
@@ -165,7 +165,7 @@ const MapWithCurrentLocation = () => {
               strokeColor="black"
               fillColor="rgba(236, 100, 99, 0.41)"
             />
-            {/* <Marker
+            <Marker
             style={{position:"absolute", zIndex: 100}}
             coordinate={region}
             draggable
@@ -173,8 +173,8 @@ const MapWithCurrentLocation = () => {
               setMarkerCoordinate(e.nativeEvent.coordinate);
             }}
           >
-          </Marker> */}
-          {/* </View> */} */}
+          </Marker> 
+          </View> 
         </MapView>
       )}
     </View>
