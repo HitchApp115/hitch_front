@@ -25,27 +25,39 @@ function LoginPage({ setChildIdx, storeToken, page }) {
     return login.trim() === "" || password.trim() === "";
   }
 
-
+  const loginData = () => ({
+    username: login,
+    password: password,
+  });
+  
   const handleLogin = async () => {
     // check if any of the fields are empty
-
+    console.log("login pressed");
+    console.log(login, password);
+    if(typeof login !== 'string' || typeof password !== 'string'){
+      console.log("undefined");
+    }  
     if (checkEmpty(login, password)) {
       alert("Please fill in all fields.");
       return;
     }
+    
+  //   else{
+
+    
     setChildIdx(2);
   //   try {
-  //     const response = await axios.get(`${page}/account/login`, {
-  //       username: login,
-  //       password: password,
-  //     });
+  //     const response = await axios.get(page+"/account/login", loginData());
 
   //     // if the login is successful, set the token and go to the home page
-  //     if (response.data.success) {
-  //       storeToken(response.data.loginToken);
+  //     if (response.data.status === "success") {
+  //       // storeToken(response.data.loginToken);
+  //       console.log("login successful");
+  //       console.log(response.data.status);
   //       setChildIdx(2);
   //     } else {
   //       // if the login is unsuccessful, display an error message
+  //       console.log("login failed");
   //       alert("Login failed. Please try again.");
   //     }
   //   }
@@ -53,7 +65,7 @@ function LoginPage({ setChildIdx, storeToken, page }) {
   //     console.log(e);
   //     // e is an object with a response property that has data and status
   // };
-
+  //   }
 };
   
 

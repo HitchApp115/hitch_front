@@ -18,6 +18,7 @@ import axios from "axios";
 const AccountCreationPage = ({ setChildIdx, storeToken, page }) => {
   const [create_first_name, SetCreateFirstName] = useState("");
   const [create_last_name, SetCreateLastName] = useState("");
+  const [create_username, SetCreateUsername] = useState("");
   const [create_email, SetCreateEmail] = useState("");
   const [create_number, SetCreateNumber] = useState("");
   const [isnumber, SetIsNumber] = useState(true);
@@ -29,6 +30,7 @@ const AccountCreationPage = ({ setChildIdx, storeToken, page }) => {
   const stateVariables = [
     create_first_name,
     create_last_name,
+    create_username,
     create_email,
     create_number,
     create_password,
@@ -36,7 +38,7 @@ const AccountCreationPage = ({ setChildIdx, storeToken, page }) => {
   ];
 
   const data = () => ({
-    username: create_email,
+    username: create_username,
     email: create_email,
     password: create_password,
     phone: create_number,
@@ -50,6 +52,7 @@ const AccountCreationPage = ({ setChildIdx, storeToken, page }) => {
       // checks if any of the input fields are empty
       if (variable.trim() === "") {
         setSubmitError(true);
+        alert("Please fill in all fields.");
         console.log("empty");
       }
       // checks if phone number is a number
@@ -57,6 +60,7 @@ const AccountCreationPage = ({ setChildIdx, storeToken, page }) => {
         if (isNaN(variable)) {
           setSubmitError(true);
           SetIsNumber(false);
+          alert("Please enter a valid phone number.");
           console.log("not a number");
         }
       }
@@ -133,6 +137,11 @@ const AccountCreationPage = ({ setChildIdx, storeToken, page }) => {
           label="Last Name"
           value={create_last_name}
           onChangeText={SetCreateLastName}
+        />
+        <InputField
+          label="Username"
+          value={create_username}
+          onChangeText={SetCreateUsername}
         />
         <InputField
           label="Email"
