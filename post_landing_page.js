@@ -13,6 +13,9 @@ import MapView, {
   PROVIDER_GOOGLE,
   Polyline,
 } from "react-native-maps";
+
+// import Polyline from '@mapbox/polyline';
+
 import { useNavigation } from "@react-navigation/native";
 import { useIsFocused } from "@react-navigation/native";
 import stickman from "./assets/stickman.png";
@@ -27,21 +30,7 @@ Circle: used to draw the circle around the start and end points
 // UseIsFocused: used to keep track of whether the user is on the page or not if it is will update the location
 */
 
-function GetRouteCoordinates(orgin, destination) {
-  const API_KEY = "AIzaSyAzaxnuhcqrHyhCKGPsekHS-VC8lGqG7GY";
 
-  axios
-    .get(
-      `https://maps.googleapis.com/maps/api/directions/json?origin=${origin}&destination=${destination}&key=${API_KEY}`
-    )
-    .then((res) => {
-      console.log(res.data);
-      console.log(JSON.stringify(res.data));
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-}
 
 import {
   requestForegroundPermissionsAsync,
@@ -49,6 +38,7 @@ import {
 } from "expo-location";
 import InputField from "./InputField";
 import { NavigationContainer } from "@react-navigation/native";
+import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 
 // displays the stickman indicating the user's location
 function BlackDotMarker() {
@@ -66,6 +56,45 @@ const coordinates = [
   },
 ];
 // displays the map with the user's location will only update when the user is on the page
+
+
+
+function decodePolyline(encoded) {
+  if (!encoded) {
+    return [];
+  }
+  const poly = [];
+  let index = 0, len = encoded.length;
+  let lat = 0, lng = 0;
+  while (index < len) {
+    let b, shift = 0, result = 0;
+    do {
+      b = encoded.charCodeAt(index++) - 63;
+      result |= (b & 0x1f) << shift;
+      shift += 5;
+    } while (b >= 0x20);
+    let dlat = ((result & 1) ? ~(result >> 1) : (result >> 1));
+    lat += dlat;
+    shift = 0;
+    result = 0;
+    do {
+      b = encoded.charCodeAt(index++) - 63;
+      result |= (b & 0x1f) << shift;
+      shift += 5;
+    } while (b >= 0x20);
+    let dlng = ((result & 1) ? ~(result >> 1) : (result >> 1));
+    lng += dlng;
+    poly.push([lat / 1e5, lng / 1e5]);
+  }
+  return poly;
+}
+
+
+
+
+
+
+
 const MapWithCurrentLocation = () => {
   const [region, setRegion] = useState(null); // the user's location also the start location
 
@@ -76,6 +105,35 @@ const MapWithCurrentLocation = () => {
     // latitudeDelta: 0.0922,
     // longitudeDelta: 0.0421,
   }); // the user's end location
+
+
+
+
+
+  const [coords1, setCoords] = useState([]);
+
+  const getDirections = async (startLoc, destinationLoc) => {
+    const YOUR_API_KEY = "AIzaSyAzaxnuhcqrHyhCKGPsekHS-VC8lGqG7GY";
+
+    try {
+      const response = await axios.get(`https://maps.googleapis.com/maps/api/directions/json?origin=${startLoc}&destination=${destinationLoc}&key=${YOUR_API_KEY}`);
+      const points = decodePolyline(response.data.routes[0].overview_polyline.points);
+      const array_cords = points.map(point => {
+        return {
+          latitude: point[0],
+          longitude: point[1]
+        };
+      });
+      setCoords(array_cords);
+      // console.log(coords1);
+      console.log(array_cords);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+
+
 
   const startref = useRef();
   const endref = useRef();
@@ -88,15 +146,15 @@ const MapWithCurrentLocation = () => {
     setStartId(startref.current?.getAddressText());
     setEndId(endref.current?.getAddressText());
   }, [buttonPressed]);
-  useEffect(() => {
-    console.log(startId);
-  }, [startId]);
-  useEffect(() => {
-    console.log(endId);
-  }, [endId]);
 
+  useEffect(() => {
+    getDirections(startId, endId);
+  }, [buttonPressed]);
+
+  
   const handleDirections = () => {
     setButtonPressed(buttonPressed + 1);
+    
   };
 
   const isFocused = useIsFocused();
@@ -157,6 +215,7 @@ const MapWithCurrentLocation = () => {
       longitudeDelta: 0.0421,
     });
   }
+
 
   return (
     <View style={styles.container}>
@@ -224,9 +283,10 @@ const MapWithCurrentLocation = () => {
       >
         {startRegion && <Marker coordinate={startRegion} title={"Start"} />}
         {endingRegion && <Marker coordinate={endingRegion} title={"End"} />}
-        {startRegion && endingRegion && (
+        {coords1 && (
+
           <Polyline
-            coordinates={[startRegion, endingRegion]}
+            coordinates={coords1}
             strokeColor="#000" // fallback for when `strokeColors` is not supported by the map-provider
             strokeColors={["#7F0000"]}
             strokeWidth={6}
