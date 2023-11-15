@@ -7,13 +7,18 @@ import {
   Text,
   KeyboardAvoidingView,
 } from "react-native";
-import MapView, { Marker, Circle, PROVIDER_GOOGLE } from "react-native-maps";
+import MapView, {
+  Marker,
+  Circle,
+  PROVIDER_GOOGLE,
+  Polyline,
+} from "react-native-maps";
 import { useNavigation } from "@react-navigation/native";
 import { useIsFocused } from "@react-navigation/native";
 import stickman from "./assets/stickman.png";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import { MapViewDirections } from "react-native-maps-directions";
-
+import axios from "axios";
 /* 
 MapView: displays the actual maps
 Polyline: used to draw the route between the two points
@@ -22,38 +27,28 @@ Circle: used to draw the circle around the start and end points
 // UseIsFocused: used to keep track of whether the user is on the page or not if it is will update the location
 */
 
+function GetRouteCoordinates(orgin, destination) {
+  const API_KEY = "AIzaSyAzaxnuhcqrHyhCKGPsekHS-VC8lGqG7GY";
+
+  axios
+    .get(
+      `https://maps.googleapis.com/maps/api/directions/json?origin=${origin}&destination=${destination}&key=${API_KEY}`
+    )
+    .then((res) => {
+      console.log(res.data);
+      console.log(JSON.stringify(res.data));
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+}
+
 import {
   requestForegroundPermissionsAsync,
   getCurrentPositionAsync,
 } from "expo-location";
 import InputField from "./InputField";
 import { NavigationContainer } from "@react-navigation/native";
-
-// function Inputs() {
-//   const [start, setStart] = useState("");
-//   const [destination, setDestination] = useState("");
-//   const navigation = useNavigation();
-
-//   const handlePostRide = () => {
-//     // handle posting the ride
-//     navigation.navigate("RideDetails", { start, destination });
-//   };
-
-//   return (
-//     <View>
-//       <InputField label="Start" value={start} onChangeText={setStart} />
-//       <InputField
-//         label="Destination"
-//         value={destination}
-//         onChangeText={setDestination}
-//         secureTextEntry={true}
-//       />
-//       <TouchableOpacity>
-//         <Text>Post Your Ride</Text>
-//       </TouchableOpacity>
-//     </View>
-//   );
-// }
 
 // displays the stickman indicating the user's location
 function BlackDotMarker() {
@@ -82,7 +77,27 @@ const MapWithCurrentLocation = () => {
     // longitudeDelta: 0.0421,
   }); // the user's end location
 
+  const startref = useRef();
+  const endref = useRef();
 
+  const [startId, setStartId] = useState(null);
+  const [endId, setEndId] = useState(null);
+  const [buttonPressed, setButtonPressed] = useState(0);
+
+  useEffect(() => {
+    setStartId(startref.current?.getAddressText());
+    setEndId(endref.current?.getAddressText());
+  }, [buttonPressed]);
+  useEffect(() => {
+    console.log(startId);
+  }, [startId]);
+  useEffect(() => {
+    console.log(endId);
+  }, [endId]);
+
+  const handleDirections = () => {
+    setButtonPressed(buttonPressed + 1);
+  };
 
   const isFocused = useIsFocused();
 
@@ -116,29 +131,7 @@ const MapWithCurrentLocation = () => {
   }, [isFocused]);
   //gets the current location of the user and sets it to the state on mount
 
-  async function getRoute() {
-    try {
-      let response = await fetch(
-        "https://maps.googleapis.com/maps/api/directions/json?origin=" +
-          origin.latitude +
-          "," +
-          origin.longitude +
-          "&destination=" +
-          destination.latitude +
-          "," +
-          destination.longitude +
-          "&key=" +
-          "AIzaSyB-7JG8VX4E2H5KXzKqZgjJ9v9UcYxXwKs"
-      );
-      let json = await response.json();
-      console.log(json);
-      return json;
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-   function updateRegion(details) {
+  function updateRegion(details) {
     setStartRegion({
       latitude: details.geometry.location.lat,
       longitude: details.geometry.location.lng,
@@ -156,18 +149,7 @@ const MapWithCurrentLocation = () => {
     });
   }
 
-
   async function moveToLocation(latitude, longitude) {
-    // mapRef.current.animateToRegion(
-    //   {
-    //     latitude,
-    //     longitude,
-    //     latitudeDelta: 0.0922,
-    //     longitudeDelta: 0.0421,
-    //   },
-    //   2000
-    // );
-
     setRegion({
       latitude,
       longitude,
@@ -176,13 +158,11 @@ const MapWithCurrentLocation = () => {
     });
   }
 
-  // console.log(region);
-  // console.log(coordinates[0]);
-  // console.log(coordinates[1]);
   return (
     <View style={styles.container}>
       <View style={googleStyles.test}>
         <GooglePlacesAutocomplete
+          ref={startref}
           placeholder="Start"
           // currentLocation={true}
           fetchDetails={true}
@@ -193,28 +173,21 @@ const MapWithCurrentLocation = () => {
             // 'details' is provided when fetchDetails = true
             console.log("start ->" + JSON.stringify(details.geometry.location));
 
-            let startCoordinates = {
-              latitude: details?.geometry?.location.lat,
-              longitude: details?.geometry?.location.lng,
-            };
-            // setRegion(startCoordinates);
-            // moveToLocation(startCoordinates);
-
             moveToLocation(
               details?.geometry?.location.lat,
               details?.geometry?.location.lng
             );
             updateRegion(details);
-      
-           
           }}
           query={{
             key: "AIzaSyAzaxnuhcqrHyhCKGPsekHS-VC8lGqG7GY",
             language: "en",
           }}
+          get
           onFail={(error) => console.error(error)}
         />
         <GooglePlacesAutocomplete
+          ref={endref}
           styles={{ flex: 1 }}
           placeholder="Destination"
           fetchDetails={true}
@@ -231,7 +204,6 @@ const MapWithCurrentLocation = () => {
               details?.geometry?.location.lng
             );
             updateEndingRegion(details);
-         
           }}
           query={{
             key: "AIzaSyAzaxnuhcqrHyhCKGPsekHS-VC8lGqG7GY",
@@ -239,6 +211,9 @@ const MapWithCurrentLocation = () => {
           }}
           onFail={(error) => console.error(error)}
         />
+        <TouchableOpacity style={styles.loginBtn} onPress={handleDirections}>
+          <Text style={styles.loginText}>Display route</Text>
+        </TouchableOpacity>
       </View>
       <MapView
         // ref={mapRef}
@@ -247,12 +222,16 @@ const MapWithCurrentLocation = () => {
         region={region}
         // onRegionChangeComplete={setRegion}
       >
-      {startRegion && (
-       <Marker coordinate={startRegion} title={"Start"} />
-      )}
-      {endingRegion && (
-       <Marker coordinate={endingRegion} title={"End"} />
-      )}
+        {startRegion && <Marker coordinate={startRegion} title={"Start"} />}
+        {endingRegion && <Marker coordinate={endingRegion} title={"End"} />}
+        {startRegion && endingRegion && (
+          <Polyline
+            coordinates={[startRegion, endingRegion]}
+            strokeColor="#000" // fallback for when `strokeColors` is not supported by the map-provider
+            strokeColors={["#7F0000"]}
+            strokeWidth={6}
+          />
+        )}
       </MapView>
     </View>
   );
@@ -307,28 +286,6 @@ export default function PostLandingPage(setChildIdx) {
     </NavigationContainer>
   );
 }
-
-const GooglePlacesInput = () => {
-  return (
-    <View style={googleStyles.test}>
-      <GooglePlacesAutocomplete
-        // styles={googleStyles.test}
-        placeholder="Search"
-        onPress={(data, details = null) => {
-          // 'details' is provided when fetchDetails = true
-          // console.log(data, details);
-        }}
-        query={{
-          key: "AIzaSyAzaxnuhcqrHyhCKGPsekHS-VC8lGqG7GY",
-          language: "en",
-        }}
-        onFail={(error) => console.error(error)}
-        currentLocation={true}
-        currentLocationLabel="Current location"
-      />
-    </View>
-  );
-};
 
 const googleStyles = StyleSheet.create({
   test: {
