@@ -18,7 +18,8 @@ import MapView, {
 
 import { useNavigation } from "@react-navigation/native";
 import { useIsFocused } from "@react-navigation/native";
-import stickman from "./assets/stickman.png";
+import car from "./assets/post.png";
+import endLocationPin from "./assets/post_ride_end.png";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import { MapViewDirections } from "react-native-maps-directions";
 import axios from "axios";
@@ -42,7 +43,11 @@ import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 
 // displays the stickman indicating the user's location
 function BlackDotMarker() {
-  return <Image source={stickman} style={{ width: 50, height: 50 }} />;
+  return <Image source={car} style={{ width: 75, height: 75 }} />;
+}
+
+function EndPointMarker(){
+  return <Image source={endLocationPin} style={{ width: 75, height: 75 }} />;
 }
 
 const coordinates = [
@@ -126,7 +131,8 @@ const MapWithCurrentLocation = () => {
       });
       setCoords(array_cords);
       // console.log(coords1);
-      console.log(array_cords);
+      console.log("directions was called");
+      // console.log(array_cords);
     } catch (error) {
       console.error(error);
     }
@@ -150,14 +156,22 @@ const MapWithCurrentLocation = () => {
   }, [buttonPressed]);
 
   useEffect(() => {
-    getDirections(startId, endId);
+    // getDirections(startId, endId);
+    //the start and end id are the names of the locations
+    //intial mount will have the startId and the endId as null
+    console.log("startId: " + startId +" Directions to"  +   " endId: " + endId);
+    if (startId && endId) {
+      if(getDirectionsPressed == true)
+        getDirections(startId, endId);
+    }
     setGetDirectionsPressed(false);
   }, [getDirectionsPressed]);
 
   
   const handleDirections = () => {
     setButtonPressed(buttonPressed + 1);
-    
+  
+  
   };
 
   const isFocused = useIsFocused();
@@ -233,7 +247,7 @@ const MapWithCurrentLocation = () => {
           // contains lat and long
           onPress={(data, details = null) => {
             // 'details' is provided when fetchDetails = true
-            console.log("start ->" + JSON.stringify(details.geometry.location));
+            // console.log("start ->" + JSON.stringify(details.geometry.location));
 
             moveToLocation(
               details?.geometry?.location.lat,
@@ -259,7 +273,7 @@ const MapWithCurrentLocation = () => {
           onPress={(data, details = null) => {
             // 'details' is provided when fetchDetails = true
             // console.log(data, details);
-            console.log("end ->" + JSON.stringify(details?.geometry?.location));
+            // console.log("end ->" + JSON.stringify(details?.geometry?.location));
 
             moveToLocation(
               details?.geometry?.location.lat,
@@ -284,14 +298,20 @@ const MapWithCurrentLocation = () => {
         region={region}
         // onRegionChangeComplete={setRegion}
       >
-        {startRegion && <Marker coordinate={startRegion} title={"Start"} />}
-        {endingRegion && <Marker coordinate={endingRegion} title={"End"} />}
+        {startRegion && <Marker coordinate={startRegion} title={"Start"} >
+          <BlackDotMarker />
+        </Marker>
+        }
+        {endingRegion && <Marker coordinate={endingRegion} title={"End"} >
+          <EndPointMarker />
+          </Marker>
+        }
         {coords1 && (
 
           <Polyline
             coordinates={coords1}
             strokeColor="#000" // fallback for when `strokeColors` is not supported by the map-provider
-            strokeColors={["#7F0000"]}
+            strokeColors={["#F11A7B", "#6528F7"]}
             strokeWidth={6}
           />
         )}
