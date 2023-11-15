@@ -8,11 +8,10 @@ import LoginPage from "./Login";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import MapWithCurrentLocation from "./post_landing_page";
 import PostLandingPage from "./post_landing_page";
-import GooglePlacesInput from "./post_landing_page";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import Constants from "expo-constants";
-import TestDirections from "./post_landing_page";
+
 const { expoConfig } = Constants;
 // const page = `http://${expoConfig.debuggerHost.split(":").shift()}:3000`;
 // import { ScrollView } from 'react-native-web';
@@ -76,15 +75,15 @@ export default function App() {
   const children = [
     // <LoginPage setChildIdx={setChildIdx} storeToken={storeToken} page={page} />,
     // <AccountCreationPage
-    //   setChildIdx={setChildIdx}
+      // setChildIdx={setChildIdx}
     //   storeToken={storeToken}
     //   page={page}
     // />,
     // <HomePage setChildIdx={setChildIdx} />,
     // <MapWithCurrentLocation setChildIdx={setChildIdx} />,
-    // <PostLandingPage setChildIdx={setChildIdx} />,
+    <PostLandingPage setChildIdx={setChildIdx} />,
     // <GooglePlacesInput />,
-  <TestDirections />
+  //<TestDirections />
   ];
 
   return children[childIdx];

@@ -141,15 +141,18 @@ const MapWithCurrentLocation = () => {
   const [startId, setStartId] = useState(null);
   const [endId, setEndId] = useState(null);
   const [buttonPressed, setButtonPressed] = useState(0);
+  const [getDirectionsPressed, setGetDirectionsPressed] = useState(false);
 
   useEffect(() => {
     setStartId(startref.current?.getAddressText());
     setEndId(endref.current?.getAddressText());
+    setGetDirectionsPressed(true);
   }, [buttonPressed]);
 
   useEffect(() => {
     getDirections(startId, endId);
-  }, [buttonPressed]);
+    setGetDirectionsPressed(false);
+  }, [getDirectionsPressed]);
 
   
   const handleDirections = () => {
