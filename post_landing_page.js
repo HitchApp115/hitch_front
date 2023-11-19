@@ -21,7 +21,7 @@ import { useIsFocused } from "@react-navigation/native";
 import car from "./assets/post.png";
 import endLocationPin from "./assets/post_ride_end.png";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
-import { MapViewDirections } from "react-native-maps-directions";
+import AccountSettings from "./account_setting";
 import axios from "axios";
 /* 
 MapView: displays the actual maps
@@ -236,7 +236,9 @@ const MapWithCurrentLocation = () => {
 
   return (
     <View style={styles.container}>
+      
       <View style={googleStyles.test}>
+     
         <GooglePlacesAutocomplete
           ref={startref}
           placeholder="Start"
@@ -363,6 +365,7 @@ export default function PostLandingPage(setChildIdx) {
   return (
     <NavigationContainer>
       <View style={{ flex: 1 }}>
+        {/* <AccountSettings /> */}
         <MapWithCurrentLocation />
         {/* <Inputs /> */}
       </View>
@@ -372,8 +375,9 @@ export default function PostLandingPage(setChildIdx) {
 
 const googleStyles = StyleSheet.create({
   test: {
-    top: 50,
+    top: 100,
     position: "absolute",
+    backgroundColor: "white",
     zIndex: 1,
     flex: 1,
     width: "100%",

@@ -11,7 +11,7 @@ import PostLandingPage from "./post_landing_page";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import Constants from "expo-constants";
-
+import AccountSettings from "./account_setting";
 const { expoConfig } = Constants;
 // const page = `http://${expoConfig.debuggerHost.split(":").shift()}:3000`;
 // import { ScrollView } from 'react-native-web';
@@ -79,9 +79,9 @@ export default function App() {
     //   storeToken={storeToken}
     //   page={page}
     // />,
-    // <HomePage setChildIdx={setChildIdx} />,
+    <HomePage setChildIdx={setChildIdx} />,
     // <MapWithCurrentLocation setChildIdx={setChildIdx} />,
-    <PostLandingPage setChildIdx={setChildIdx} />,
+    // <PostLandingPage setChildIdx={setChildIdx} />,
     // <GooglePlacesInput />,
   //<TestDirections />
   ];

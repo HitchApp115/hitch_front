@@ -8,7 +8,7 @@ import {
   Image,
   ImageBackground,
 } from "react-native";
-
+import AccountSettings from "./account_setting";
 export default function HomePage({ setChildIdx}) {
   const handleHitchPress = () => {
     console.log("hitch a ride");
@@ -24,11 +24,8 @@ export default function HomePage({ setChildIdx}) {
       source={require("./assets/background.png")}
       style={MenuStyle.backgroundImage}
     >
-      <View></View>
+      <AccountSettings/>
       <View style={MenuStyle.container}>
-        <Pressable onPress={() => setChildIdx(0)}>
-          <Text style={{ color: "black" }}>Logout</Text>
-        </Pressable>
         <View style={MenuStyle.select_box}>
           <Pressable
             style={({ pressed }) => [
