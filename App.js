@@ -73,14 +73,14 @@ export default function App() {
   // }
 
   const children = [
-    // <LoginPage setChildIdx={setChildIdx} storeToken={storeToken} page={page} />,
-    // <AccountCreationPage
-      // setChildIdx={setChildIdx}
-    //   storeToken={storeToken}
-    //   page={page}
-    // />,
+    <LoginPage setChildIdx={setChildIdx} storeToken={storeToken} page={page} />,
+    <AccountCreationPage
+      setChildIdx={setChildIdx}
+      storeToken={storeToken}
+      page={page}
+    />,
     <HomePage setChildIdx={setChildIdx} />,
-    // <MapWithCurrentLocation setChildIdx={setChildIdx} />,
+    <MapWithCurrentLocation setChildIdx={setChildIdx} />,
     // <PostLandingPage setChildIdx={setChildIdx} />,
     // <GooglePlacesInput />,
   //<TestDirections />

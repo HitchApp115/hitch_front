@@ -19,6 +19,7 @@ import MapView, {
 import { useNavigation } from "@react-navigation/native";
 import { useIsFocused } from "@react-navigation/native";
 import car from "./assets/post.png";
+import back from "./assets/back.png";
 import endLocationPin from "./assets/post_ride_end.png";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import AccountSettings from "./account_setting";
@@ -31,8 +32,6 @@ Circle: used to draw the circle around the start and end points
 // UseIsFocused: used to keep track of whether the user is on the page or not if it is will update the location
 */
 
-
-
 import {
   requestForegroundPermissionsAsync,
   getCurrentPositionAsync,
@@ -40,13 +39,14 @@ import {
 import InputField from "./InputField";
 import { NavigationContainer } from "@react-navigation/native";
 import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
+import { ImageBackground } from "react-native-web";
 
 // displays the stickman indicating the user's location
 function BlackDotMarker() {
   return <Image source={car} style={{ width: 75, height: 75 }} />;
 }
 
-function EndPointMarker(){
+function EndPointMarker() {
   return <Image source={endLocationPin} style={{ width: 75, height: 75 }} />;
 }
 
@@ -62,23 +62,25 @@ const coordinates = [
 ];
 // displays the map with the user's location will only update when the user is on the page
 
-
-
 function decodePolyline(encoded) {
   if (!encoded) {
     return [];
   }
   const poly = [];
-  let index = 0, len = encoded.length;
-  let lat = 0, lng = 0;
+  let index = 0,
+    len = encoded.length;
+  let lat = 0,
+    lng = 0;
   while (index < len) {
-    let b, shift = 0, result = 0;
+    let b,
+      shift = 0,
+      result = 0;
     do {
       b = encoded.charCodeAt(index++) - 63;
       result |= (b & 0x1f) << shift;
       shift += 5;
     } while (b >= 0x20);
-    let dlat = ((result & 1) ? ~(result >> 1) : (result >> 1));
+    let dlat = result & 1 ? ~(result >> 1) : result >> 1;
     lat += dlat;
     shift = 0;
     result = 0;
@@ -87,20 +89,14 @@ function decodePolyline(encoded) {
       result |= (b & 0x1f) << shift;
       shift += 5;
     } while (b >= 0x20);
-    let dlng = ((result & 1) ? ~(result >> 1) : (result >> 1));
+    let dlng = result & 1 ? ~(result >> 1) : result >> 1;
     lng += dlng;
     poly.push([lat / 1e5, lng / 1e5]);
   }
   return poly;
 }
 
-
-
-
-
-
-
-const MapWithCurrentLocation = () => {
+function MapWithCurrentLocation ({setChildIdx}) {
   const [region, setRegion] = useState(null); // the user's location also the start location
 
   const [startRegion, setStartRegion] = useState(null); // the user's start location
@@ -111,22 +107,22 @@ const MapWithCurrentLocation = () => {
     // longitudeDelta: 0.0421,
   }); // the user's end location
 
-
-
-
-
   const [coords1, setCoords] = useState([]);
 
   const getDirections = async (startLoc, destinationLoc) => {
     const YOUR_API_KEY = "AIzaSyAzaxnuhcqrHyhCKGPsekHS-VC8lGqG7GY";
 
     try {
-      const response = await axios.get(`https://maps.googleapis.com/maps/api/directions/json?origin=${startLoc}&destination=${destinationLoc}&key=${YOUR_API_KEY}`);
-      const points = decodePolyline(response.data.routes[0].overview_polyline.points);
-      const array_cords = points.map(point => {
+      const response = await axios.get(
+        `https://maps.googleapis.com/maps/api/directions/json?origin=${startLoc}&destination=${destinationLoc}&key=${YOUR_API_KEY}`
+      );
+      const points = decodePolyline(
+        response.data.routes[0].overview_polyline.points
+      );
+      const array_cords = points.map((point) => {
         return {
           latitude: point[0],
-          longitude: point[1]
+          longitude: point[1],
         };
       });
       setCoords(array_cords);
@@ -137,9 +133,6 @@ const MapWithCurrentLocation = () => {
       console.error(error);
     }
   };
-
-
-
 
   const startref = useRef();
   const endref = useRef();
@@ -159,19 +152,20 @@ const MapWithCurrentLocation = () => {
     // getDirections(startId, endId);
     //the start and end id are the names of the locations
     //intial mount will have the startId and the endId as null
-    console.log("startId: " + startId +" Directions to"  +   " endId: " + endId);
+    console.log("startId: " + startId + " Directions to" + " endId: " + endId);
     if (startId && endId) {
-      if(getDirectionsPressed == true)
-        getDirections(startId, endId);
+      if (getDirectionsPressed == true) getDirections(startId, endId);
     }
     setGetDirectionsPressed(false);
   }, [getDirectionsPressed]);
 
-  
+
+  const backBtnPressed = () => {
+    setChildIdx(2);
+  }
+
   const handleDirections = () => {
     setButtonPressed(buttonPressed + 1);
-  
-  
   };
 
   const isFocused = useIsFocused();
@@ -233,12 +227,9 @@ const MapWithCurrentLocation = () => {
     });
   }
 
-
   return (
     <View style={styles.container}>
-      
       <View style={googleStyles.test}>
-     
         <GooglePlacesAutocomplete
           ref={startref}
           placeholder="Start"
@@ -289,9 +280,22 @@ const MapWithCurrentLocation = () => {
           }}
           onFail={(error) => console.error(error)}
         />
-        <TouchableOpacity style={styles.loginBtn} onPress={handleDirections}>
-          <Text style={styles.loginText}>Display route</Text>
+        <View style={styles.containerForButtons}>
+        
+        <TouchableOpacity onPress={backBtnPressed} style={styles.backBtn}>
+            <Image source={back} style={styles.backBtnImage}  />
         </TouchableOpacity>
+      
+  
+
+          <TouchableOpacity style={[styles.displayBtn, styles.displayRouteBtn]} onPress={handleDirections}>
+            <Text style={styles.loginText}>Show route</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={[styles.displayBtn, styles.dislayPostBtn]}>
+            <Text style={styles.loginText}>Post</Text>
+          </TouchableOpacity>
+        </View>
       </View>
       <MapView
         // ref={mapRef}
@@ -300,16 +304,17 @@ const MapWithCurrentLocation = () => {
         region={region}
         // onRegionChangeComplete={setRegion}
       >
-        {startRegion && <Marker coordinate={startRegion} title={"Start"} >
-          <BlackDotMarker />
-        </Marker>
-        }
-        {endingRegion && <Marker coordinate={endingRegion} title={"End"} >
-          <EndPointMarker />
+        {startRegion && (
+          <Marker coordinate={startRegion} title={"Start"}>
+            <BlackDotMarker />
           </Marker>
-        }
+        )}
+        {endingRegion && (
+          <Marker coordinate={endingRegion} title={"End"}>
+            <EndPointMarker />
+          </Marker>
+        )}
         {coords1 && (
-
           <Polyline
             coordinates={coords1}
             strokeColor="#000" // fallback for when `strokeColors` is not supported by the map-provider
@@ -341,32 +346,56 @@ const styles = StyleSheet.create({
     // backgroundColor: "white",
     margin: 0,
   },
-  loginBtn: {
-    width: "80%",
-    borderRadius: 25,
+
+  containerForButtons: {
+    flexDirection: "row",
+    // alignItems: "center",
     height: 50,
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: 10,
-    backgroundColor: "#F9F3CC",
+    margin: 0,
+    padding: 0,
+    // borderWidth: 3,
+    borderColor: "red",
   },
-  loginBtn: {
-    width: "80%",
-    borderRadius: 25,
-    height: 50,
+
+  backBtn: {
+    // height: 50,
+    padding: 0,
+    margin: 0,
+    // flex: 1,
+    maxWidth: "20%",
+    // height: 50,
+  },
+  backBtnImage: {
+
+    flex: 1,
+    margin: 0,
+    // height: 55,
+    // width: 55,
+    // height: "100%",
+    // width: "100%",
+  },
+
+  displayBtn: {
+    flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    marginTop: 10,
-    backgroundColor: "#F9F3CC",
+    // marginTop: 10,
+    // backgroundColor: "#F9F3CC",
+  },
+  displayRouteBtn: {
+    backgroundColor: "#F58484",
+  },
+  dislayPostBtn: {
+    backgroundColor: "red",
   },
 });
 
-export default function PostLandingPage(setChildIdx) {
+export default function PostLandingPage({setChildIdx}) {
   return (
     <NavigationContainer>
       <View style={{ flex: 1 }}>
         {/* <AccountSettings /> */}
-        <MapWithCurrentLocation />
+        <MapWithCurrentLocation setChildIdx = {setChildIdx}/>
         {/* <Inputs /> */}
       </View>
     </NavigationContainer>
@@ -375,7 +404,7 @@ export default function PostLandingPage(setChildIdx) {
 
 const googleStyles = StyleSheet.create({
   test: {
-    top: 100,
+    top: 50,
     position: "absolute",
     backgroundColor: "white",
     zIndex: 1,
