@@ -47,7 +47,7 @@ function LoginPage({ setChildIdx, storeToken, page }) {
     
     setChildIdx(2);
   //   try {
-  //     const response = await axios.get(page+"/account/login", loginData());
+  //     const response = await axios.post(page+"/account/login", loginData());
 
   //     // if the login is successful, set the token and go to the home page
   //     if (response.data.status === "success") {
