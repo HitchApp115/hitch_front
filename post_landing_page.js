@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Text,
   KeyboardAvoidingView,
+  TextInput,
 } from "react-native";
 import MapView, {
   Marker,
@@ -40,6 +41,8 @@ import InputField from "./InputField";
 import { NavigationContainer } from "@react-navigation/native";
 import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 import { ImageBackground } from "react-native-web";
+
+
 
 // displays the stickman indicating the user's location
 function BlackDotMarker() {
@@ -96,9 +99,10 @@ function decodePolyline(encoded) {
   return poly;
 }
 
-function MapWithCurrentLocation ({setChildIdx}) {
-  const [region, setRegion] = useState(null); // the user's location also the start location
+function MapWithCurrentLocation({ setChildIdx }) {
+  const [showscreen, setShowScreen] = useState(0);
 
+  const [region, setRegion] = useState(null); // the user's location also the start location
   const [startRegion, setStartRegion] = useState(null); // the user's start location
   const [endingRegion, setEndingRegion] = useState({
     latitude: 36.9809503330377,
@@ -159,13 +163,13 @@ function MapWithCurrentLocation ({setChildIdx}) {
     setGetDirectionsPressed(false);
   }, [getDirectionsPressed]);
 
-
   const backBtnPressed = () => {
     setChildIdx(2);
-  }
+  };
 
   const handleDirections = () => {
     setButtonPressed(buttonPressed + 1);
+    setShowScreen(1);
   };
 
   const isFocused = useIsFocused();
@@ -227,76 +231,127 @@ function MapWithCurrentLocation ({setChildIdx}) {
     });
   }
 
+  function switchToPost() {
+    setShowScreen(1);
+
+  }
+
   return (
     <View style={styles.container}>
+      {/* //below is the input field for the start and end location */}
+
       <View style={googleStyles.test}>
-        <GooglePlacesAutocomplete
-          ref={startref}
-          placeholder="Start"
-          // currentLocation={true}
-          fetchDetails={true}
-          // when turned on fetchDetails will return the details of the location that is selected
-          // data is the name of the location which is all the details that are returned
-          // contains lat and long
-          onPress={(data, details = null) => {
-            // 'details' is provided when fetchDetails = true
-            // console.log("start ->" + JSON.stringify(details.geometry.location));
+            
+            <GooglePlacesAutocomplete
+              ref={startref}
+              placeholder="Start"
+              
+              fetchDetails={true}
+              // when turned on fetchDetails will return the details of the location that is selected
+              // data is the name of the location which is all the details that are returned
+              // contains lat and long
+              getCurrentPositionAsync={true}
+              onPress={(data, details = null) => {
+                // 'details' is provided when fetchDetails = true
+                // console.log("start ->" + JSON.stringify(details.geometry.location));
 
-            moveToLocation(
-              details?.geometry?.location.lat,
-              details?.geometry?.location.lng
-            );
-            updateRegion(details);
-          }}
-          query={{
-            key: "AIzaSyAzaxnuhcqrHyhCKGPsekHS-VC8lGqG7GY",
-            language: "en",
-          }}
-          get
-          onFail={(error) => console.error(error)}
-        />
-        <GooglePlacesAutocomplete
-          ref={endref}
-          styles={{ flex: 1 }}
-          placeholder="Destination"
-          fetchDetails={true}
-          // when turned on fetchDetails will return the details of the location that is selected
-          // data is the name of the location which is all the details that are returned
-          // contains lat and long
-          onPress={(data, details = null) => {
-            // 'details' is provided when fetchDetails = true
-            // console.log(data, details);
-            // console.log("end ->" + JSON.stringify(details?.geometry?.location));
+                moveToLocation(
+                  details?.geometry?.location.lat,
+                  details?.geometry?.location.lng
+                );
+                updateRegion(details);
+              }}
+              query={{
+                key: "AIzaSyAzaxnuhcqrHyhCKGPsekHS-VC8lGqG7GY",
+                language: "en",
+              }}
+              get
+              onFail={(error) => console.error(error)}
+            />
+            <GooglePlacesAutocomplete
+              ref={endref}
+              styles={{ flex: 1 }}
+              placeholder="Destination"
+              fetchDetails={true}
+              // when turned on fetchDetails will return the details of the location that is selected
+              // data is the name of the location which is all the details that are returned
+              // contains lat and long
+              onPress={(data, details = null) => {
+                // 'details' is provided when fetchDetails = true
+                // console.log(data, details);
+                // console.log("end ->" + JSON.stringify(details?.geometry?.location));
 
-            moveToLocation(
-              details?.geometry?.location.lat,
-              details?.geometry?.location.lng
-            );
-            updateEndingRegion(details);
-          }}
-          query={{
-            key: "AIzaSyAzaxnuhcqrHyhCKGPsekHS-VC8lGqG7GY",
-            language: "en",
-          }}
-          onFail={(error) => console.error(error)}
-        />
-        <View style={styles.containerForButtons}>
-        
-        <TouchableOpacity onPress={backBtnPressed} style={styles.backBtn}>
-            <Image source={back} style={styles.backBtnImage}  />
-        </TouchableOpacity>
-      
-  
+                moveToLocation(
+                  details?.geometry?.location.lat,
+                  details?.geometry?.location.lng
+                );
+                updateEndingRegion(details);
+              }}
+              query={{
+                key: "AIzaSyAzaxnuhcqrHyhCKGPsekHS-VC8lGqG7GY",
+                language: "en",
+              }}
+              onFail={(error) => console.error(error)}
+            />
+    
+            
+              {showscreen == 0 && (
+          <>
+            <View style={styles.containerForButtons}>
+              <TouchableOpacity onPress={backBtnPressed} style={styles.backBtn}>
+                <Image source={back} style={styles.backBtnImage} />
+              </TouchableOpacity>
 
-          <TouchableOpacity style={[styles.displayBtn, styles.displayRouteBtn]} onPress={handleDirections}>
-            <Text style={styles.loginText}>Show route</Text>
-          </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.displayBtn, styles.displayRouteBtn]}
+                onPress={handleDirections}
+              >
+                <Text style={styles.loginText}>Confirm Route</Text>
+              </TouchableOpacity>
 
-          <TouchableOpacity style={[styles.displayBtn, styles.dislayPostBtn]}>
-            <Text style={styles.loginText}>Post</Text>
-          </TouchableOpacity>
-        </View>
+              <TouchableOpacity
+                style={[styles.displayBtn, styles.dislayPostBtn]}
+                onPress={switchToPost}
+              >
+                <Text style={styles.loginText}>Post</Text>
+              </TouchableOpacity>
+            </View>
+          </>
+        )}
+
+        {showscreen === 1 && (
+          <View style={styles.adjustingRideCreationContainer}>
+
+            <TextInput
+              style={styles.postInputTextInputs}
+              placeholder="riders"
+            ></TextInput>
+            <TextInput
+              style={styles.postInputTextInputs}
+              placeholder="costPerRider"
+            ></TextInput>
+            <TextInput
+              style={styles.postInputTextInputs}
+              placeholder="Max Distance from rop"
+            ></TextInput>
+            <View style={styles.containerForButtons}>
+            <TouchableOpacity onPress={()=>{setShowScreen(0)}} style={styles.backBtn}>
+                <Image source={back} style={styles.backBtnImage} />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.displayBtn, styles.dislayPostBtn]}
+                onPress={switchToPost}
+              >
+                <Text style={styles.loginText}>Submit Your Route!</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+
+        )}
       </View>
+
+      {/* //input for start and stop location ends here */}
+
       <MapView
         // ref={mapRef}
         provider={PROVIDER_GOOGLE}
@@ -325,7 +380,7 @@ function MapWithCurrentLocation ({setChildIdx}) {
       </MapView>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -366,11 +421,10 @@ const styles = StyleSheet.create({
     // height: 50,
   },
   backBtnImage: {
-
     flex: 1,
     margin: 0,
-    // height: 55,
-    // width: 55,
+    height: 55,
+    width: 55,
     // height: "100%",
     // width: "100%",
   },
@@ -388,14 +442,44 @@ const styles = StyleSheet.create({
   dislayPostBtn: {
     backgroundColor: "red",
   },
+
+  adjustingRideCreationContainer: {
+    width: "100%",
+    // height: 320,
+  },
+  postInputTextInputs: {
+    width: "100%",
+    height: 33,
+    backgroundColor: "white",
+    fontFamily: "Helvetica",
+    fontSize: 20,
+    borderWidth: 3,
+    marginTop: 2,
+    borderColor: "black",
+  },
+  screen1:{
+    
+    // position: "absolute",
+    zIndex: 3,
+    width: "100%",
+
+
+  },
+  visible: {
+    opacity: 1,
+   
+  },
+  hidden: {
+    opacity: 0,
+  },
 });
 
-export default function PostLandingPage({setChildIdx}) {
+export default function PostLandingPage({ setChildIdx }) {
   return (
     <NavigationContainer>
       <View style={{ flex: 1 }}>
         {/* <AccountSettings /> */}
-        <MapWithCurrentLocation setChildIdx = {setChildIdx}/>
+        <MapWithCurrentLocation setChildIdx={setChildIdx} />
         {/* <Inputs /> */}
       </View>
     </NavigationContainer>
@@ -404,7 +488,7 @@ export default function PostLandingPage({setChildIdx}) {
 
 const googleStyles = StyleSheet.create({
   test: {
-    top: 50,
+    top: 35,
     position: "absolute",
     backgroundColor: "white",
     zIndex: 1,
