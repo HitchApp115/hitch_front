@@ -8,11 +8,12 @@ import {
   Platform,
   TextInput,
   ImageBackground,
+  Image,
 } from "react-native";
 import InputField from "./InputField";
 import { Button } from "react-native-web";
 import axios from "axios";
-
+import back from "./assets/back.png";
 // set where the backend is running here
 
 const AccountCreationPage = ({ setChildIdx, storeToken, page }) => {
@@ -54,6 +55,7 @@ const AccountCreationPage = ({ setChildIdx, storeToken, page }) => {
         setSubmitError(true);
         alert("Please fill in all fields.");
         console.log("empty");
+        break;
       }
       // checks if phone number is a number
       if ((variable = create_number)) {
@@ -62,13 +64,16 @@ const AccountCreationPage = ({ setChildIdx, storeToken, page }) => {
           SetIsNumber(false);
           alert("Please enter a valid phone number.");
           console.log("not a number");
+          break;
         }
       }
       // checks if passwords match
       if ((variable = create_password_confirm)) {
         if (variable != create_password) {
           setSubmitError(true);
+          alert("Passwords do not match.");
           console.log("passwords dont match");
+          break;
         }
       }
     }
@@ -77,8 +82,11 @@ const AccountCreationPage = ({ setChildIdx, storeToken, page }) => {
     SetIsNumber(true);
   };
 
-  const [status, setStatus] = useState({});
+  const backBtnPressed = () => {
+    setChildIdx(0);
+  };
 
+  const [status, setStatus] = useState({});
   const handleSubmit = async () => {
     checkStateVariables();
     if (submitError) {
@@ -121,13 +129,16 @@ const AccountCreationPage = ({ setChildIdx, storeToken, page }) => {
       source={require("./assets/background.png")}
       style={AccountStyles.backgroundImage}
     >
+      
       <KeyboardAvoidingView
         style={AccountStyles.container}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
       >
         {/* <View style={AccountStyles.container}> */}
-
+      <TouchableOpacity onPress={backBtnPressed} style = {AccountStyles.backBtnContainer}>
+                <Image source={back} style={AccountStyles.backbtn}/>
+      </TouchableOpacity>
         <InputField
           label="First Name"
           value={create_first_name}
@@ -222,6 +233,15 @@ const AccountStyles = StyleSheet.create({
   errorText: {
     color: "red",
     marginTop: 10,
+  },
+  backBtnContainer:{
+    width: "100%",
+  },
+  backbtn:{
+    width: 60,
+    height: 50,
+    marginBottom: 30,
+    marginLeft: 10,
   },
 });
 
