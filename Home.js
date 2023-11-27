@@ -24,7 +24,7 @@ export default function HomePage({ setChildIdx}) {
       source={require("./assets/background.png")}
       style={MenuStyle.backgroundImage}
     >
-      <AccountSettings/>
+      <AccountSettings setChilDIdx={setChildIdx}/>
       <View style={MenuStyle.container}>
         <View style={MenuStyle.select_box}>
           <Pressable

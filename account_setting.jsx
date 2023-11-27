@@ -5,7 +5,7 @@ import account_icon from "./assets/account_icon.png";
 import x_fill from "./assets/x_fill.png";
 
 
-const AccountSettings = ({ UserName, Email, PhoneNumber }) => {
+const AccountSettings = ({ UserName, Email, PhoneNumber, setChilDIdx }) => {
   const [showAccountInfo, setShowAccountInfo] = useState(false);
 
   if (!UserName) {
@@ -24,6 +24,7 @@ const AccountSettings = ({ UserName, Email, PhoneNumber }) => {
 
   const handleLogout = () => {
     // Handle logout logic here
+    setChilDIdx(0);
     console.log("Logged out");
   };
 
