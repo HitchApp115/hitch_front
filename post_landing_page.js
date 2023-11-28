@@ -356,8 +356,15 @@ function MapWithCurrentLocation({ setChildIdx }) {
         // ref={mapRef}
         provider={PROVIDER_GOOGLE}
         style={styles.map}
+        initialRegion={{
+          latitude:  36.99126994890912,
+      longitude: -122.05864519201934,
+      latitudeDelta: 0.0922,
+      longitudeDelta: 0.0421,
+        }}
+        showsUserLocation={true}
         region={region}
-        // onRegionChangeComplete={setRegion}
+
       >
         {startRegion && (
           <Marker coordinate={startRegion} title={"Start"}>
