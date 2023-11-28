@@ -12,6 +12,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import Constants from "expo-constants";
 import AccountSettings from "./account_setting";
+import axios, { Axios } from "axios";
 const { expoConfig } = Constants;
 // const page = `http://${expoConfig.debuggerHost.split(":").shift()}:3000`;
 // import { ScrollView } from 'react-native-web';
@@ -20,10 +21,13 @@ const Stack = createStackNavigator();
 
 // where to find the backend
 // const page = "http://localhost:3000";
-const page = "http://10.0.0.157:3000";
+const page = "http://10.0.0.157:3300";
 // const page = "http://169.233.224.168"
 // const page = `http://${manifest.debuggerHost.split(":").shift()}:3000`;
 
+
+// const response= await axios.get(page);
+// console.log(response);
 export default function App() {
   // token used to keep track of whether the user is logged in
   const [token, setToken] = useState(null);
@@ -45,6 +49,8 @@ export default function App() {
     try {
       const userToken = await AsyncStorage.getItem("userToken");
       setToken(userToken); // Update the state
+      console.log("got token "+userToken);
+      setChildIdx(2);
     } catch (error) {
       // Handle errors here
       console.log("Error retrieving data", error);
@@ -53,8 +59,15 @@ export default function App() {
 
   // function that removes the token from the device's storage
   const removeToken = async () => {
+    await AsyncStorage.removeItem("userToken");
     try {
-      await AsyncStorage.removeItem("userToken");
+      let test = await axios.post(page+"/account/logout", {}, {
+        headers: {
+          authorization: token
+        }
+      });
+      console.log("test ",test);
+      
       setToken(null); // Update the state
     } catch (error) {
       // Handle errors here
@@ -63,9 +76,9 @@ export default function App() {
   };
 
   // function that retrives the token from the device's storage and sets it into state
-  // useEffect(() => {
-  //   getToken();
-  // }, []);
+  useEffect(() => {
+    getToken();
+  }, []);
 
   // if the user is logged in, go to the home page
   // if(token != null) {
@@ -79,7 +92,7 @@ export default function App() {
       storeToken={storeToken}
       page={page}
     />,
-    <HomePage setChildIdx={setChildIdx} />,
+    <HomePage setChildIdx={setChildIdx} removeToken={removeToken}/>,
     <MapWithCurrentLocation setChildIdx={setChildIdx} />,
     // <PostLandingPage setChildIdx={setChildIdx} />,
     // <GooglePlacesInput />,

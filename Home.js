@@ -9,7 +9,7 @@ import {
   ImageBackground,
 } from "react-native";
 import AccountSettings from "./account_setting";
-export default function HomePage({ setChildIdx}) {
+export default function HomePage({ setChildIdx, removeToken}) {
   const handleHitchPress = () => {
     console.log("hitch a ride");
   };
@@ -24,7 +24,7 @@ export default function HomePage({ setChildIdx}) {
       source={require("./assets/background.png")}
       style={MenuStyle.backgroundImage}
     >
-      <AccountSettings setChilDIdx={setChildIdx}/>
+      <AccountSettings setChilDIdx={setChildIdx} removeToken={removeToken}/>
       <View style={MenuStyle.container}>
         <View style={MenuStyle.select_box}>
           <Pressable

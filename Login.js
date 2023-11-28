@@ -12,8 +12,7 @@ import InputField from "./InputField";
 // import Video from 'react-native-video';
 import { Video } from "expo-av";
 import axios from "axios";
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // where to find the backend
 
@@ -29,47 +28,41 @@ function LoginPage({ setChildIdx, storeToken, page }) {
     username: login,
     password: password,
   });
-  
+
   const handleLogin = async () => {
     // check if any of the fields are empty
     console.log("login pressed");
     console.log(login, password);
-    if(typeof login !== 'string' || typeof password !== 'string'){
+    if (typeof login !== "string" || typeof password !== "string") {
       console.log("undefined");
-    }  
+    }
     if (checkEmpty(login, password)) {
       alert("Please fill in all fields.");
       return;
+    } else {
+      try {
+        
+        const response = await axios.post(page + "/account/login", loginData());
+        console.log("FUCK", loginData());
+
+        // if the login is successful, set the token and go to the home page
+        if (response.data.status === "success") {
+          
+          console.log("login successful");
+          console.log(response.data.status);
+          storeToken(response.data.loginToken);
+          setChildIdx(2);
+        } else {
+          // if the login is unsuccessful, display an error message
+          console.log("login failed");
+          alert("Login failed. Please try again.");
+        }
+      } catch (e) {
+        console.log(e);
+        // e is an object with a response property that has data and status
+      }
     }
-    
-  //   else{
-
-    
-    setChildIdx(2);
-  //   try {
-  //     const response = await axios.post(page+"/account/login", loginData());
-
-  //     // if the login is successful, set the token and go to the home page
-  //     if (response.data.status === "success") {
-  //       // storeToken(response.data.loginToken);
-  //       console.log("login successful");
-  //       console.log(response.data.status);
-  //       setChildIdx(2);
-  //     } else {
-  //       // if the login is unsuccessful, display an error message
-  //       console.log("login failed");
-  //       alert("Login failed. Please try again.");
-  //     }
-  //   }
-  //   catch (e) {
-  //     console.log(e);
-  //     // e is an object with a response property that has data and status
-  // };
-  //   }
-};
-  
-
-
+  };
 
   return (
     // <ImageBackground source={require('./assets/background.png')} style={styles.backgroundImage}>
@@ -107,16 +100,13 @@ function LoginPage({ setChildIdx, storeToken, page }) {
           secureTextEntry={true}
         />
 
-        <TouchableOpacity
-          style={styles.loginBtn}
-          onPress= {handleLogin}
-        >
+        <TouchableOpacity style={styles.loginBtn} onPress={handleLogin}>
           <Text style={styles.loginText}>LOGIN</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.signupBtn}
-            onPress={() => setChildIdx(1)}
-          >
+          onPress={() => setChildIdx(1)}
+        >
           <Text style={styles.forgot_button}>
             Don't have an account yet{" "}
             <Text
@@ -194,7 +184,5 @@ const styles = StyleSheet.create({
     backgroundColor: "#F9F3CC",
   },
 });
-
-
 
 export default LoginPage;
