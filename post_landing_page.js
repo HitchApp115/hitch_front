@@ -99,17 +99,17 @@ function decodePolyline(encoded) {
   return poly;
 }
 
-function MapWithCurrentLocation({ setChildIdx }) {
+function MapWithCurrentLocation({ setChildIdx, token, }) {
+  const domain = "https://lionfish-app-3pdnm.ondigitalocean.app";
   const [showscreen, setShowScreen] = useState(0);
+
+  const [riders, setRiders] = useState(0)
+  const [costPerRider, setCostPerRider] = useState(0)
+  const [maxDistance, setMaxDistance] = useState(0)
 
   const [region, setRegion] = useState(null); // the user's location also the start location
   const [startRegion, setStartRegion] = useState(null); // the user's start location
-  const [endingRegion, setEndingRegion] = useState({
-    latitude: 36.9809503330377,
-    longitude: -122.05049376286459,
-    // latitudeDelta: 0.0922,
-    // longitudeDelta: 0.0421,
-  }); // the user's end location
+  const [endingRegion, setEndingRegion] = useState(null); // the user's end location
 
   const [coords1, setCoords] = useState([]);
 
@@ -233,7 +233,29 @@ function MapWithCurrentLocation({ setChildIdx }) {
 
   function switchToPost() {
     setShowScreen(1);
+  }
 
+  const submitRoute = () => {
+    console.log("MVP:", startRegion, endingRegion, riders, costPerRider, maxDistance, domain + "/rides/create")
+    axios.post(domain + "/rides/create", {
+      startPoint: startRegion,
+      destination: endingRegion,
+      riders,
+      costPerRider,
+      pickUpDistance: maxDistance
+    }, {
+      headers: {
+        authorization: token
+      }
+    })
+      .then(response => {
+        console.log("AYY:", response)
+      })
+      .catch(response => {
+        alert(response.response)
+        console.log("FUCKK:", response)
+      })
+  
   }
 
   return (
@@ -325,14 +347,17 @@ function MapWithCurrentLocation({ setChildIdx }) {
             <TextInput
               style={styles.postInputTextInputs}
               placeholder="riders"
+              onChangeText={(text) => setRiders(Number(text))}
             ></TextInput>
             <TextInput
               style={styles.postInputTextInputs}
               placeholder="costPerRider"
+              onChangeText={(text) => setCostPerRider(Number(text))}
             ></TextInput>
             <TextInput
               style={styles.postInputTextInputs}
               placeholder="Max Distance from rop"
+              onChangeText={(text) => setMaxDistance(Number(text))}
             ></TextInput>
             <View style={styles.containerForButtons}>
             <TouchableOpacity onPress={()=>{setShowScreen(0)}} style={styles.backBtn}>
@@ -340,7 +365,7 @@ function MapWithCurrentLocation({ setChildIdx }) {
               </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.displayBtn, styles.dislayPostBtn]}
-                onPress={switchToPost}
+                onPress={submitRoute}
               >
                 <Text style={styles.loginText}>Submit Your Route!</Text>
               </TouchableOpacity>
@@ -481,12 +506,12 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function PostLandingPage({ setChildIdx }) {
+export default function PostLandingPage({ setChildIdx, token }) {
   return (
     <NavigationContainer>
       <View style={{ flex: 1 }}>
         {/* <AccountSettings /> */}
-        <MapWithCurrentLocation setChildIdx={setChildIdx} />
+        <MapWithCurrentLocation setChildIdx={setChildIdx} token={token} />
         {/* <Inputs /> */}
       </View>
     </NavigationContainer>

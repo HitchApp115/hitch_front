@@ -9,6 +9,7 @@ import {
   ImageBackground,
 } from "react-native";
 import AccountSettings from "./account_setting";
+
 export default function HomePage({ setChildIdx, removeToken}) {
   const handleHitchPress = () => {
     console.log("hitch a ride");
@@ -18,6 +19,10 @@ export default function HomePage({ setChildIdx, removeToken}) {
     setChildIdx(3);
     console.log("post a ride");
   };
+
+  handlePendingRidesPress = () => {
+    setChildIdx(4)
+  }
 
   return (
     <ImageBackground
@@ -80,6 +85,34 @@ export default function HomePage({ setChildIdx, removeToken}) {
               style={{ width: 50, height: 50 }}
             />
             <Text style={{ color: "white" }}>Post a Ride</Text>
+          </Pressable>
+        </View>
+        <View style={MenuStyle.select_box}>
+          <Pressable
+            onPress={handlePendingRidesPress}
+            style={({ pressed }) => [
+              {
+                backgroundColor: pressed ? "lightskyblue" : "royalblue",
+                borderRadius: 10,
+                padding: 10,
+                shadowColor: "#000",
+                shadowOffset: {
+                  width: 0,
+                  height: 2,
+                },
+                shadowOpacity: 0.25,
+                shadowRadius: 3.84,
+
+                elevation: 5,
+              },
+              MenuStyle.Btn,
+            ]}
+          >
+            <Image
+              source={require("./assets/post.png")}
+              style={{ width: 50, height: 50 }}
+            />
+            <Text style={{ color: "white" }}>View Pending Rides</Text>
           </Pressable>
         </View>
       </View>

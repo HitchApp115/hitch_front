@@ -7,6 +7,7 @@ import HomePage from "./Home";
 import LoginPage from "./Login";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import MapWithCurrentLocation from "./post_landing_page";
+import PendingRidesPage from './PendingRidesPage'
 import PostLandingPage from "./post_landing_page";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -86,7 +87,9 @@ export default function App() {
   // if(token != null) {
   //   setChildIdx(2);
   // }
-
+  useEffect(() => {
+    console.log("PAGE1:", page)
+  }, [])
   const children = [
     <LoginPage setChildIdx={setChildIdx} storeToken={storeToken} page={page} />,
     <AccountCreationPage
@@ -95,7 +98,8 @@ export default function App() {
       page={page}
     />,
     <HomePage setChildIdx={setChildIdx} removeToken={removeToken}/>,
-    <MapWithCurrentLocation setChildIdx={setChildIdx} />,
+    <MapWithCurrentLocation setChildIdx={setChildIdx} token={token} domain={page} />,
+    <PendingRidesPage  setChildIdx={setChildIdx} page={page} />
     // <PostLandingPage setChildIdx={setChildIdx} />,
     // <GooglePlacesInput />,
   //<TestDirections />

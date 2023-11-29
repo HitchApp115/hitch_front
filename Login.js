@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -17,6 +17,9 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 // where to find the backend
 
 function LoginPage({ setChildIdx, storeToken, page }) {
+  useEffect(() => {
+    console.log("PAGE2:", page)
+  })
   const [login, SetLogin] = useState("");
   const [password, SetPassword] = useState("");
 
@@ -53,17 +56,7 @@ function LoginPage({ setChildIdx, storeToken, page }) {
           })
 
         // if the login is successful, set the token and go to the home page
-        // if (response.data.status === "success") {
-          
-        //   console.log("login successful");
-        //   console.log(response.data.status);
-        //   storeToken(response.data.loginToken);
-        //   setChildIdx(2);
-        // } else {
-        //   // if the login is unsuccessful, display an error message
-        //   console.log("login failed");
-        //   alert("Login failed. Please try again.");
-        // }
+
       } catch (e) {
         console.log(e);
         // e is an object with a response property that has data and status
