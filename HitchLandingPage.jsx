@@ -7,6 +7,7 @@ import {
   Text,
   KeyboardAvoidingView,
   TextInput,
+  ScrollView,
 } from "react-native";
 import MapView, {
   Marker,
@@ -41,8 +42,6 @@ import InputField from "./InputField";
 import { NavigationContainer } from "@react-navigation/native";
 import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 import { ImageBackground } from "react-native-web";
-
-
 
 // displays the stickman indicating the user's location
 function BlackDotMarker() {
@@ -130,9 +129,8 @@ function HitchLandingPage({ setChildIdx }) {
         };
       });
       setCoords(array_cords);
-      // console.log(coords1);
+
       console.log("directions was called");
-      // console.log(array_cords);
     } catch (error) {
       console.error(error);
     }
@@ -155,8 +153,7 @@ function HitchLandingPage({ setChildIdx }) {
   useEffect(() => {
     // getDirections(startId, endId);
     //the start and end id are the names of the locations
-    //intial mount will have the startId and the endId as null
-    console.log("startId: " + startId + " Directions to" + " endId: " + endId);
+    //intial mount will have the startId and the endId as null 
     if (startId && endId) {
       if (getDirectionsPressed == true) getDirections(startId, endId);
     }
@@ -231,71 +228,83 @@ function HitchLandingPage({ setChildIdx }) {
     });
   }
 
-  function switchToPost() {
-    setShowScreen(1);
-
+  function handleSubmit() {
+    setShowScreen(2);
+    alert(setShowScreen);
+    console.log("submit pressed");
+    console.log(showscreen);
   }
+
+  const data = [
+    { key: "cost" },
+    { key: "cost" },
+    { key: "cost" },
+    { key: "cost" },
+    { key: "cost" },
+    { key: "cost" },
+
+    // ... more items
+  ];
 
   return (
     <View style={styles.container}>
       {/* //below is the input field for the start and end location */}
 
       <View style={googleStyles.test}>
-            
-            <GooglePlacesAutocomplete
-              ref={startref}
-              placeholder="Start"
-              
-              fetchDetails={true}
-              // when turned on fetchDetails will return the details of the location that is selected
-              // data is the name of the location which is all the details that are returned
-              // contains lat and long
-              getCurrentPositionAsync={true}
-              onPress={(data, details = null) => {
-                // 'details' is provided when fetchDetails = true
-                // console.log("start ->" + JSON.stringify(details.geometry.location));
+        <View style={[showscreen < 2 ? styles:googleStyles.container]}>
+          <GooglePlacesAutocomplete
+            ref={startref}
+            placeholder="Start"
+            fetchDetails={true}
+            // when turned on fetchDetails will return the details of the location that is selected
+            // data is the name of the location which is all the details that are returned
+            // contains lat and long
+            getCurrentPositionAsync={true}
+            onPress={(data, details = null) => {
+              // 'details' is provided when fetchDetails = true
+              // console.log("start ->" + JSON.stringify(details.geometry.location));
 
-                moveToLocation(
-                  details?.geometry?.location.lat,
-                  details?.geometry?.location.lng
-                );
-                updateRegion(details);
-              }}
-              query={{
-                key: "AIzaSyAzaxnuhcqrHyhCKGPsekHS-VC8lGqG7GY",
-                language: "en",
-              }}
-              get
-              onFail={(error) => console.error(error)}
-            />
-            <GooglePlacesAutocomplete
-              ref={endref}
-              styles={{ flex: 1 }}
-              placeholder="Destination"
-              fetchDetails={true}
-              // when turned on fetchDetails will return the details of the location that is selected
-              // data is the name of the location which is all the details that are returned
-              // contains lat and long
-              onPress={(data, details = null) => {
-                // 'details' is provided when fetchDetails = true
-                // console.log(data, details);
-                // console.log("end ->" + JSON.stringify(details?.geometry?.location));
+              moveToLocation(
+                details?.geometry?.location.lat,
+                details?.geometry?.location.lng
+              );
+              updateRegion(details);
+            }}
+            query={{
+              key: "AIzaSyAzaxnuhcqrHyhCKGPsekHS-VC8lGqG7GY",
+              language: "en",
+            }}
+            get
+            onFail={(error) => console.error(error)}
+          />
+          <GooglePlacesAutocomplete
+            ref={endref}
+            styles={{ flex: 1 }}
+            placeholder="Destination"
+            fetchDetails={true}
+            // when turned on fetchDetails will return the details of the location that is selected
+            // data is the name of the location which is all the details that are returned
+            // contains lat and long
+            onPress={(data, details = null) => {
+              // 'details' is provided when fetchDetails = true
+              // console.log(data, details);
+              // console.log("end ->" + JSON.stringify(details?.geometry?.location));
 
-                moveToLocation(
-                  details?.geometry?.location.lat,
-                  details?.geometry?.location.lng
-                );
-                updateEndingRegion(details);
-              }}
-              query={{
-                key: "AIzaSyAzaxnuhcqrHyhCKGPsekHS-VC8lGqG7GY",
-                language: "en",
-              }}
-              onFail={(error) => console.error(error)}
-            />
-    
-            
-              {showscreen == 0 && (
+              moveToLocation(
+                details?.geometry?.location.lat,
+                details?.geometry?.location.lng
+              );
+              updateEndingRegion(details);
+            }}
+            query={{
+              key: "AIzaSyAzaxnuhcqrHyhCKGPsekHS-VC8lGqG7GY",
+              language: "en",
+            }}
+            onFail={(error) => console.error(error)}
+          />
+        </View>
+
+        {showscreen == 0 && (
           <>
             <View style={styles.containerForButtons}>
               <TouchableOpacity onPress={backBtnPressed} style={styles.backBtn}>
@@ -308,45 +317,78 @@ function HitchLandingPage({ setChildIdx }) {
               >
                 <Text style={styles.loginText}>Confirm Route</Text>
               </TouchableOpacity>
-
-              <TouchableOpacity
-                style={[styles.displayBtn, styles.dislayPostBtn]}
-                onPress={switchToPost}
-              >
-                <Text style={styles.loginText}>Post</Text>
-              </TouchableOpacity>
             </View>
           </>
         )}
 
         {showscreen === 1 && (
           <View style={styles.adjustingRideCreationContainer}>
+            <TextInput
+              style={styles.postInputTextInputs}
+              placeholder="Budget"
+            ></TextInput>
 
-            <TextInput
-              style={styles.postInputTextInputs}
-              placeholder="riders"
-            ></TextInput>
-            <TextInput
-              style={styles.postInputTextInputs}
-              placeholder="costPerRider"
-            ></TextInput>
-            <TextInput
-              style={styles.postInputTextInputs}
-              placeholder="Max Distance from rop"
-            ></TextInput>
             <View style={styles.containerForButtons}>
-            <TouchableOpacity onPress={()=>{setShowScreen(0)}} style={styles.backBtn}>
+              <TouchableOpacity
+                onPress={() => {
+                  setShowScreen(0);
+                }}
+                style={styles.backBtn}
+              >
                 <Image source={back} style={styles.backBtnImage} />
               </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.displayBtn, styles.dislayPostBtn]}
-                onPress={switchToPost}
+                onPress={() => {
+                  setShowScreen(2);
+                }}
               >
-                <Text style={styles.loginText}>Submit Your Route!</Text>
+                <Text style={styles.loginText}>Find Your Ride</Text>
               </TouchableOpacity>
             </View>
           </View>
-
+        )}
+        {showscreen === 2 && (
+          <View style={styles.ridesContainer}>
+             <View style={styles.containerForButtons}>
+              <TouchableOpacity
+                onPress={() => {
+                  setShowScreen(1);
+                }}
+                style={styles.backBtn}
+              >
+                <Image source={back} style={styles.backBtnImage} />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.displayBtn, styles.dislayPostBtn]}
+                onPress={() => {
+                  setShowScreen(2);
+                }}
+              >
+                <Text style={styles.loginText}>Refresh</Text>
+              </TouchableOpacity>
+            </View>
+            <ScrollView style={styles.ridesContainer}>
+              {data.map((item, index) => (
+                <View
+                  key={index}
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    padding: 10,
+                  }}
+                >
+                  <Text>ride {index} </Text>
+                  <TouchableOpacity
+                    title="Press me"
+                    onPress={() => alert("Button pressed!")}
+                  >
+                    <Text>Join</Text>
+                  </TouchableOpacity>
+                </View>
+              ))}
+            </ScrollView>
+          </View>
         )}
       </View>
 
@@ -357,14 +399,13 @@ function HitchLandingPage({ setChildIdx }) {
         provider={PROVIDER_GOOGLE}
         style={styles.map}
         initialRegion={{
-          latitude:  36.99126994890912,
-      longitude: -122.05864519201934,
-      latitudeDelta: 0.0922,
-      longitudeDelta: 0.0421,
+          latitude: 36.99126994890912,
+          longitude: -122.05864519201934,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
         }}
         showsUserLocation={true}
         region={region}
-
       >
         {startRegion && (
           <Marker coordinate={startRegion} title={"Start"}>
@@ -464,45 +505,48 @@ const styles = StyleSheet.create({
     marginTop: 2,
     borderColor: "black",
   },
-  screen1:{
-    
+  screen1: {
     // position: "absolute",
     zIndex: 3,
     width: "100%",
-
-
   },
   visible: {
     opacity: 1,
-   
   },
   hidden: {
     opacity: 0,
   },
+
+  ridesContainer: {
+    height: 150,
+    width: "100%",
+  },
 });
 
-
-
 export default function HitchLandingPageContainer({ setChildIdx }) {
-    return (
-      <NavigationContainer>
-        <View style={{ flex: 1 }}>
-          {/* <AccountSettings /> */}
-          <HitchLandingPage setChildIdx={setChildIdx} />
-          {/* <Inputs /> */}
-        </View>
-      </NavigationContainer>
-    );
-  }
-
+  return (
+    <NavigationContainer>
+      <View style={{ flex: 1 }}>
+        {/* <AccountSettings /> */}
+        <HitchLandingPage setChildIdx={setChildIdx} />
+        {/* <Inputs /> */}
+      </View>
+    </NavigationContainer>
+  );
+}
 
 const googleStyles = StyleSheet.create({
-    test: {
-      top: 35,
-      position: "absolute",
-      backgroundColor: "white",
-      zIndex: 1,
-      flex: 1,
-      width: "100%",
-    },
-  });
+  test: {
+    top: 35,
+    position: "absolute",
+    backgroundColor: "white",
+    zIndex: 1,
+    flex: 1,
+    width: "100%",
+  },
+  container: {
+    height:  0,
+    opacity: 0, // Makes the component fully transparent
+    pointerEvents: 'none', // The component will not receive touch events
+  },
+});
