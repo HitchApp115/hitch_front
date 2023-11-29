@@ -141,8 +141,8 @@ function MapWithCurrentLocation({ setChildIdx, token, }) {
   const startref = useRef();
   const endref = useRef();
 
-  const [startId, setStartId] = useState(null);
-  const [endId, setEndId] = useState(null);
+  const [startId, setStartId] = useState("");
+  const [endId, setEndId] = useState("");
   const [buttonPressed, setButtonPressed] = useState(0);
   const [getDirectionsPressed, setGetDirectionsPressed] = useState(false);
 
@@ -157,8 +157,21 @@ function MapWithCurrentLocation({ setChildIdx, token, }) {
     //the start and end id are the names of the locations
     //intial mount will have the startId and the endId as null
     console.log("startId: " + startId + " Directions to" + " endId: " + endId);
-    if (startId && endId) {
-      if (getDirectionsPressed == true) getDirections(startId, endId);
+    if (startId!="" && endId!="") {
+      if (getDirectionsPressed == true){
+        getDirections(startId, endId);
+        setShowScreen(1);
+      } 
+      
+    }
+    else{
+    
+      if (getDirectionsPressed == true){
+        setShowScreen(0);
+        alert("Please enter a valid start and end location" )
+      } 
+      
+      ;
     }
     setGetDirectionsPressed(false);
   }, [getDirectionsPressed]);
@@ -169,7 +182,7 @@ function MapWithCurrentLocation({ setChildIdx, token, }) {
 
   const handleDirections = () => {
     setButtonPressed(buttonPressed + 1);
-    setShowScreen(1);
+    // setShowScreen(1);
   };
 
   const isFocused = useIsFocused();
@@ -331,12 +344,12 @@ function MapWithCurrentLocation({ setChildIdx, token, }) {
                 <Text style={styles.loginText}>Confirm Route</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 style={[styles.displayBtn, styles.dislayPostBtn]}
                 onPress={switchToPost}
               >
                 <Text style={styles.loginText}>Post</Text>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
           </>
         )}
