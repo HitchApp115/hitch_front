@@ -96,28 +96,19 @@ const AccountCreationPage = ({ setChildIdx, storeToken, page }) => {
       try {
         // getting back { status: 'success', loginToken: {TOKEN} }
         // sends a request to the backend to create an account
-        console.log("FUCK", page + "/account/create");
-        console.log(data());
         //const response = await axios.post(page + "/account/create", data);
-        const response = await axios.post(
+        const response =  axios.post(
           // "http://localhost:3000/account/create",
           page+"/account/create",
           data()
-        );
-        // the backend will send back a status of success if the account was created
-        if (response.data.status === "success") {
-          console.log("account successfully created");
-          setStatus(response.data.status);
-          // storeToken(response.data.loginToken);
-          console.log(response.data);
-          console.log(response.data.status);
-          console.log(response.data.loginToken);
-          setChildIdx(2);
-        } else {
-          {
-            console.log("error");
-          }
-        }
+        )
+          .then(response => {
+            setChildIdx(2)
+          })
+          .catch(response => {
+            console.log("ERR:", response)
+            alert(response.response.data.message)
+          })
       } catch (error) {
         console.error("Error fetching data: ", error);
       }

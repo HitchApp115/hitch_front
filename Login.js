@@ -42,21 +42,28 @@ function LoginPage({ setChildIdx, storeToken, page }) {
     } else {
       try {
         
-        const response = await axios.post(page + "/account/login", loginData());
-        console.log("FUCK", loginData());
+        const response = axios.post(page + "/account/login", loginData())
+          .then(response => {
+            storeToken(response.data.loginToken);
+            setChildIdx(2);
+          })
+          .catch(response => {
+            console.log("ERRL:", response)
+            alert(response.response.data)
+          })
 
         // if the login is successful, set the token and go to the home page
-        if (response.data.status === "success") {
+        // if (response.data.status === "success") {
           
-          console.log("login successful");
-          console.log(response.data.status);
-          storeToken(response.data.loginToken);
-          setChildIdx(2);
-        } else {
-          // if the login is unsuccessful, display an error message
-          console.log("login failed");
-          alert("Login failed. Please try again.");
-        }
+        //   console.log("login successful");
+        //   console.log(response.data.status);
+        //   storeToken(response.data.loginToken);
+        //   setChildIdx(2);
+        // } else {
+        //   // if the login is unsuccessful, display an error message
+        //   console.log("login failed");
+        //   alert("Login failed. Please try again.");
+        // }
       } catch (e) {
         console.log(e);
         // e is an object with a response property that has data and status

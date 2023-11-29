@@ -21,7 +21,7 @@ const Stack = createStackNavigator();
 
 // where to find the backend
 // const page = "http://localhost:3000";
-const page = "http://10.0.0.157:3300";
+const page = "https://lionfish-app-3pdnm.ondigitalocean.app";
 // const page = "http://169.233.224.168"
 // const page = `http://${manifest.debuggerHost.split(":").shift()}:3000`;
 
