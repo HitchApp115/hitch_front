@@ -48,6 +48,8 @@ export default function App() {
   const getToken = async () => {
     try {
       const userToken = await AsyncStorage.getItem("userToken");
+      if (userToken === undefined)
+        return
       setToken(userToken); // Update the state
       console.log("got token "+userToken);
       setChildIdx(2);
