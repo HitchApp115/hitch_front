@@ -160,6 +160,7 @@ function HitchLandingPage({ setChildIdx }) {
       setShowScreen(1);
     }
     }
+    // will check to see if the start and end id are not null this will alret the user to enter a start and end location
     else{
         if (getDirectionsPressed == true){
             setShowScreen(0);
