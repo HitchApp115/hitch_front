@@ -7,7 +7,11 @@ import HomePage from "./Home";
 import LoginPage from "./Login";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import MapWithCurrentLocation from "./post_landing_page";
+<<<<<<< HEAD
 import PendingRidesPage from './PendingRidesPage'
+=======
+import HitchLandingPageContainer from "./HitchLandingPage";
+>>>>>>> ce7f152199e1d4ca78bb969ccd4cd40f43555ba8
 import PostLandingPage from "./post_landing_page";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -99,7 +103,9 @@ export default function App() {
     />,
     <HomePage setChildIdx={setChildIdx} removeToken={removeToken}/>,
     <MapWithCurrentLocation setChildIdx={setChildIdx} token={token} domain={page} />,
+    <HitchLandingPageContainer setChildIdx={setChildIdx} />,
     <PendingRidesPage  setChildIdx={setChildIdx} page={page} />
+
     // <PostLandingPage setChildIdx={setChildIdx} />,
     // <GooglePlacesInput />,
   //<TestDirections />

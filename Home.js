@@ -12,7 +12,9 @@ import AccountSettings from "./account_setting";
 
 export default function HomePage({ setChildIdx, removeToken}) {
   const handleHitchPress = () => {
+    setChildIdx(4);
     console.log("hitch a ride");
+
   };
 
   const handlePostPress = () => {
@@ -21,7 +23,7 @@ export default function HomePage({ setChildIdx, removeToken}) {
   };
 
   handlePendingRidesPress = () => {
-    setChildIdx(4)
+    setChildIdx(5)
   }
 
   return (
