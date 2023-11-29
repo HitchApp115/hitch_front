@@ -11,7 +11,9 @@ import {
 import AccountSettings from "./account_setting";
 export default function HomePage({ setChildIdx, removeToken}) {
   const handleHitchPress = () => {
+    setChildIdx(4);
     console.log("hitch a ride");
+
   };
 
   const handlePostPress = () => {

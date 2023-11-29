@@ -7,6 +7,7 @@ import HomePage from "./Home";
 import LoginPage from "./Login";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import MapWithCurrentLocation from "./post_landing_page";
+import HitchLandingPageContainer from "./HitchLandingPage";
 import PostLandingPage from "./post_landing_page";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -96,6 +97,7 @@ export default function App() {
     />,
     <HomePage setChildIdx={setChildIdx} removeToken={removeToken}/>,
     <MapWithCurrentLocation setChildIdx={setChildIdx} />,
+    <HitchLandingPageContainer setChildIdx={setChildIdx} />,
     // <PostLandingPage setChildIdx={setChildIdx} />,
     // <GooglePlacesInput />,
   //<TestDirections />
