@@ -139,8 +139,8 @@ function HitchLandingPage({ setChildIdx }) {
   const startref = useRef();
   const endref = useRef();
 
-  const [startId, setStartId] = useState(null);
-  const [endId, setEndId] = useState(null);
+  const [startId, setStartId] = useState("");
+  const [endId, setEndId] = useState("");
   const [buttonPressed, setButtonPressed] = useState(0);
   const [getDirectionsPressed, setGetDirectionsPressed] = useState(false);
 
@@ -154,8 +154,18 @@ function HitchLandingPage({ setChildIdx }) {
     // getDirections(startId, endId);
     //the start and end id are the names of the locations
     //intial mount will have the startId and the endId as null 
-    if (startId && endId) {
-      if (getDirectionsPressed == true) getDirections(startId, endId);
+    if (startId!="" && endId!="") {
+      if (getDirectionsPressed == true){ 
+      getDirections(startId, endId);
+      setShowScreen(1);
+    }
+    }
+    else{
+        if (getDirectionsPressed == true){
+            setShowScreen(0);
+            alert("Please enter a start and end location");
+        }
+       
     }
     setGetDirectionsPressed(false);
   }, [getDirectionsPressed]);
@@ -166,7 +176,7 @@ function HitchLandingPage({ setChildIdx }) {
 
   const handleDirections = () => {
     setButtonPressed(buttonPressed + 1);
-    setShowScreen(1);
+    // setShowScreen(1);
   };
 
   const isFocused = useIsFocused();
