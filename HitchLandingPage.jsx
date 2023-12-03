@@ -100,7 +100,7 @@ function decodePolyline(encoded) {
 }
 
 function HitchLandingPage({ setChildIdx, token }) {
-  const [showscreen, setShowScreen] = useState(1); // 0 = start and end location input, 1 = route display, 2 = ride joining
+  const [showscreen, setShowScreen] = useState(0); // 0 = start and end location input, 1 = route display, 2 = ride joining
   const [region, setRegion] = useState(null); // the user's location also the start location
   const [startRegion, setStartRegion] = useState(null); // the user's start location
   const [endingRegion, setEndingRegion] = useState({
@@ -250,7 +250,13 @@ function HitchLandingPage({ setChildIdx, token }) {
   const [maxPrice, setMaxPrice] = useState("");
   const [isFocusPrice, SetIsFocusPrice] = useState(false);
   const [rides, setRides] = useState([]);
+  const [pendingRides, setPendingRides] = useState([]);
 
+// 0 = rejected 1 = pending 2 = accepted
+  const addPendingList = (newItem) => {
+    const addItem = {ride_id: newItem.ride_id, cost: newItem.cost_per_rider ,status: 1};
+    setPendingRides([...pendingRides, addItem]);
+};
 
 
   async function ViewOpenRides() {
@@ -265,65 +271,53 @@ function HitchLandingPage({ setChildIdx, token }) {
 
     const url = 'https://lionfish-app-3pdnm.ondigitalocean.app/rides/view';
 
-    const response = await axios.get(url, { params })
+    const response = await axios.get(`${page}/rides/view`, { params })
         .then(response => {
             console.log('Response data:', response.data);
             // console.log('rides', response.data.rides);
-            console.log(response.data);
+            // console.log(response.data);
             setRides(response.data.rides);
             
         })
         .catch(error => {
             console.error('Error during request:', error);
         });
-
-     
-   
-    // const url =
-    //   "https://lionfish-app-3pdnm.ondigitalocean.app/rides/sendRiderRequest";
-    // const headers = {
-    //   authorization: token,
-    // };
-    // const body = {
-    //   riderStartPoint: `${startRegion.latitude}:${startRegion.longitude}`,
-    //   rideId: 29469,
-    // };
-
-    // axios
-    //   .post(url, body, { headers })
-    //   .then((response) => {
-    //     console.log(response.data);
-    //   })
-    //   .catch((error) => {
-    //     console.error("There was an error!", error);
-    //   });
   }
 
-  const data = [
-    { key: "cost" },
-    { key: "cost" },
-    { key: "cost" },
-    { key: "cost" },
-    { key: "cost" },
-    { key: "cost" },
+  //currently this function is not working because the backend is not working
+  async function JoinRide(index,ride_id) {
+  //   const requestBody = {
+  //     riderStartPoint: `${startRegion.latitude},${startRegion.longitude}`,
+  //     rideId: ride_id
+  //   };
 
-    // ... more items
-  ];
+  //   try {
+  //     const response = await axios.post(`${page}/rides/sendRiderRequest`, requestBody, {
+  //         headers: {
+  //             'Authorization': token
+  //         }
+  //     });
 
-  const pendingRidesData = [
-    { key: "cost" },
-    { key: "cost" },
-    { key: "cost" },
-    { key: "cost" },
-    { key: "cost" },
-    { key: "cost" },
-  ];
+  // } catch (error) {
+  //     console.error('Error during axios request:', error);
+  //     throw error;
+  // }
+  addPendingList(rides[index]);
+  console.log(pendingRides);
+};
+  // this part is going to show rides that are available
 
-  // this part is going to show rides and pending rides
-  const ViewRidesContainer = () => {
+  const ViewRidesParent = () => {
+
+    const [showChild, setShowChild] = useState(0);
+
+    const children = [
+      <ViewRidesContainer />,
+      <ViewPendingRidesContainer />,
+    ];
     return (
       <>
-        <View style={styles.ridesContainer}>
+           <View style={styles.ridesContainer}>
           <View style={styles.containerForButtons}>
             <TouchableOpacity
               onPress={() => {
@@ -343,7 +337,33 @@ function HitchLandingPage({ setChildIdx, token }) {
               <Text style={styles.loginText}>Refresh</Text>
             </TouchableOpacity>
           </View>
-          <ScrollView style={styles.ridesContainer}>
+          <View style={styles.containerForButtons}>
+            <TouchableOpacity
+              onPress={() => {
+                setShowChild(0);
+              }}
+              style={styles.viewRidesBtn}
+            ><Text style={styles.loginText}>Rides To Join</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.viewPendingBtn]}
+              onPress={() => {
+                setShowChild(1);
+              }}
+            >
+              <Text style={styles.loginText}>Pending</Text>
+            </TouchableOpacity>
+          </View>
+        {children[showChild]}
+        </View>
+      </>
+      );
+    };
+  const ViewRidesContainer = () => {
+    return (
+      <>
+     
+          <ScrollView style={styles.viewRidesContainer}>
             {rides.map((item, index) => (
               <View
                 key={index}
@@ -356,66 +376,52 @@ function HitchLandingPage({ setChildIdx, token }) {
                 <Text>Ride {index+1} Cost:${item.cost_per_rider}  </Text>
                 <TouchableOpacity
                   title="Press me"
-                  onPress={() => alert("Button pressed!")}
+                  onPress={() =>
+                    {JoinRide(index,ride_id=item.ride_id)}
+                  }
                 >
                   <Text>Join</Text>
                 </TouchableOpacity>
               </View>
             ))}
           </ScrollView>
-        </View>
+       
       </>
     );
   };
 
-  const PendingRidesContainer = () => {
+  const ViewPendingRidesContainer = () => {
     return (
-      <View>
-        <View style={styles.ridesContainer}>
-          <View style={styles.containerForButtons}>
-            <TouchableOpacity
-              onPress={() => {
-                setShowScreen(1);
-              }}
-              style={styles.backBtn}
-            >
-              <Image source={back} style={styles.backBtnImage} />
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.displayBtn, styles.dislayPostBtn]}
-              onPress={() => {
-                setShowScreen(2);
-                ViewOpenRides();
-              }}
-            >
-              <Text style={styles.loginText}>Refresh</Text>
-            </TouchableOpacity>
-          </View>
+      <>
           <ScrollView style={styles.ridesContainer}>
-            {rides.map((ride) => (
+            {pendingRides.map((item, index) => (
               <View
-                key={ride.ride_Id}
+                key={index}
                 style={{
                   flexDirection: "row",
                   alignItems: "center",
                   padding: 10,
                 }}
               >
-                <Text>ride {index} {item.cost_per_rider} </Text>
+                <Text>Ride {index+1} Cost:${item.cost}  </Text>
                 <TouchableOpacity
                   title="Press me"
                   onPress={() => alert("Button pressed!")}
                 >
-                  <Text>Join</Text>
+                  {item.status == 0 && <Text>Rejected</Text>}
+                  {item.status == 1 && <Text>Pending</Text>}
+                  {item.status == 2 && <Text>Accepted</Text>}
                 </TouchableOpacity>
               </View>
             ))}
           </ScrollView>
-        </View>
-      </View>
+      </>
     );
   };
+  
 
+
+ 
   return (
     <View style={styles.container}>
       {/* //below is the input field for the start and end location */}
@@ -525,53 +531,13 @@ function HitchLandingPage({ setChildIdx, token }) {
           </View>
         )}
         {showscreen === 2 && (
-          <ViewRidesContainer />
-          // <View style={styles.ridesContainer}>
-          //   <View style={styles.containerForButtons}>
-          //     <TouchableOpacity
-          //       onPress={() => {
-          //         setShowScreen(1);
-          //       }}
-          //       style={styles.backBtn}
-          //     >
-          //       <Image source={back} style={styles.backBtnImage} />
-          //     </TouchableOpacity>
-          //     <TouchableOpacity
-          //       style={[styles.displayBtn, styles.dislayPostBtn]}
-          //       onPress={() => {
-          //         setShowScreen(2);
-          //         console.log(rides);
-          //       }}
-          //     >
-          //       <Text style={styles.loginText}>Refresh</Text>
-          //     </TouchableOpacity>
-          //   </View>
-          //   <ScrollView style={styles.ridesContainer}>
-          //     {data.map((item, index) => (
-          //       <View
-          //         key={index}
-          //         style={{
-          //           flexDirection: "row",
-          //           alignItems: "center",
-          //           padding: 10,
-          //         }}
-          //       >
-          //         <Text>ride {index} </Text>
-          //         <TouchableOpacity
-          //           title="Press me"
-          //           onPress={() => alert("Button pressed!")}
-          //         >
-          //           <Text>Join</Text>
-          //         </TouchableOpacity>
-          //       </View>
-          //     ))}
-          //   </ScrollView>
-          // </View>
+          <>
+             <ViewRidesParent />
+          </>
         )}
       </View>
 
       {/* //input for start and stop location ends here */}
-
       <MapView
         // ref={mapRef}
         provider={PROVIDER_GOOGLE}
@@ -696,9 +662,28 @@ const styles = StyleSheet.create({
   },
 
   ridesContainer: {
-    height: 150,
+    height: 250,
     width: "100%",
+    // backgroundColor: "grey",
   },
+  viewRidesBtn: {
+    backgroundColor: "#F3EEEA",
+    flex: 1,
+    width: "50%",
+  },
+  viewPendingBtn: {
+    backgroundColor: "white",
+    flex: 1,
+    width: "50%",
+  },
+  viewRidesContainer: {
+    height: 250,
+    width: "100%",
+    backgroundColor: "#F3EEEA",
+  },
+
+
+
 });
 
 export default function HitchLandingPageContainer({ setChildIdx, token }) {
@@ -712,6 +697,10 @@ export default function HitchLandingPageContainer({ setChildIdx, token }) {
     </NavigationContainer>
   );
 }
+
+
+
+
 
 const googleStyles = StyleSheet.create({
   test: {

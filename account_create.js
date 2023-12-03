@@ -89,6 +89,15 @@ const AccountCreationPage = ({ setChildIdx, storeToken, page }) => {
   const [status, setStatus] = useState({});
   const handleSubmit = async () => {
     checkStateVariables();
+    const body = {
+      first_name: create_first_name,
+      last_name: create_last_name,
+      username: create_username,
+      email: create_email,
+      password: create_password,
+      phone: create_number,
+    }
+
     if (submitError) {
       return;
     } else {
@@ -97,10 +106,8 @@ const AccountCreationPage = ({ setChildIdx, storeToken, page }) => {
         // getting back { status: 'success', loginToken: {TOKEN} }
         // sends a request to the backend to create an account
         //const response = await axios.post(page + "/account/create", data);
-        const response =  axios.post(
-          // "http://localhost:3000/account/create",
-          page+"/account/create",
-          data()
+        const response =  await axios.post(
+          page+"/account/create", {body}
         )
           .then(response => {
             setChildIdx(2)

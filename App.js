@@ -65,7 +65,7 @@ export default function App() {
   const removeToken = async () => {
     await AsyncStorage.removeItem("userToken");
     try {
-      let test = await axios.post(page+"/account/logout", {}, {
+      let test = await axios.post(`${page}/account/logout`, {}, {
         headers: {
           authorization: token
         }
