@@ -264,7 +264,6 @@ function HitchLandingPage({ setChildIdx, token }) {
     const floatNumber = parseFloat(maxPrice);
 
      const params = {
-
       startPoint: `${startId}:${startRegion.latitude},${startRegion.longitude}`,
       maxPrice: floatNumber
      }
@@ -286,22 +285,23 @@ function HitchLandingPage({ setChildIdx, token }) {
 
   //currently this function is not working because the backend is not working
   async function JoinRide(index,ride_id) {
-  //   const requestBody = {
-  //     riderStartPoint: `${startRegion.latitude},${startRegion.longitude}`,
-  //     rideId: ride_id
-  //   };
+    const requestBody = {
+      riderStartPoint: `${startId}:${startRegion.latitude},${startRegion.longitude}`,
+      rideId: ride_id
+    };
+    console.log(`${token}--${requestBody.riderStartPoint}--${requestBody.rideId}`);
+    try {
+      const response = await axios.post(`${page}/rides/sendRiderRequest`, requestBody, {
+          headers: {
+              'Authorization': token
+          }
+      });
+      console.log('Response data:', response.data);
 
-  //   try {
-  //     const response = await axios.post(`${page}/rides/sendRiderRequest`, requestBody, {
-  //         headers: {
-  //             'Authorization': token
-  //         }
-  //     });
-
-  // } catch (error) {
-  //     console.error('Error during axios request:', error);
-  //     throw error;
-  // }
+  } catch (error) {
+      console.error('Error during axios request:', error);
+      throw error;
+  }
   addPendingList(rides[index]);
   console.log(pendingRides);
 };
