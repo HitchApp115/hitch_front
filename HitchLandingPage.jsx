@@ -43,6 +43,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 import { ImageBackground } from "react-native-web";
 
+const page = "https://lionfish-app-3pdnm.ondigitalocean.app";
 // displays the stickman indicating the user's location
 function BlackDotMarker() {
   return <Image source={stickman} style={{ width: 75, height: 75 }} />;
@@ -98,9 +99,8 @@ function decodePolyline(encoded) {
   return poly;
 }
 
-function HitchLandingPage({ setChildIdx }) {
-  const [showscreen, setShowScreen] = useState(0);
-
+function HitchLandingPage({ setChildIdx, token }) {
+  const [showscreen, setShowScreen] = useState(1); // 0 = start and end location input, 1 = route display, 2 = ride joining
   const [region, setRegion] = useState(null); // the user's location also the start location
   const [startRegion, setStartRegion] = useState(null); // the user's start location
   const [endingRegion, setEndingRegion] = useState({
@@ -139,6 +139,7 @@ function HitchLandingPage({ setChildIdx }) {
   const startref = useRef();
   const endref = useRef();
 
+  // startId: name of location for start end-> name of location for endpoint
   const [startId, setStartId] = useState("");
   const [endId, setEndId] = useState("");
   const [buttonPressed, setButtonPressed] = useState(0);
@@ -153,20 +154,19 @@ function HitchLandingPage({ setChildIdx }) {
   useEffect(() => {
     // getDirections(startId, endId);
     //the start and end id are the names of the locations
-    //intial mount will have the startId and the endId as null 
-    if (startId!="" && endId!="") {
-      if (getDirectionsPressed == true){ 
-      getDirections(startId, endId);
-      setShowScreen(1);
-    }
+    //intial mount will have the startId and the endId as null
+    if (startId != "" && endId != "") {
+      if (getDirectionsPressed == true) {
+        getDirections(startId, endId);
+        setShowScreen(1);
+      }
     }
     // will check to see if the start and end id are not null this will alret the user to enter a start and end location
-    else{
-        if (getDirectionsPressed == true){
-            setShowScreen(0);
-            alert("Please enter a start and end location");
-        }
-       
+    else {
+      if (getDirectionsPressed == true) {
+        setShowScreen(0);
+        alert("Please enter a start and end location");
+      }
     }
     setGetDirectionsPressed(false);
   }, [getDirectionsPressed]);
@@ -246,6 +246,59 @@ function HitchLandingPage({ setChildIdx }) {
     console.log(showscreen);
   }
 
+  // maxPrice must be a float value
+  const [maxPrice, setMaxPrice] = useState("");
+  const [isFocusPrice, SetIsFocusPrice] = useState(false);
+  const [rides, setRides] = useState([]);
+
+
+
+  async function ViewOpenRides() {
+    console.log(token);
+    const floatNumber = parseFloat(maxPrice);
+
+     const params = {
+
+      startPoint: `${startId}:${startRegion.latitude},${startRegion.longitude}`,
+      maxPrice: floatNumber
+     }
+
+    const url = 'https://lionfish-app-3pdnm.ondigitalocean.app/rides/view';
+
+    const response = await axios.get(url, { params })
+        .then(response => {
+            console.log('Response data:', response.data);
+            // console.log('rides', response.data.rides);
+            console.log(response.data);
+            setRides(response.data.rides);
+            
+        })
+        .catch(error => {
+            console.error('Error during request:', error);
+        });
+
+     
+   
+    // const url =
+    //   "https://lionfish-app-3pdnm.ondigitalocean.app/rides/sendRiderRequest";
+    // const headers = {
+    //   authorization: token,
+    // };
+    // const body = {
+    //   riderStartPoint: `${startRegion.latitude}:${startRegion.longitude}`,
+    //   rideId: 29469,
+    // };
+
+    // axios
+    //   .post(url, body, { headers })
+    //   .then((response) => {
+    //     console.log(response.data);
+    //   })
+    //   .catch((error) => {
+    //     console.error("There was an error!", error);
+    //   });
+  }
+
   const data = [
     { key: "cost" },
     { key: "cost" },
@@ -257,12 +310,118 @@ function HitchLandingPage({ setChildIdx }) {
     // ... more items
   ];
 
+  const pendingRidesData = [
+    { key: "cost" },
+    { key: "cost" },
+    { key: "cost" },
+    { key: "cost" },
+    { key: "cost" },
+    { key: "cost" },
+  ];
+
+  // this part is going to show rides and pending rides
+  const ViewRidesContainer = () => {
+    return (
+      <>
+        <View style={styles.ridesContainer}>
+          <View style={styles.containerForButtons}>
+            <TouchableOpacity
+              onPress={() => {
+                setShowScreen(1);
+              }}
+              style={styles.backBtn}
+            >
+              <Image source={back} style={styles.backBtnImage} />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.displayBtn, styles.dislayPostBtn]}
+              onPress={() => {
+                setShowScreen(2);
+                ViewOpenRides();
+              }}
+            >
+              <Text style={styles.loginText}>Refresh</Text>
+            </TouchableOpacity>
+          </View>
+          <ScrollView style={styles.ridesContainer}>
+            {rides.map((item, index) => (
+              <View
+                key={index}
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  padding: 10,
+                }}
+              >
+                <Text>Ride {index+1} Cost:${item.cost_per_rider}  </Text>
+                <TouchableOpacity
+                  title="Press me"
+                  onPress={() => alert("Button pressed!")}
+                >
+                  <Text>Join</Text>
+                </TouchableOpacity>
+              </View>
+            ))}
+          </ScrollView>
+        </View>
+      </>
+    );
+  };
+
+  const PendingRidesContainer = () => {
+    return (
+      <View>
+        <View style={styles.ridesContainer}>
+          <View style={styles.containerForButtons}>
+            <TouchableOpacity
+              onPress={() => {
+                setShowScreen(1);
+              }}
+              style={styles.backBtn}
+            >
+              <Image source={back} style={styles.backBtnImage} />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.displayBtn, styles.dislayPostBtn]}
+              onPress={() => {
+                setShowScreen(2);
+                ViewOpenRides();
+              }}
+            >
+              <Text style={styles.loginText}>Refresh</Text>
+            </TouchableOpacity>
+          </View>
+          <ScrollView style={styles.ridesContainer}>
+            {rides.map((ride) => (
+              <View
+                key={ride.ride_Id}
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  padding: 10,
+                }}
+              >
+                <Text>ride {index} {item.cost_per_rider} </Text>
+                <TouchableOpacity
+                  title="Press me"
+                  onPress={() => alert("Button pressed!")}
+                >
+                  <Text>Join</Text>
+                </TouchableOpacity>
+              </View>
+            ))}
+          </ScrollView>
+        </View>
+      </View>
+    );
+  };
+
   return (
     <View style={styles.container}>
       {/* //below is the input field for the start and end location */}
 
       <View style={googleStyles.test}>
-        <View style={[showscreen < 2 ? styles:googleStyles.container]}>
+        <View style={[showscreen < 2 ? styles : googleStyles.container]}>
           <GooglePlacesAutocomplete
             ref={startref}
             placeholder="Start"
@@ -335,8 +494,12 @@ function HitchLandingPage({ setChildIdx }) {
         {showscreen === 1 && (
           <View style={styles.adjustingRideCreationContainer}>
             <TextInput
+              value={maxPrice}
               style={styles.postInputTextInputs}
-              placeholder="Budget"
+              placeholder="Enter form float 0.0"
+              // onChangeText={(val) => setMaxPrice(parseFloat(val))}
+              onChangeText={(val) => setMaxPrice(val)}
+              keyboardType="numeric" // This ensures a numeric keyboard is shown
             ></TextInput>
 
             <View style={styles.containerForButtons}>
@@ -351,6 +514,8 @@ function HitchLandingPage({ setChildIdx }) {
               <TouchableOpacity
                 style={[styles.displayBtn, styles.dislayPostBtn]}
                 onPress={() => {
+                  ViewOpenRides();
+
                   setShowScreen(2);
                 }}
               >
@@ -360,46 +525,48 @@ function HitchLandingPage({ setChildIdx }) {
           </View>
         )}
         {showscreen === 2 && (
-          <View style={styles.ridesContainer}>
-             <View style={styles.containerForButtons}>
-              <TouchableOpacity
-                onPress={() => {
-                  setShowScreen(1);
-                }}
-                style={styles.backBtn}
-              >
-                <Image source={back} style={styles.backBtnImage} />
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.displayBtn, styles.dislayPostBtn]}
-                onPress={() => {
-                  setShowScreen(2);
-                }}
-              >
-                <Text style={styles.loginText}>Refresh</Text>
-              </TouchableOpacity>
-            </View>
-            <ScrollView style={styles.ridesContainer}>
-              {data.map((item, index) => (
-                <View
-                  key={index}
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    padding: 10,
-                  }}
-                >
-                  <Text>ride {index} </Text>
-                  <TouchableOpacity
-                    title="Press me"
-                    onPress={() => alert("Button pressed!")}
-                  >
-                    <Text>Join</Text>
-                  </TouchableOpacity>
-                </View>
-              ))}
-            </ScrollView>
-          </View>
+          <ViewRidesContainer />
+          // <View style={styles.ridesContainer}>
+          //   <View style={styles.containerForButtons}>
+          //     <TouchableOpacity
+          //       onPress={() => {
+          //         setShowScreen(1);
+          //       }}
+          //       style={styles.backBtn}
+          //     >
+          //       <Image source={back} style={styles.backBtnImage} />
+          //     </TouchableOpacity>
+          //     <TouchableOpacity
+          //       style={[styles.displayBtn, styles.dislayPostBtn]}
+          //       onPress={() => {
+          //         setShowScreen(2);
+          //         console.log(rides);
+          //       }}
+          //     >
+          //       <Text style={styles.loginText}>Refresh</Text>
+          //     </TouchableOpacity>
+          //   </View>
+          //   <ScrollView style={styles.ridesContainer}>
+          //     {data.map((item, index) => (
+          //       <View
+          //         key={index}
+          //         style={{
+          //           flexDirection: "row",
+          //           alignItems: "center",
+          //           padding: 10,
+          //         }}
+          //       >
+          //         <Text>ride {index} </Text>
+          //         <TouchableOpacity
+          //           title="Press me"
+          //           onPress={() => alert("Button pressed!")}
+          //         >
+          //           <Text>Join</Text>
+          //         </TouchableOpacity>
+          //       </View>
+          //     ))}
+          //   </ScrollView>
+          // </View>
         )}
       </View>
 
@@ -534,12 +701,12 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function HitchLandingPageContainer({ setChildIdx }) {
+export default function HitchLandingPageContainer({ setChildIdx, token }) {
   return (
     <NavigationContainer>
       <View style={{ flex: 1 }}>
         {/* <AccountSettings /> */}
-        <HitchLandingPage setChildIdx={setChildIdx} />
+        <HitchLandingPage setChildIdx={setChildIdx} token={token} />
         {/* <Inputs /> */}
       </View>
     </NavigationContainer>
@@ -556,8 +723,8 @@ const googleStyles = StyleSheet.create({
     width: "100%",
   },
   container: {
-    height:  0,
+    height: 0,
     opacity: 0, // Makes the component fully transparent
-    pointerEvents: 'none', // The component will not receive touch events
+    pointerEvents: "none", // The component will not receive touch events
   },
 });
