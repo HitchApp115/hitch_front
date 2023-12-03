@@ -100,7 +100,7 @@ export default function App() {
     />,
     <HomePage setChildIdx={setChildIdx} removeToken={removeToken}/>,
     <MapWithCurrentLocation setChildIdx={setChildIdx} token={token} domain={page} />,
-    <HitchLandingPageContainer setChildIdx={setChildIdx} token={token}/>,
+    <HitchLandingPageContainer setChildIdx={setChildIdx} />,
     <PendingRidesPage  setChildIdx={setChildIdx} page={page} />
 
     // <PostLandingPage setChildIdx={setChildIdx} />,

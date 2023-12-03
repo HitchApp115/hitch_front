@@ -8,6 +8,7 @@ import {
   KeyboardAvoidingView,
   TextInput,
 } from "react-native";
+import DateTimePicker from '@react-native-community/datetimepicker';
 import MapView, {
   Marker,
   Circle,
@@ -106,6 +107,7 @@ function MapWithCurrentLocation({ setChildIdx, token, }) {
   const [riders, setRiders] = useState(0)
   const [costPerRider, setCostPerRider] = useState(0)
   const [maxDistance, setMaxDistance] = useState(0)
+  const [startTime, setStartTime] = useState(new Date())
 
   const [region, setRegion] = useState(null); // the user's location also the start location
   const [startRegion, setStartRegion] = useState(null); // the user's start location
@@ -255,7 +257,8 @@ function MapWithCurrentLocation({ setChildIdx, token, }) {
       destination: endingRegion,
       riders,
       costPerRider,
-      pickUpDistance: maxDistance
+      pickUpDistance: maxDistance,
+      rideStartTime: startTime.toLocaleString()
     }, {
       headers: {
         authorization: token
@@ -359,19 +362,24 @@ function MapWithCurrentLocation({ setChildIdx, token, }) {
 
             <TextInput
               style={styles.postInputTextInputs}
-              placeholder="riders"
+              placeholder="Maximum Rider Count"
               onChangeText={(text) => setRiders(Number(text))}
             ></TextInput>
             <TextInput
               style={styles.postInputTextInputs}
-              placeholder="costPerRider"
+              placeholder="Cost Per Rider"
               onChangeText={(text) => setCostPerRider(Number(text))}
             ></TextInput>
             <TextInput
               style={styles.postInputTextInputs}
-              placeholder="Max Distance from rop"
+              placeholder="Max Distance from Pickup Location"
               onChangeText={(text) => setMaxDistance(Number(text))}
             ></TextInput>
+            <DateTimePicker
+              value={startTime}
+              onChange={(e, date) => setStartTime(date)}
+              mode="datetime"
+            />
             <View style={styles.containerForButtons}>
             <TouchableOpacity onPress={()=>{setShowScreen(0)}} style={styles.backBtn}>
                 <Image source={back} style={styles.backBtnImage} />
