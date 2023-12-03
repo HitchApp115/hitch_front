@@ -102,8 +102,15 @@ function decodePolyline(encoded) {
 
 function MapWithCurrentLocation({ setChildIdx, token, }) {
   const domain = "https://lionfish-app-3pdnm.ondigitalocean.app";
-  const [showscreen, setShowScreen] = useState(0);
 
+  const startref = useRef();
+  const endref = useRef();
+
+  const [showscreen, setShowScreen] = useState(0);
+  const [startId, setStartId] = useState("");
+  const [endId, setEndId] = useState("");
+  const [buttonPressed, setButtonPressed] = useState(0);
+  const [getDirectionsPressed, setGetDirectionsPressed] = useState(false);
   const [riders, setRiders] = useState(0)
   const [costPerRider, setCostPerRider] = useState(0)
   const [maxDistance, setMaxDistance] = useState(0)
@@ -140,19 +147,11 @@ function MapWithCurrentLocation({ setChildIdx, token, }) {
     }
   };
 
-  const startref = useRef();
-  const endref = useRef();
-
-  const [startId, setStartId] = useState("");
-  const [endId, setEndId] = useState("");
-  const [buttonPressed, setButtonPressed] = useState(0);
-  const [getDirectionsPressed, setGetDirectionsPressed] = useState(false);
-
   useEffect(() => {
     setStartId(startref.current?.getAddressText());
     setEndId(endref.current?.getAddressText());
     setGetDirectionsPressed(true);
-  }, [buttonPressed]);
+  }, [startRegion, endingRegion]);
 
   useEffect(() => {
     // getDirections(startId, endId);
@@ -251,8 +250,9 @@ function MapWithCurrentLocation({ setChildIdx, token, }) {
   }
 
   const submitRoute = () => {
-    console.log("MVP:", startRegion, endingRegion, riders, costPerRider, maxDistance, domain + "/rides/create")
     axios.post(domain + "/rides/create", {
+      startPointName: startId,
+      endPointName: endId,
       startPoint: startRegion,
       destination: endingRegion,
       riders,
@@ -265,11 +265,11 @@ function MapWithCurrentLocation({ setChildIdx, token, }) {
       }
     })
       .then(response => {
-        console.log("AYY:", response)
+        alert("Ride Created Successfully")
+        setChildIdx(5)
       })
       .catch(response => {
-        alert(response.response)
-        console.log("FUCKK:", response)
+        alert(response.response.data)
       })
   
   }
@@ -279,6 +279,7 @@ function MapWithCurrentLocation({ setChildIdx, token, }) {
       {/* //below is the input field for the start and end location */}
 
       <View style={googleStyles.test}>
+      <Text>{startId} {startRegion?.latitude} {startRegion?.longitude}</Text>
             
             <GooglePlacesAutocomplete
               ref={startref}
@@ -292,7 +293,7 @@ function MapWithCurrentLocation({ setChildIdx, token, }) {
               onPress={(data, details = null) => {
                 // 'details' is provided when fetchDetails = true
                 // console.log("start ->" + JSON.stringify(details.geometry.location));
-
+                
                 moveToLocation(
                   details?.geometry?.location.lat,
                   details?.geometry?.location.lng

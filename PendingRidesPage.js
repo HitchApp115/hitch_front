@@ -51,13 +51,26 @@ export default PendingRidesPage = ({ setChildIdx, page, token }) => {
             key={idx}
                 style={{backgroundColor: 'white',
                     width: '90%',
-                    marginHorizontal: '5%'
+                    marginHorizontal: '5%',
+                    marginTop: 25,
+                    padding: 5,
+                    borderRadius: 5,
+                    borderColor: 'black',
+                    borderWidth: 2
                     }}
             >
                 <Text>Ride {ride['ride_id']}</Text>
-                <Text>Start Point: {ride['start_point']}</Text>
-                <Text>End Point: {ride['driver_dest']}</Text>
+                <Text>Start Point: {ride['start_point'].split(':')[0]}</Text>
+                <Text>End Point: {ride['driver_dest'].split(':')[0]}</Text>
                 <Text>Departure Time: {ride['ride_start_time']}</Text>
+                <TouchableOpacity style={
+                                      { padding: 5,
+                                         borderColor: 'black', 
+                                         borderWidth: 2 ,
+                                        borderRadius: 5}
+                                      }>
+                  <Text>Start Ride</Text>
+                </TouchableOpacity>
                 {ride['requesting_riders'].map(
                     (rider, nestedIdx) => {
                         return (
@@ -69,7 +82,7 @@ export default PendingRidesPage = ({ setChildIdx, page, token }) => {
                                 }}
                             >
                                 <Text>Rider: {rider['first_name']}</Text>
-                                <Text>Rating: {rider['rating']}</Text>
+                                <Text>Rating: {rider['average_rating']}</Text>
                                 <Text>Distance: {rider['distance']}</Text>
                                 {/* <Image source={{uri: rider.image}} style={{
                                     width: 100,
@@ -83,8 +96,22 @@ export default PendingRidesPage = ({ setChildIdx, page, token }) => {
                                         gap: 10
                                     }}
                                 >
-                                    <TouchableOpacity style={{ backgroundColor: 'blue', }}><Text>Accept</Text></TouchableOpacity>
-                                    <TouchableOpacity style={{backgroundColor: 'red'}}><Text>Reject</Text></TouchableOpacity>
+                                    <TouchableOpacity style={
+                                      { padding: 5,
+                                         borderColor: 'black', 
+                                         borderWidth: 2 ,
+                                        borderRadius: 5}
+                                      }>
+                                      <Text>Accept</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity style={
+                                      { padding: 5,
+                                         borderColor: 'black', 
+                                         borderWidth: 2 ,
+                                        borderRadius: 5}
+                                      }>
+                                      <Text>Reject</Text>
+                                    </TouchableOpacity>
                                     </View>
 
                             </View>
