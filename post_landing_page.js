@@ -275,7 +275,7 @@ function MapWithCurrentLocation({ setChildIdx, token, page }) {
     })
       .then(response => {
         alert("Ride Created Successfully")
-        setChildIdx(5)
+        setShouldDisplayPage(true)
       })
       .catch(response => {
         alert(response.response.data)

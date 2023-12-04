@@ -42,7 +42,7 @@ export default PendingRidesPage = ({ setChildIdx, page, token }) => {
       axios.post(`${page}/rides/resolveRiderRequest`, {
         rideId,
         riderId,
-        accepted: isAccepted ? 1 : 2
+        acceptRider: isAccepted ? 1 : 2
       }, {
         headers: {
           Authorization: token
@@ -50,6 +50,30 @@ export default PendingRidesPage = ({ setChildIdx, page, token }) => {
       })
         .then(resp => {
           updatePendingRides()
+        })
+    }
+
+    const removeRide = (rideId) => {
+      axios.delete(`${page}/rides/remove`, {
+        data: {
+          rideId
+        },
+        headers: { Authorization: token}
+      })
+        .then(() => {
+          updatePendingRides()
+        })
+    }
+
+    const startRide = (rideId) => {
+      axios.post(`${page}/rides/start`, {
+        rideId
+      }, {
+        headers: { Authorization: token}
+      })
+        .then(() => {
+          updatePendingRides()
+          // Move to the active ride page
         })
     }
 
@@ -82,19 +106,24 @@ return (
                 <Text>Departure Time: {ride['ride_start_time']}</Text>
                 <Text>{ride['accepted_riders']} / {ride['maximum_riders']} Riders</Text>
                 <TouchableOpacity style={
-                                      { padding: 5,
-                                         borderColor: 'black', 
-                                         borderWidth: 2 ,
-                                        borderRadius: 5}
-                                      }>
+                  { padding: 5,
+                      borderColor: 'black', 
+                      borderWidth: 2 ,
+                    borderRadius: 5}
+                  }
+                    onPress={() => startRide(ride['ride_id'])}
+                  >
                   <Text>Start Ride</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={
-                                      { padding: 5,
-                                         borderColor: 'black', 
-                                         borderWidth: 2 ,
-                                        borderRadius: 5}
-                                      }>
+                    { padding: 5,
+                        borderColor: 'black', 
+                        borderWidth: 2 ,
+                      borderRadius: 5}
+                    }
+                    
+                    onPress={() => removeRide(ride['ride_id'])}
+                    >
                   <Text>Cancel Ride</Text>
                 </TouchableOpacity>
                 {ride['requesting_riders'].map(
