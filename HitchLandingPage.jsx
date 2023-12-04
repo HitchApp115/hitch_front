@@ -373,7 +373,7 @@ function HitchLandingPage({ setChildIdx, token }) {
                   padding: 10,
                 }}
               >
-                <Text>Ride {index+1} Cost:${item.cost_per_rider}  </Text>
+                <Text>Ride {index+1} Cost:${item.cost_per_rider} {item.ride_id}</Text>
                 <TouchableOpacity
                   title="Press me"
                   onPress={() =>
@@ -403,15 +403,13 @@ function HitchLandingPage({ setChildIdx, token }) {
                   padding: 10,
                 }}
               >
-                <Text>Ride {index+1} Cost:${item.cost}  </Text>
-                <TouchableOpacity
-                  title="Press me"
-                  onPress={() => alert("Button pressed!")}
-                >
+                <Text>Ride {index+1} Cost:${item.cost}  ride_id {item.ride_id} </Text>
+                <Text>
                   {item.status == 0 && <Text>Rejected</Text>}
                   {item.status == 1 && <Text>Pending</Text>}
                   {item.status == 2 && <Text>Accepted</Text>}
-                </TouchableOpacity>
+                </Text>
+
               </View>
             ))}
           </ScrollView>
