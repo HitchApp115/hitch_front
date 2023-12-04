@@ -26,6 +26,7 @@ import endLocationPin from "./assets/post_ride_end.png";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import AccountSettings from "./account_setting";
 import axios from "axios";
+import ActiveRide from "./ActiveRide";
 /* 
 MapView: displays the actual maps
 Polyline: used to draw the route between the two points
@@ -302,11 +303,28 @@ function HitchLandingPage({ setChildIdx, token }) {
       console.error('Error during axios request:', error);
       throw error;
   }
-  addPendingList(rides[index]);
-  console.log(pendingRides);
+  
 };
   // this part is going to show rides that are available
+  async function ViewPendingRides() {
+    console.log(token);
+    // Make the POST request
+axios.post(`${page}/rides/approved`, {}, {
+  headers: {
+    'Authorization': token
+  }
+})
+.then(response => {
+  console.log('Status:', response.status);
+  console.log('Body:', response.data);
+  setPendingRides(response.data["message"]);
+})
+.catch(error => {
+  console.error('Error:', error.response ? error.response.data : error.message);
+});
 
+ 
+};
   const ViewRidesParent = () => {
 
     const [showChild, setShowChild] = useState(0);
@@ -332,6 +350,7 @@ function HitchLandingPage({ setChildIdx, token }) {
               onPress={() => {
                 setShowScreen(2);
                 ViewOpenRides();
+                ViewPendingRides();
               }}
             >
               <Text style={styles.loginText}>Refresh</Text>
@@ -403,11 +422,10 @@ function HitchLandingPage({ setChildIdx, token }) {
                   padding: 10,
                 }}
               >
-                <Text>Ride {index+1} Cost:${item.cost}  ride_id {item.ride_id} </Text>
+                <Text>Ride {index+1} Cost:${item.cost_per_rider}  ride_id {item.ride_id} </Text>
                 <Text>
-                  {item.status == 0 && <Text>Rejected</Text>}
-                  {item.status == 1 && <Text>Pending</Text>}
-                  {item.status == 2 && <Text>Accepted</Text>}
+                  {item.accepted == 0 && <Text>Pending</Text>}
+                  {item.accepted == 1 && <Text>Accepted</Text>}
                 </Text>
 
               </View>

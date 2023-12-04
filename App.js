@@ -13,6 +13,7 @@ import PostLandingPage from "./post_landing_page";
 import { createStackNavigator } from "@react-navigation/stack";
 import Constants from "expo-constants";
 import axios, { Axios } from "axios";
+import ActiveRide from "./ActiveRide";
 const { expoConfig } = Constants;
 // const page = `http://${expoConfig.debuggerHost.split(":").shift()}:3000`;
 // import { ScrollView } from 'react-native-web';
@@ -99,7 +100,8 @@ export default function App() {
     <HomePage setChildIdx={setChildIdx} removeToken={removeToken} page={page} token={token}/>,
     <MapWithCurrentLocation setChildIdx={setChildIdx} token={token} page={page} />,
     <HitchLandingPageContainer setChildIdx={setChildIdx} token={token}/>,
-    <PendingRidesPage  setChildIdx={setChildIdx} page={page} token={token} />
+    <PendingRidesPage  setChildIdx={setChildIdx} page={page} token={token} />,
+    <ActiveRide setChildIdx={setChildIdx} token={token} page={page}/>,
 
     // <PostLandingPage setChildIdx={setChildIdx} />,
     // <GooglePlacesInput />,
