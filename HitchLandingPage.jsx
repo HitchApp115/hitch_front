@@ -43,7 +43,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 import { ImageBackground } from "react-native-web";
 
-const page = "https://lionfish-app-3pdnm.ondigitalocean.app";
+const page = "https://dolphin-app-7udnd.ondigitalocean.app";
 // displays the stickman indicating the user's location
 function BlackDotMarker() {
   return <Image source={stickman} style={{ width: 75, height: 75 }} />;
@@ -269,7 +269,7 @@ function HitchLandingPage({ setChildIdx, token }) {
       maxPrice: floatNumber
      }
 
-    const url = 'https://lionfish-app-3pdnm.ondigitalocean.app/rides/view';
+    const url = 'https://dolphin-app-7udnd.ondigitalocean.app';
 
     const response = await axios.get(`${page}/rides/view`, { params })
         .then(response => {

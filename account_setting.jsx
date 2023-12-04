@@ -1,23 +1,35 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
 import { Icon } from "react-native-elements"; // You might need to install react-native-elements
 import account_icon from "./assets/account_icon.png";
 import x_fill from "./assets/x_fill.png";
+import axios from "axios";
 
 
-const AccountSettings = ({ UserName, Email, PhoneNumber, setChilDIdx, removeToken }) => {
+const AccountSettings = ({ setChilDIdx, removeToken, token, page }) => {
   const [showAccountInfo, setShowAccountInfo] = useState(false);
+  const [username, setUsername] = useState("Loading...")
+  const [email, setEmail] = useState('Loading...')
+  const [phone, setPhone] = useState('Loading...')
 
-  if (!UserName) {
-    UserName = "Loading...";
-  }
+  useEffect(() => {
+    if (!showAccountInfo){
+      return
+    }
+     axios.get(`${page}/account/info`, {
+      headers: {
+        authorization: token
+      }
+    })
+      .then(resp => {
+        let accountInfo = resp.data.accountInfo[0]
+        setUsername(accountInfo.username)
+        setEmail(accountInfo.email)
+        setPhone(accountInfo['phone_num'])
+      })
+    }, [token, showAccountInfo])
 
-  if (!Email) {
-    Email = "Loading...";
-  }
-  if (!PhoneNumber) {
-    PhoneNumber = "Loading...";
-  }
+
   const toggleAccountInfo = () => {
     setShowAccountInfo(!showAccountInfo);
   };
@@ -47,15 +59,15 @@ const AccountSettings = ({ UserName, Email, PhoneNumber, setChilDIdx, removeToke
             </View>
             <View style={styles.info_container}>
               <Text style={styles.header}>Username</Text>
-              <Text>{UserName}</Text>
+              <Text>{username}</Text>
             </View>
             <View style={styles.info_container}>
               <Text style={styles.header}>Email</Text>
-              <Text >{Email}</Text>
+              <Text >{email}</Text>
             </View>
             <View style={styles.info_container}>
               <Text style={styles.header}>Phone Number</Text>
-              <Text >{PhoneNumber}</Text>
+              <Text >{phone}</Text>
             </View>
 
             {/* Display account information here */}

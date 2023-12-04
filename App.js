@@ -23,7 +23,7 @@ const Stack = createStackNavigator();
 
 // where to find the backend
 // const page = "http://localhost:3000";
-const page = "https://lionfish-app-3pdnm.ondigitalocean.app";
+const page = "https://dolphin-app-7udnd.ondigitalocean.app";
 // const page = "http://169.233.224.168"
 // const page = `http://${manifest.debuggerHost.split(":").shift()}:3000`;
 
@@ -88,17 +88,17 @@ export default function App() {
   // if(token != null) {
   //   setChildIdx(2);
   // }
-  useEffect(() => {
-    console.log("PAGE1:", page)
-  }, [])
+
   const children = [
     <LoginPage setChildIdx={setChildIdx} storeToken={storeToken} page={page} />,
     <AccountCreationPage
       setChildIdx={setChildIdx}
       storeToken={storeToken}
+      removeToken={removeToken}
+      token={token}
       page={page}
     />,
-    <HomePage setChildIdx={setChildIdx} removeToken={removeToken}/>,
+    <HomePage setChildIdx={setChildIdx} removeToken={removeToken} page={page} token={token}/>,
     <MapWithCurrentLocation setChildIdx={setChildIdx} token={token} domain={page} />,
     <HitchLandingPageContainer setChildIdx={setChildIdx} />,
     <PendingRidesPage  setChildIdx={setChildIdx} page={page} />

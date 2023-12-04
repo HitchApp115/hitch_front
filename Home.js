@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import AccountSettings from "./account_setting";
 
-export default function HomePage({ setChildIdx, removeToken}) {
+export default function HomePage({ setChildIdx, removeToken, token, page}) {
   const handleHitchPress = () => {
     setChildIdx(4);
     console.log("hitch a ride");
@@ -31,7 +31,7 @@ export default function HomePage({ setChildIdx, removeToken}) {
       source={require("./assets/background.png")}
       style={MenuStyle.backgroundImage}
     >
-      <AccountSettings setChilDIdx={setChildIdx} removeToken={removeToken}/>
+      <AccountSettings setChilDIdx={setChildIdx} removeToken={removeToken} token={token} page={page}/>
       <View style={MenuStyle.container}>
         <View style={MenuStyle.select_box}>
           <Pressable

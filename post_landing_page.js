@@ -101,7 +101,7 @@ function decodePolyline(encoded) {
 }
 
 function MapWithCurrentLocation({ setChildIdx, token, }) {
-  const domain = "https://lionfish-app-3pdnm.ondigitalocean.app";
+  const domain = "https://dolphin-app-7udnd.ondigitalocean.app";
 
   const startref = useRef();
   const endref = useRef();
