@@ -50,8 +50,8 @@ export default function App() {
   const getToken = async () => {
     try {
       const userToken = await AsyncStorage.getItem("userToken");
-      if (userToken === null)
-        return
+      if (userToken === undefined || userToken === null)
+        return;
       setToken(userToken); // Update the state
       console.log("got token "+userToken);
       setChildIdx(2);
@@ -100,7 +100,7 @@ export default function App() {
     />,
     <HomePage setChildIdx={setChildIdx} removeToken={removeToken} page={page} token={token}/>,
     <MapWithCurrentLocation setChildIdx={setChildIdx} token={token} domain={page} />,
-    <HitchLandingPageContainer setChildIdx={setChildIdx} />,
+    <HitchLandingPageContainer setChildIdx={setChildIdx} token={token}/>,
     <PendingRidesPage  setChildIdx={setChildIdx} page={page} />
 
     // <PostLandingPage setChildIdx={setChildIdx} />,
