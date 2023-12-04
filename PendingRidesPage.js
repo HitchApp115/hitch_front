@@ -19,6 +19,7 @@ export default PendingRidesPage = ({ setChildIdx, page, token }) => {
     ])
 
     useEffect(() => {
+      console.log("auth: ", token)
       axios.get(`${page}/rides/pending`, {
         headers: {
           Authorization: token

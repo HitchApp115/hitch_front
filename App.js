@@ -101,7 +101,7 @@ export default function App() {
     <HomePage setChildIdx={setChildIdx} removeToken={removeToken} page={page} token={token}/>,
     <MapWithCurrentLocation setChildIdx={setChildIdx} token={token} domain={page} />,
     <HitchLandingPageContainer setChildIdx={setChildIdx} token={token}/>,
-    <PendingRidesPage  setChildIdx={setChildIdx} page={page} />
+    <PendingRidesPage  setChildIdx={setChildIdx} page={page} token={token} />
 
     // <PostLandingPage setChildIdx={setChildIdx} />,
     // <GooglePlacesInput />,
