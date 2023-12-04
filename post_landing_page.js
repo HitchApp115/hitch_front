@@ -7,6 +7,7 @@ import {
   Text,
   KeyboardAvoidingView,
   TextInput,
+  ImageBackground
 } from "react-native";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import MapView, {
@@ -26,6 +27,8 @@ import endLocationPin from "./assets/post_ride_end.png";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import AccountSettings from "./account_setting";
 import axios from "axios";
+import PendingRidesPage from "./PendingRidesPage";
+import background from './assets/background.png'
 /* 
 MapView: displays the actual maps
 Polyline: used to draw the route between the two points
@@ -41,7 +44,6 @@ import {
 import InputField from "./InputField";
 import { NavigationContainer } from "@react-navigation/native";
 import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
-import { ImageBackground } from "react-native-web";
 
 
 
@@ -100,7 +102,7 @@ function decodePolyline(encoded) {
   return poly;
 }
 
-function MapWithCurrentLocation({ setChildIdx, token, }) {
+function MapWithCurrentLocation({ setChildIdx, token, page }) {
   const domain = "https://dolphin-app-7udnd.ondigitalocean.app";
 
   const startref = useRef();
@@ -121,6 +123,8 @@ function MapWithCurrentLocation({ setChildIdx, token, }) {
   const [endingRegion, setEndingRegion] = useState(null); // the user's end location
 
   const [coords1, setCoords] = useState([]);
+
+  const [ shouldDisplayPage, setShouldDisplayPage ] = useState(false)
 
   const getDirections = async (startLoc, destinationLoc) => {
     const YOUR_API_KEY = "AIzaSyAzaxnuhcqrHyhCKGPsekHS-VC8lGqG7GY";
@@ -150,7 +154,12 @@ function MapWithCurrentLocation({ setChildIdx, token, }) {
   useEffect(() => {
     setStartId(startref.current?.getAddressText());
     setEndId(endref.current?.getAddressText());
-    setGetDirectionsPressed(true);
+
+    if (startref.current?.getAddressText() && endref.current?.getAddressText()){
+      setGetDirectionsPressed(true)
+    } else {
+      setGetDirectionsPressed(false);
+    }
   }, [startRegion, endingRegion]);
 
   useEffect(() => {
@@ -274,13 +283,41 @@ function MapWithCurrentLocation({ setChildIdx, token, }) {
   
   }
 
+  if (shouldDisplayPage) {
+    console.log('page: ',page)
+    return (
+      <ImageBackground
+          source={background}
+          style={{flex: 1,
+            resizeMode: "cover"}}
+      >
+          <View style={styles.container}>
+         <View style={{...styles.SelectionMenu, marginTop: 55, width: '80%', borderRadius: 5, marginHorizontal: '10%' }}>
+              <TouchableOpacity onPress={() => setShouldDisplayPage(false)} style={{...styles.SelectionButton, borderRadius: 5}}>
+                <Text style={{fontSize: 24, textAlign: 'center', }}>Create a ride</Text>
+              </TouchableOpacity> 
+            </View>           
+            <Text style={{fontSize: 48, textAlign: 'center', }}>Created Rides</Text>
+        <PendingRidesPage setChildIdx={setChildIdx} token={token} page={page} />
+      </View>
+      </ImageBackground>
+    )
+  }
+
   return (
     <View style={styles.container}>
       {/* //below is the input field for the start and end location */}
+     
 
-      <View style={googleStyles.test}>
-      <Text>{startId} {startRegion?.latitude} {startRegion?.longitude}</Text>
-            
+      <View style={{...googleStyles.test, marginTop: 20}}> 
+
+
+              <View style={{...styles.SelectionMenu, marginTop: 0, width: '80%', borderRadius: 5, marginHorizontal: '10%' }}>
+              <TouchableOpacity onPress={() => setShouldDisplayPage(true)} style={{...styles.SelectionButton, borderRadius: 5}}>
+                <Text style={{fontSize: 24, textAlign: 'center', }}>View Created Rides</Text>
+              </TouchableOpacity> 
+            </View>
+
             <GooglePlacesAutocomplete
               ref={startref}
               placeholder="Start"
@@ -437,6 +474,19 @@ function MapWithCurrentLocation({ setChildIdx, token, }) {
 }
 
 const styles = StyleSheet.create({
+  SelectionButton: {
+    borderColor: 'black',
+    borderWidth: 2,
+    height: 50,
+    flexGrow: 1,
+  },
+  SelectionMenu: {
+    display: 'flex',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    backgroundColor: 'white'
+  },
+
   container: {
     flex: 1,
   },
@@ -528,12 +578,12 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function PostLandingPage({ setChildIdx, token }) {
+export default function PostLandingPage({ setChildIdx, token, page }) {
   return (
     <NavigationContainer>
       <View style={{ flex: 1 }}>
         {/* <AccountSettings /> */}
-        <MapWithCurrentLocation setChildIdx={setChildIdx} token={token} />
+        <MapWithCurrentLocation setChildIdx={setChildIdx} token={token} page={page} />
         {/* <Inputs /> */}
       </View>
     </NavigationContainer>

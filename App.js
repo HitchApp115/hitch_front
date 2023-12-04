@@ -10,10 +10,8 @@ import MapWithCurrentLocation from "./post_landing_page";
 import PendingRidesPage from './PendingRidesPage'
 import HitchLandingPageContainer from "./HitchLandingPage";
 import PostLandingPage from "./post_landing_page";
-import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import Constants from "expo-constants";
-import AccountSettings from "./account_setting";
 import axios, { Axios } from "axios";
 const { expoConfig } = Constants;
 // const page = `http://${expoConfig.debuggerHost.split(":").shift()}:3000`;
@@ -99,7 +97,7 @@ export default function App() {
       page={page}
     />,
     <HomePage setChildIdx={setChildIdx} removeToken={removeToken} page={page} token={token}/>,
-    <MapWithCurrentLocation setChildIdx={setChildIdx} token={token} domain={page} />,
+    <MapWithCurrentLocation setChildIdx={setChildIdx} token={token} page={page} />,
     <HitchLandingPageContainer setChildIdx={setChildIdx} token={token}/>,
     <PendingRidesPage  setChildIdx={setChildIdx} page={page} token={token} />
 

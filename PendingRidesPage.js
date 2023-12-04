@@ -10,8 +10,10 @@ import {
     TextInput,
     ImageBackground,
     Image,
+    ScrollView
   } from "react-native";
-  import back from "./assets/back.png";
+  import back from "./assets/back.png"
+  import background from './assets/background.png';
 import { useScrollToTop } from "@react-navigation/native";
 
 export default PendingRidesPage = ({ setChildIdx, page, token }) => {
@@ -19,32 +21,46 @@ export default PendingRidesPage = ({ setChildIdx, page, token }) => {
     ])
 
     useEffect(() => {
-      console.log("auth: ", token)
+      updatePendingRides()
+    }, [])
+
+    const updatePendingRides = () => {
       axios.get(`${page}/rides/pending`, {
         headers: {
           Authorization: token
         }
       })
         .then((resp) => {
-          console.log("RESP:", resp.data.pendingRides)
           setRides(resp.data.pendingRides)
         })
         .catch(() => {
           alert("Error fetching pending rides")
         })
-    }, [])
+    }
+
+    const acceptOrRejectRider = (riderId, rideId, isAccepted) => {
+      axios.post(`${page}/rides/resolveRiderRequest`, {
+        rideId,
+        riderId,
+        accepted: isAccepted ? 1 : 2
+      }, {
+        headers: {
+          Authorization: token
+        }
+      })
+        .then(resp => {
+          updatePendingRides()
+        })
+    }
 
 
-    return  (
-    <ImageBackground
-        source={require("./assets/background.png")}
-        style={AccountStyles.backgroundImage}
-    >
+return (
     
+    <>
      <TouchableOpacity onPress={() => setChildIdx(2)} style = {AccountStyles.backBtnContainer}>
         <Image source={back} style={AccountStyles.backbtn}/>
       </TouchableOpacity>
-
+      <ScrollView contentContainerStyle={{paddingBottom: 50}}>
       {rides.map((ride, idx) => {
 
         return(
@@ -64,6 +80,7 @@ export default PendingRidesPage = ({ setChildIdx, page, token }) => {
                 <Text>Start Point: {ride['start_point'].split(':')[0]}</Text>
                 <Text>End Point: {ride['driver_dest'].split(':')[0]}</Text>
                 <Text>Departure Time: {ride['ride_start_time']}</Text>
+                <Text>{ride['accepted_riders']} / {ride['maximum_riders']} Riders</Text>
                 <TouchableOpacity style={
                                       { padding: 5,
                                          borderColor: 'black', 
@@ -71,6 +88,14 @@ export default PendingRidesPage = ({ setChildIdx, page, token }) => {
                                         borderRadius: 5}
                                       }>
                   <Text>Start Ride</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={
+                                      { padding: 5,
+                                         borderColor: 'black', 
+                                         borderWidth: 2 ,
+                                        borderRadius: 5}
+                                      }>
+                  <Text>Cancel Ride</Text>
                 </TouchableOpacity>
                 {ride['requesting_riders'].map(
                     (rider, nestedIdx) => {
@@ -85,6 +110,7 @@ export default PendingRidesPage = ({ setChildIdx, page, token }) => {
                                 <Text>Rider: {rider['first_name']}</Text>
                                 <Text>Rating: {rider['average_rating']}</Text>
                                 <Text>Distance: {rider['distance']}</Text>
+                
                                 {/* <Image source={{uri: rider.image}} style={{
                                     width: 100,
                                     height: 100
@@ -102,7 +128,9 @@ export default PendingRidesPage = ({ setChildIdx, page, token }) => {
                                          borderColor: 'black', 
                                          borderWidth: 2 ,
                                         borderRadius: 5}
-                                      }>
+                                      }
+                                        onPress={() => acceptOrRejectRider(rider['rider_id'], ride['ride_id'], true)}
+                                      >
                                       <Text>Accept</Text>
                                     </TouchableOpacity>
                                     <TouchableOpacity style={
@@ -110,7 +138,9 @@ export default PendingRidesPage = ({ setChildIdx, page, token }) => {
                                          borderColor: 'black', 
                                          borderWidth: 2 ,
                                         borderRadius: 5}
-                                      }>
+                                      }
+                                      onPress={() => acceptOrRejectRider(rider['rider_id'], ride['ride_id'], false)}
+                                      >
                                       <Text>Reject</Text>
                                     </TouchableOpacity>
                                     </View>
@@ -123,9 +153,9 @@ export default PendingRidesPage = ({ setChildIdx, page, token }) => {
             </View>
         )
       })}
-
+      </ScrollView>
+</>
         
-    </ImageBackground>
     )
 }
 
@@ -173,12 +203,11 @@ const AccountStyles = StyleSheet.create({
     },
     backBtnContainer:{
       width: "100%",
-      marginTop: 50
+      marginVertical: 10
     },
     backbtn:{
       width: 60,
       height: 50,
-      marginBottom: 30,
       marginLeft: 10,
 
     },
