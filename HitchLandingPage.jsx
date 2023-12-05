@@ -275,8 +275,12 @@ function HitchLandingPage({ setChildIdx, token }) {
         .then(response => {
             console.log('Response data:', response.data);
             // console.log('rides', response.data.rides);
-            // console.log(response.data);
-            setRides(response.data.rides);
+            if (response.data.rides.length == 0) {
+              console.log("No rides found");
+            }else{
+              setRides(response.data.rides);
+            }
+            
             
         })
         .catch(error => {
@@ -309,6 +313,11 @@ function HitchLandingPage({ setChildIdx, token }) {
   async function ViewPendingRides() {
     console.log(token);
     // Make the POST request
+    try {
+    
+    } catch (error) {
+
+    }
 axios.post(`${page}/rides/approved`, {}, {
   headers: {
     'Authorization': token
