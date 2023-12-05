@@ -107,8 +107,7 @@ const AccountCreationPage = ({ setChildIdx, storeToken, page }) => {
         // sends a request to the backend to create an account
         //const response = await axios.post(page + "/account/create", data);
         const response =  await axios.post(
-          page+"/account/create", {body}
-        )
+          `${page}/account/create`, body)
           .then(response => {
             setChildIdx(2)
           })
