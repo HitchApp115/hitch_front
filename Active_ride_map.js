@@ -1,7 +1,62 @@
 import React, { useState, useEffect } from 'react';
-import MapView, { Polyline,  PROVIDER_GOOGLE,   } from 'react-native-maps';
+import MapView, { Polyline,  PROVIDER_GOOGLE, Marker  } from 'react-native-maps';
+import { Image } from 'react-native';
+import start from './assets/post.png';
+import waypoint from './assets/stickman.png';
+import end from './assets/post_ride_end.png';
 
-const MapWithPolyline = ({ polylineCoordinates }) => {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const createMapMarkers = (coordinatesArray, markerImage) => {
+
+  // Check if coordinatesArray is provided and is an array
+  if (Array.isArray(coordinatesArray) && coordinatesArray.length > 0) {
+    return coordinatesArray.map((coordinates, index) => {
+      // Check if the individual coordinates object is valid
+      if (coordinates && coordinates.latitude && coordinates.longitude) {
+        return (
+          <Marker
+            key={index}
+            coordinate={{
+              latitude: coordinates.latitude,
+              longitude: coordinates.longitude,
+            }}
+            // Additional Marker properties can be added here
+          >
+            <Image
+              source={markerImage}
+              style={{ width: 50, height: 50, zIndex: 200 }} // You can adjust the size as needed
+            />
+          </Marker>
+
+        );
+      }
+      return null;
+    });
+  }
+
+  // Return null or an alternative element if coordinatesArray is not valid
+  return null;
+};
+
+
+
+
+
+const MapWithPolyline = ({ polylineCoordinates,  startMarkerCoord, endMarkerCoord, waypointsCoord}) => {
   const [region, setRegion] = useState(null);
 
   const calculateRegion = (coords) => {
@@ -27,12 +82,18 @@ const MapWithPolyline = ({ polylineCoordinates }) => {
       longitudeDelta: deltaLng + 0.05, // Add some padding
     };
   };
+  
 
   useEffect(() => {
     if (polylineCoordinates.length > 0) {
       setRegion(calculateRegion(polylineCoordinates));
     }
+    console.log("start coordiante", startMarkerCoord);
+    console.log("end coordinate", endMarkerCoord);
   }, [polylineCoordinates]);
+
+
+
 
   return (
     <MapView
@@ -45,6 +106,9 @@ const MapWithPolyline = ({ polylineCoordinates }) => {
         strokeColor="#000" // Black color for the polyline
         strokeWidth={3} // Polyline width
       />
+      {createMapMarkers([startMarkerCoord], start)}
+      {createMapMarkers(waypointsCoord, waypoint)}
+      {createMapMarkers([endMarkerCoord], end)}
     </MapView>
   );
 };
