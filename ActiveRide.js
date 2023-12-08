@@ -324,7 +324,7 @@ const styles = StyleSheet.create({
     paddingTop: 50,
     flex: 1,
     backgroundColor: "#fff",
-    padding: 20,
+    padding: 10,
   },
   displayInfo: {
     height: 50,
