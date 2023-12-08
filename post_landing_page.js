@@ -278,7 +278,7 @@ function MapWithCurrentLocation({ setChildIdx, token, page }) {
         setShouldDisplayPage(true)
       })
       .catch(response => {
-        alert(response.response.data)
+        alert(response.response.data.message)
       })
   
   }
