@@ -7,6 +7,7 @@ import {
   Text,
   KeyboardAvoidingView,
   TextInput,
+  ImageBackground,
   ScrollView,
 } from "react-native";
 import MapView, {
@@ -27,6 +28,8 @@ import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplet
 import AccountSettings from "./account_setting";
 import axios from "axios";
 import ActiveRide from "./ActiveRide";
+import background from './assets/background.png'
+
 /* 
 MapView: displays the actual maps
 Polyline: used to draw the route between the two points
@@ -42,7 +45,6 @@ import {
 import InputField from "./InputField";
 import { NavigationContainer } from "@react-navigation/native";
 import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
-import { ImageBackground } from "react-native-web";
 
 const page = "https://dolphin-app-7udnd.ondigitalocean.app";
 // displays the stickman indicating the user's location
@@ -113,38 +115,16 @@ function HitchLandingPage({ setChildIdx, token }) {
 
   const [coords1, setCoords] = useState([]);
 
-  const getDirections = async (startLoc, destinationLoc) => {
-    const YOUR_API_KEY = "AIzaSyAzaxnuhcqrHyhCKGPsekHS-VC8lGqG7GY";
-
-    try {
-      const response = await axios.get(
-        `https://maps.googleapis.com/maps/api/directions/json?origin=${startLoc}&destination=${destinationLoc}&key=${YOUR_API_KEY}`
-      );
-      const points = decodePolyline(
-        response.data.routes[0].overview_polyline.points
-      );
-      const array_cords = points.map((point) => {
-        return {
-          latitude: point[0],
-          longitude: point[1],
-        };
-      });
-      setCoords(array_cords);
-
-      console.log("directions was called");
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const startref = useRef();
-  const endref = useRef();
-
   // startId: name of location for start end-> name of location for endpoint
   const [startId, setStartId] = useState("");
   const [endId, setEndId] = useState("");
   const [buttonPressed, setButtonPressed] = useState(0);
   const [getDirectionsPressed, setGetDirectionsPressed] = useState(false);
+  const [shouldDisplayPendingRides, setShouldDisplayPendingRides] = useState(false)
+  const [isDownloadingPendingRides, setIsDownloadingPendingRides] = useState(false)
+  
+  const startref = useRef();
+  const endref = useRef();
 
   useEffect(() => {
     setStartId(startref.current?.getAddressText());
@@ -171,6 +151,30 @@ function HitchLandingPage({ setChildIdx, token }) {
     }
     setGetDirectionsPressed(false);
   }, [getDirectionsPressed]);
+
+  const getDirections = async (startLoc, destinationLoc) => {
+    const YOUR_API_KEY = "AIzaSyAzaxnuhcqrHyhCKGPsekHS-VC8lGqG7GY";
+
+    try {
+      const response = await axios.get(
+        `https://maps.googleapis.com/maps/api/directions/json?origin=${startLoc}&destination=${destinationLoc}&key=${YOUR_API_KEY}`
+      );
+      const points = decodePolyline(
+        response.data.routes[0].overview_polyline.points
+      );
+      const array_cords = points.map((point) => {
+        return {
+          latitude: point[0],
+          longitude: point[1],
+        };
+      });
+      setCoords(array_cords);
+
+      console.log("directions was called");
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const backBtnPressed = () => {
     setChildIdx(2);
@@ -310,22 +314,17 @@ function HitchLandingPage({ setChildIdx, token }) {
   
 };
   // this part is going to show rides that are available
-  async function ViewPendingRides() {
-    console.log(token);
-    // Make the POST request
-    try {
-    
-    } catch (error) {
+async function ViewPendingRides() {
+  setIsDownloadingPendingRides(true)
 
-    }
-axios.post(`${page}/rides/approved`, {}, {
+    // Make the POST request
+  axios.post(`${page}/rides/approved`, {}, {
   headers: {
     'Authorization': token
   }
 })
 .then(response => {
-  console.log('Status:', response.status);
-  console.log('Body:', response.data);
+  setIsDownloadingPendingRides(false)
   setPendingRides(response.data["message"]);
 })
 .catch(error => {
@@ -420,8 +419,14 @@ axios.post(`${page}/rides/approved`, {}, {
 
   const ViewPendingRidesContainer = () => {
     return (
-      <>
-          <ScrollView style={styles.ridesContainer}>
+      
+      <ImageBackground
+          source={{uri: background}}
+          style={{flex: 1,
+            resizeMode: "cover"}}
+      >
+        <ScrollView style={styles.ridesContainer}>
+            {isDownloadingPendingRides ? <Text>Loading...</Text>: null}
             {pendingRides.map((item, index) => (
               <View
                 key={index}
@@ -440,19 +445,43 @@ axios.post(`${page}/rides/approved`, {}, {
               </View>
             ))}
           </ScrollView>
-      </>
+
+      </ImageBackground>
+      
     );
   };
   
 
-
+  if (shouldDisplayPendingRides) {
+    return(
+      <View style={{...googleStyles.test, marginTop: 20}}>
+          <View style={{...styles.SelectionMenu, marginTop: 0, width: '80%', borderRadius: 5, marginHorizontal: '10%' }}>
+            <TouchableOpacity onPress={() => {
+              setShouldDisplayPendingRides(false);
+              }} style={{...styles.SelectionButton, borderRadius: 5}}>
+              <Text style={{fontSize: 24, textAlign: 'center', }}>Find New Rides</Text>
+            </TouchableOpacity> 
+          </View>
+          <ViewPendingRidesContainer />
+      </View>
+    )
+  }
  
   return (
     <View style={styles.container}>
       {/* //below is the input field for the start and end location */}
 
-      <View style={googleStyles.test}>
+      <View style={{...googleStyles.test, marginTop: 20}}>
         <View style={[showscreen < 2 ? styles : googleStyles.container]}>
+
+        <View style={{...styles.SelectionMenu, marginTop: 0, width: '80%', borderRadius: 5, marginHorizontal: '10%' }}>
+              <TouchableOpacity onPress={() => {
+                setShouldDisplayPendingRides(true)
+                ViewPendingRides()}} style={{...styles.SelectionButton, borderRadius: 5}}>
+                <Text style={{fontSize: 24, textAlign: 'center', }}>View Pending Rides</Text>
+              </TouchableOpacity> 
+            </View>
+        
           <GooglePlacesAutocomplete
             ref={startref}
             placeholder="Start"
@@ -527,7 +556,7 @@ axios.post(`${page}/rides/approved`, {}, {
             <TextInput
               value={maxPrice}
               style={styles.postInputTextInputs}
-              placeholder="Enter form float 0.0"
+              placeholder="Enter maximum price"
               // onChangeText={(val) => setMaxPrice(parseFloat(val))}
               onChangeText={(val) => setMaxPrice(val)}
               keyboardType="numeric" // This ensures a numeric keyboard is shown
@@ -645,11 +674,25 @@ const styles = StyleSheet.create({
     // height: "100%",
     // width: "100%",
   },
+  SelectionButton: {
+    borderColor: 'black',
+    borderWidth: 2,
+    height: 50,
+    flexGrow: 1,
+  },
+  SelectionMenu: {
+    display: 'flex',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    backgroundColor: 'white'
+  },
+
 
   displayBtn: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
+    
     // marginTop: 10,
     // backgroundColor: "#F9F3CC",
   },
@@ -665,13 +708,17 @@ const styles = StyleSheet.create({
     // height: 320,
   },
   postInputTextInputs: {
-    width: "100%",
+    width: "80%",
+    marginLeft: '10%',
+    paddingVertical: 5,
+    paddingHorizontal: 15,
+    borderRadius: 5,
     height: 33,
     backgroundColor: "white",
     fontFamily: "Helvetica",
     fontSize: 20,
     borderWidth: 3,
-    marginTop: 2,
+    marginVertical: 5,
     borderColor: "black",
   },
   screen1: {

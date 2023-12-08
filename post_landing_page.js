@@ -312,7 +312,7 @@ function MapWithCurrentLocation({ setChildIdx, token, page }) {
       <View style={{...googleStyles.test, marginTop: 20}}> 
 
 
-              <View style={{...styles.SelectionMenu, marginTop: 0, width: '80%', borderRadius: 5, marginHorizontal: '10%' }}>
+            <View style={{...styles.SelectionMenu, marginTop: 0, width: '80%', borderRadius: 5, marginHorizontal: '10%' }}>
               <TouchableOpacity onPress={() => setShouldDisplayPage(true)} style={{...styles.SelectionButton, borderRadius: 5}}>
                 <Text style={{fontSize: 24, textAlign: 'center', }}>View Created Rides</Text>
               </TouchableOpacity> 
