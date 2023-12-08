@@ -250,6 +250,28 @@ export default function ActiveRide({ setChildIdx, removeToken, token, page }) {
 
   const endText = "end\n" + destination;
 
+  
+  async function CompletedRides() {
+    const config = {
+      headers: {
+          'Authorization': token
+      }
+  };
+  
+  // Data to be sent in the body of the POST request
+  const data = {
+      rideId: ride_id
+  };
+  
+  // Making the POST request
+  axios.post(`${page}/rides/end`, data, config)
+      .then(response => {
+          console.log('Success:', response.data);
+      })
+      .catch(error => {
+          console.error('Error:', error.response ? error.response.data : error.message);
+      });
+    }
   return (
     <View style={styles.container}>
       <View>
@@ -277,7 +299,8 @@ export default function ActiveRide({ setChildIdx, removeToken, token, page }) {
         <TouchableOpacity
           style={styles.btn}
           onPress={() => {
-            alert("Ride Completed!");
+            // alert("Ride Completed!");
+            CompletedRides();
           }}
         >
           <Text>Completed Ride!</Text>
