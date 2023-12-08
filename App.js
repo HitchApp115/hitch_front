@@ -21,10 +21,8 @@ const { expoConfig } = Constants;
 const Stack = createStackNavigator();
 
 // where to find the backend
-// const page = "http://localhost:3000";
 const page = "https://dolphin-app-7udnd.ondigitalocean.app";
-// const page = "http://169.233.224.168"
-// const page = `http://${manifest.debuggerHost.split(":").shift()}:3000`;
+
 
 
 // const response= await axios.get(page);
@@ -49,11 +47,31 @@ export default function App() {
   const getToken = async () => {
     try {
       const userToken = await AsyncStorage.getItem("userToken");
-      if (userToken === undefined || userToken === null)
-        return;
-      setToken(userToken); // Update the state
-      console.log("got token "+userToken);
-      setChildIdx(2);
+      if (userToken === undefined || userToken === null){
+        console.log("INVALID TOKEN")
+        setToken(userToken)
+        setChildIdx(0);
+        return userToken
+      }
+      console.log("VALID TOKEN")
+
+         axios.get(`${page}/account/verifyToken`, {
+          headers: {
+            Authorization: userToken
+          }
+        })
+          .then(resp => {
+
+            setToken(userToken); // Update the state
+            setChildIdx(2);
+            return userToken
+          })
+          .catch((e) => {
+            consolelog('bad Token')
+          setToken('')
+          setChildIdx(0);
+          return userToken
+          })
     } catch (error) {
       // Handle errors here
       console.log("Error retrieving data", error);
@@ -68,9 +86,7 @@ export default function App() {
         headers: {
           authorization: token
         }
-      });
-      console.log("test ",test);
-      
+      });    
       setToken(null); // Update the state
     } catch (error) {
       // Handle errors here
@@ -81,7 +97,7 @@ export default function App() {
   // function that retrives the token from the device's storage and sets it into state
   useEffect(() => {
     getToken();
-  }, []);
+  }, [token]);
 
   // if the user is logged in, go to the home page
   // if(token != null) {
