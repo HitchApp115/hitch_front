@@ -301,18 +301,15 @@ function HitchLandingPage({ setChildIdx, token, page }) {
       riderStartPoint: `${startId}:${startRegion.latitude},${startRegion.longitude}`,
       rideId: ride_id
     };
-    console.log(`${token}--${requestBody.riderStartPoint}--${requestBody.rideId}`);
-    console.log(`${page}/rides/sendRiderRequest`);
-      const response = await axios.post(`${page}/rides/sendRiderRequest`, requestBody, {
+      await axios.post(`${page}/rides/sendRiderRequest`, requestBody, {
           headers: {
               'Authorization': token
           }
       })
-      .then(
-        console.log('Response data:', response.data),
-        ViewPendingRides())
+      .then((response) => { 
+        
+      })
       .catch(error => {
-          console.error('Error during axios request:', error);
           throw error;
       });
       
@@ -428,7 +425,9 @@ async function RemoveRequest(token, ride_id) {
                 <TouchableOpacity
                   title="Press me"
                   onPress={() =>
-                    {JoinRide(index,ride_id=item.ride_id)}
+                    {JoinRide(index,ride_id=item.ride_id)
+                      ViewPendingRides();
+                    }
                   }
                 >
                   <Text>Join</Text>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Pressable,
@@ -9,8 +9,16 @@ import {
   ImageBackground,
 } from "react-native";
 import AccountSettings from "./account_setting";
+import axios from "axios";
 
-export default function HomePage({ setChildIdx, removeToken, token, page}) {
+
+
+export default function HomePage({ setChildIdx, removeToken, token, page, showActivePassenger,}) {
+
+  const [showActiveRide, setShowActiveRide] = useState(false);
+  
+
+
   const handleHitchPress = () => {
     setChildIdx(4);
     console.log("hitch a ride");
@@ -25,6 +33,25 @@ export default function HomePage({ setChildIdx, removeToken, token, page}) {
   handlePendingRidesPress = () => {
     setChildIdx(5)
   }
+
+  // useEffect(() => {
+  //   const config = {
+  //     headers: {
+  //         'Authorization': token
+  //     }
+  // };
+  //   if (token != null) {
+  //     axios.get(`${page}/account/rideAwaitingPickup`, config)
+  //   .then(response => {
+  //       console.log('Success:', response.data);
+  //   })
+  //   .catch(error => {
+  //       console.error('Error:', error.response ? error.response.data : error.message);
+  //   });
+  //   }
+  // }, []);
+
+
 
   return (
     <ImageBackground
@@ -89,7 +116,8 @@ export default function HomePage({ setChildIdx, removeToken, token, page}) {
             <Text style={{ color: "white" }}>Drivers</Text>
           </Pressable>
         </View>
-        <View style={MenuStyle.select_box}>
+        {showActiveRide &&(
+          <View style={MenuStyle.select_box}>
           <Pressable
             onPress={()=>{setChildIdx(6)}}
             style={({ pressed }) => [
@@ -112,11 +140,45 @@ export default function HomePage({ setChildIdx, removeToken, token, page}) {
           >
             <Image
               source={require("./assets/post.png")}
-              style={{ width: 50, height: 50 }}
+              style={{ width: 150, height: 100 }}
             />
-            <Text style={{ color: "white" }}>Test ActiveRide</Text>
+            <Text style={{ color: "white" }}>ActiveRide</Text>
           </Pressable>
         </View>
+        )    
+        }
+        {showActivePassenger &&(
+              <View style={MenuStyle.select_box}>
+              <Pressable
+                onPress={()=>{setChildIdx(8)}}
+                style={({ pressed }) => [
+                  {
+                    backgroundColor: pressed ? "lightskyblue" : "royalblue",
+                    borderRadius: 10,
+                    padding: 10,
+                    shadowColor: "#000",
+                    shadowOffset: {
+                      width: 0,
+                      height: 2,
+                    },
+                    shadowOpacity: 0.25,
+                    shadowRadius: 3.84,
+    
+                    elevation: 5,
+                  },
+                  MenuStyle.Btn,
+                ]}
+              >
+                <Image
+                  source={require("./assets/post.png")}
+                  style={{ width: 150, height: 100 }}
+                />
+                <Text style={{ color: "white" }}>ActivePassenger</Text>
+              </Pressable>
+            </View>
+        )}
+
+        
         
       </View>
     </ImageBackground>

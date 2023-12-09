@@ -17,9 +17,9 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 // where to find the backend
 
 function LoginPage({ setChildIdx, storeToken, page }) {
-  useEffect(() => {
-    console.log("PAGE2:", page)
-  })
+  // useEffect(() => {
+  //   console.log("PAGE2:", page)
+  // })
   const [login, SetLogin] = useState("");
   const [password, SetPassword] = useState("");
 

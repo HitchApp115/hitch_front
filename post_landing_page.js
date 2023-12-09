@@ -259,7 +259,7 @@ function MapWithCurrentLocation({ setChildIdx, token, page }) {
   }
 
   const submitRoute = () => {
-    axios.post(domain + "/rides/create", {
+    axios.post(page + "/rides/create", {
       startPointName: startId,
       endPointName: endId,
       startPoint: startRegion,

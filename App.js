@@ -14,7 +14,12 @@ import { createStackNavigator } from "@react-navigation/stack";
 import Constants from "expo-constants";
 import axios, { Axios } from "axios";
 import ActiveRide from "./ActiveRide";
+import ActivePassenger from "./ActivePassenger";
+
 const { expoConfig } = Constants;
+
+
+
 // const page = `http://${expoConfig.debuggerHost.split(":").shift()}:3000`;
 // import { ScrollView } from 'react-native-web';
 
@@ -22,7 +27,7 @@ const Stack = createStackNavigator();
 
 // where to find the backend
 const page = "https://dolphin-app-7udnd.ondigitalocean.app";
-
+// const page =  "http://10.0.0.157:3000";
 
 
 // const response= await axios.get(page);
@@ -31,7 +36,7 @@ export default function App() {
   // token used to keep track of whether the user is logged in
   const [token, setToken] = useState(null);
   const [childIdx, setChildIdx] = useState(0);
-
+  const [showActivePassenger, setShowActivePassenger] = useState(false);
   // function that stores the token in the device's storage
   const storeToken = async (userToken) => {
     try {
@@ -67,8 +72,8 @@ export default function App() {
             return userToken
           })
           .catch((e) => {
-            consolelog('bad Token')
-          setToken('')
+            console.log('bad Token')
+          setToken(null)
           setChildIdx(0);
           return userToken
           })
@@ -97,7 +102,39 @@ export default function App() {
   // function that retrives the token from the device's storage and sets it into state
   useEffect(() => {
     getToken();
-  }, [token]);
+  }, []);
+
+
+
+  async function checkRidesActive() {
+    console.log("token", token);
+    try {
+      const response = await axios.get(`${page}/account/rideAwaitingPickup`, {
+        headers: {
+          Authorization: token
+        }
+      });
+      console.log(response.data);
+      if (response.data.rideId != null) {
+        // setChildIdx(7);
+        setShowActivePassenger(true);
+      }
+      // Handle the API response here
+    } catch (error) {
+      console.error(error);
+      // Handle the error here
+    }
+
+  }
+
+  // useEffect(() => {
+  //   if ((token != null) && (childIdx == 2)) {
+
+  //     checkRidesActive();
+  //   }
+
+  // }
+  // , [childIdx]);
 
   // if the user is logged in, go to the home page
   // if(token != null) {
@@ -113,12 +150,12 @@ export default function App() {
       token={token}
       page={page}
     />,
-    <HomePage setChildIdx={setChildIdx} removeToken={removeToken} page={page} token={token}/>,
+    <HomePage setChildIdx={setChildIdx} removeToken={removeToken} page={page} token={token} showActivePassenger={showActivePassenger}/>,
     <MapWithCurrentLocation setChildIdx={setChildIdx} token={token} page={page} />,
-    <HitchLandingPageContainer setChildIdx={setChildIdx} token={token}/>,
+    <HitchLandingPageContainer setChildIdx={setChildIdx} token={token} page={page} />,
     <PendingRidesPage  setChildIdx={setChildIdx} page={page} token={token} />,
     <ActiveRide setChildIdx={setChildIdx} token={token} page={page}/>,
-
+    <ActivePassenger showActivePassenger={showActivePassenger}/>,
     // <PostLandingPage setChildIdx={setChildIdx} />,
     // <GooglePlacesInput />,
   //<TestDirections />
