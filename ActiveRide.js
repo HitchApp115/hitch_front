@@ -207,7 +207,7 @@ export default function ActiveRide({ setChildIdx, removeToken, token, page }) {
         // console.log('Status:', response.status);
         // console.log('Data:', response.data);
         const data = response.data;
-        console.log("data", data);
+        console.log("Correctly got Data", data);
         extractRoutePoints(data);
       })
       .catch((error) => {
@@ -267,6 +267,8 @@ export default function ActiveRide({ setChildIdx, removeToken, token, page }) {
   axios.post(`${page}/rides/end`, data, config)
       .then(response => {
           console.log('Success:', response.data);
+          alert("Ride Completed!");
+          setChildIdx(2); 
       })
       .catch(error => {
           console.error('Error:', error.response ? error.response.data : error.message);
