@@ -46,7 +46,7 @@ import InputField from "./InputField";
 import { NavigationContainer } from "@react-navigation/native";
 import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 
-const page = "https://dolphin-app-7udnd.ondigitalocean.app";
+
 // displays the stickman indicating the user's location
 function BlackDotMarker() {
   return <Image source={stickman} style={{ width: 75, height: 75 }} />;
@@ -102,7 +102,7 @@ function decodePolyline(encoded) {
   return poly;
 }
 
-function HitchLandingPage({ setChildIdx, token }) {
+function HitchLandingPage({ setChildIdx, token, page }) {
   const [showscreen, setShowScreen] = useState(0); // 0 = start and end location input, 1 = route display, 2 = ride joining
   const [region, setRegion] = useState(null); // the user's location also the start location
   const [startRegion, setStartRegion] = useState(null); // the user's start location
@@ -125,6 +125,8 @@ function HitchLandingPage({ setChildIdx, token }) {
   
   const startref = useRef();
   const endref = useRef();
+
+  
 
   useEffect(() => {
     setStartId(startref.current?.getAddressText());
@@ -272,8 +274,9 @@ function HitchLandingPage({ setChildIdx, token }) {
       startPoint: `${startId}:${startRegion.latitude},${startRegion.longitude}`,
       maxPrice: floatNumber
      }
-
-    const url = 'https://dolphin-app-7udnd.ondigitalocean.app';
+      console.log(params);
+    
+      console.log(`${page}/rides/view`);
 
     const response = await axios.get(`${page}/rides/view`, { params })
         .then(response => {
@@ -299,18 +302,20 @@ function HitchLandingPage({ setChildIdx, token }) {
       rideId: ride_id
     };
     console.log(`${token}--${requestBody.riderStartPoint}--${requestBody.rideId}`);
-    try {
+    console.log(`${page}/rides/sendRiderRequest`);
       const response = await axios.post(`${page}/rides/sendRiderRequest`, requestBody, {
           headers: {
               'Authorization': token
           }
+      })
+      .then(
+        console.log('Response data:', response.data),
+        ViewPendingRides())
+      .catch(error => {
+          console.error('Error during axios request:', error);
+          throw error;
       });
-      console.log('Response data:', response.data);
-
-  } catch (error) {
-      console.error('Error during axios request:', error);
-      throw error;
-  }
+      
   
 };
   // this part is going to show rides that are available
@@ -331,8 +336,27 @@ async function ViewPendingRides() {
   console.error('Error:', error.response ? error.response.data : error.message);
 });
 
+
  
 };
+
+async function RemoveRequest(token, ride_id) {
+  console.log(token, ride_id);
+  try{
+    console.log(`${page}/rides/riderRequestRemoval`);
+    const response = await axios.post(`${page}/rides/riderRequestRemoval`, {rideId: ride_id}, {
+      headers: {
+        'Authorization': token
+      }
+    });
+    console.log('Response data:', response.data);
+  }
+  catch(error){
+    console.error('Error:', error.response ? error.response.data : error.message);
+  }
+  
+}
+
   const ViewRidesParent = () => {
 
     const [showChild, setShowChild] = useState(0);
@@ -356,7 +380,7 @@ async function ViewPendingRides() {
             <TouchableOpacity
               style={[styles.displayBtn, styles.dislayPostBtn]}
               onPress={() => {
-                setShowScreen(2);
+                // setShowScreen(2);
                 ViewOpenRides();
                 ViewPendingRides();
               }}
@@ -418,6 +442,8 @@ async function ViewPendingRides() {
   };
 
   const ViewPendingRidesContainer = () => {
+    // usedfor refrencing the viewpending rides request
+    const [rideRequestkey, setRideRequestKey] = useState(0);
     return (
       
       <ImageBackground
@@ -425,7 +451,7 @@ async function ViewPendingRides() {
           style={{flex: 1,
             resizeMode: "cover"}}
       >
-        <ScrollView style={styles.ridesContainer}>
+        <ScrollView key={rideRequestkey} style={styles.ridesContainer}>
             {isDownloadingPendingRides ? <Text>Loading...</Text>: null}
             {pendingRides.map((item, index) => (
               <View
@@ -441,6 +467,14 @@ async function ViewPendingRides() {
                   {item.accepted == 0 && <Text>Pending</Text>}
                   {item.accepted == 1 && <Text>Accepted</Text>}
                 </Text>
+                <TouchableOpacity onPress={()=>{RemoveRequest(token, item.ride_id);
+                ViewPendingRides();
+                setRideRequestKey(rideRequestkey + 1)  
+
+              } 
+                
+              }><Text>Cancel</Text></TouchableOpacity>
+                
 
               </View>
             ))}
@@ -758,12 +792,12 @@ const styles = StyleSheet.create({
 
 });
 
-export default function HitchLandingPageContainer({ setChildIdx, token }) {
+export default function HitchLandingPageContainer({ setChildIdx, token, page }) {
   return (
     <NavigationContainer>
       <View style={{ flex: 1 }}>
         {/* <AccountSettings /> */}
-        <HitchLandingPage setChildIdx={setChildIdx} token={token} />
+        <HitchLandingPage setChildIdx={setChildIdx} token={token} page={page}/>
         {/* <Inputs /> */}
       </View>
     </NavigationContainer>
