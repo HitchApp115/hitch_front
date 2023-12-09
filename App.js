@@ -155,7 +155,7 @@ export default function App() {
     <HitchLandingPageContainer setChildIdx={setChildIdx} token={token} page={page} />,
     <PendingRidesPage  setChildIdx={setChildIdx} page={page} token={token} />,
     <ActiveRide setChildIdx={setChildIdx} token={token} page={page}/>,
-    <ActivePassenger showActivePassenger={showActivePassenger}/>,
+    <ActivePassenger page={page} token={token} showActivePassenger={showActivePassenger} setChildIdx={setChildIdx}/>,
     // <PostLandingPage setChildIdx={setChildIdx} />,
     // <GooglePlacesInput />,
   //<TestDirections />
