@@ -127,14 +127,20 @@ export default function App() {
 
   }
 
-  // useEffect(() => {
-  //   if ((token != null) && (childIdx == 2)) {
 
-  //     checkRidesActive();
-  //   }
+  const penisFunc = () => {
+    console.log("PENIS FUNCTION")
+    axios.get(`${page}/account/rideAwaitingPickup`, {
+        headers: {
+          Authorization: token
+        }})
+        .then(resp => console.log("AAAAA:", resp))
+        .catch(resp => console.log("AAAAAL:", resp))
+  }
 
-  // }
-  // , [childIdx]);
+  useEffect(() => {
+    penisFunc()
+}, [childIdx]);
 
   // if the user is logged in, go to the home page
   // if(token != null) {

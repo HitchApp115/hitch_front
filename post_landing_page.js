@@ -259,6 +259,16 @@ function MapWithCurrentLocation({ setChildIdx, token, page }) {
   }
 
   const submitRoute = () => {
+    console.log("SSS: creating ride", {
+        startPointName: startId,
+        endPointName: endId,
+        startPoint: startRegion,
+        destination: endingRegion,
+        riders,
+        costPerRider,
+        pickUpDistance: maxDistance,
+        rideStartTime: startTime.toLocaleString()
+      })
     axios.post(page + "/rides/create", {
       startPointName: startId,
       endPointName: endId,
@@ -267,7 +277,7 @@ function MapWithCurrentLocation({ setChildIdx, token, page }) {
       riders,
       costPerRider,
       pickUpDistance: maxDistance,
-      rideStartTime: startTime.toLocaleString()
+      rideStartTime: startTime.toString()
     }, {
       headers: {
         authorization: token
