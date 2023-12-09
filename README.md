@@ -56,3 +56,5 @@ The Hitch Ride page will contain the following features:
 
 - Display avaible rides based on the destination they want go to
 - allow users to make a request for rides at the fair rate set by the User
+
+

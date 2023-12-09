@@ -383,7 +383,7 @@ function HitchLandingPage({ setChildIdx, token, page }) {
               style={[styles.displayBtn, styles.dislayPostBtn]}
               onPress={() => {
                 // setShowScreen(2);
-                // ViewOpenRides();
+                ViewOpenRides();
                 ViewPendingRides();
               }}
             >
@@ -640,7 +640,7 @@ function HitchLandingPage({ setChildIdx, token, page }) {
                 style={[styles.displayBtn, styles.dislayPostBtn]}
                 onPress={() => {
                   ViewOpenRides();
-
+                   
                   setShowScreen(2);
                 }}
               >
