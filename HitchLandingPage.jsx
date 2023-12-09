@@ -28,7 +28,7 @@ import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplet
 import AccountSettings from "./account_setting";
 import axios from "axios";
 import ActiveRide from "./ActiveRide";
-import background from './assets/background.png'
+import background from "./assets/background2.png";
 
 /* 
 MapView: displays the actual maps
@@ -45,7 +45,6 @@ import {
 import InputField from "./InputField";
 import { NavigationContainer } from "@react-navigation/native";
 import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
-
 
 // displays the stickman indicating the user's location
 function BlackDotMarker() {
@@ -120,13 +119,13 @@ function HitchLandingPage({ setChildIdx, token, page }) {
   const [endId, setEndId] = useState("");
   const [buttonPressed, setButtonPressed] = useState(0);
   const [getDirectionsPressed, setGetDirectionsPressed] = useState(false);
-  const [shouldDisplayPendingRides, setShouldDisplayPendingRides] = useState(false)
-  const [isDownloadingPendingRides, setIsDownloadingPendingRides] = useState(false)
-  
+  const [shouldDisplayPendingRides, setShouldDisplayPendingRides] =
+    useState(false);
+  const [isDownloadingPendingRides, setIsDownloadingPendingRides] =
+    useState(false);
+
   const startref = useRef();
   const endref = useRef();
-
-  
 
   useEffect(() => {
     setStartId(startref.current?.getAddressText());
@@ -259,112 +258,118 @@ function HitchLandingPage({ setChildIdx, token, page }) {
   const [rides, setRides] = useState([]);
   const [pendingRides, setPendingRides] = useState([]);
 
-// 0 = rejected 1 = pending 2 = accepted
+  // 0 = rejected 1 = pending 2 = accepted
   const addPendingList = (newItem) => {
-    const addItem = {ride_id: newItem.ride_id, cost: newItem.cost_per_rider ,status: 1};
+    const addItem = {
+      ride_id: newItem.ride_id,
+      cost: newItem.cost_per_rider,
+      status: 1,
+    };
     setPendingRides([...pendingRides, addItem]);
-};
-
+  };
 
   async function ViewOpenRides() {
     console.log(token);
     const floatNumber = parseFloat(maxPrice);
 
-     const params = {
+    const params = {
       startPoint: `${startId}:${startRegion.latitude},${startRegion.longitude}`,
-      maxPrice: floatNumber
-     }
-      console.log(params);
-    
-      console.log(`${page}/rides/view`);
+      maxPrice: floatNumber,
+    };
+    console.log(params);
 
-    const response = await axios.get(`${page}/rides/view`, { params })
-        .then(response => {
-            console.log('Response data:', response.data);
-            // console.log('rides', response.data.rides);
-            if (response.data.rides.length == 0) {
-              console.log("No rides found");
-            }else{
-              setRides(response.data.rides);
-            }
-            
-            
-        })
-        .catch(error => {
-            console.error('Error during request:', error);
-        });
+    console.log(`${page}/rides/view`);
+
+    const response = await axios
+      .get(`${page}/rides/view`, { params })
+      .then((response) => {
+        console.log("Response data:", response.data);
+        // console.log('rides', response.data.rides);
+        if (response.data.rides.length == 0) {
+          console.log("No rides found");
+        } else {
+          setRides(response.data.rides);
+        }
+      })
+      .catch((error) => {
+        console.error("Error during request:", error);
+      });
   }
 
   //currently this function is not working because the backend is not working
-  async function JoinRide(index,ride_id) {
+  async function JoinRide(index, ride_id) {
     const requestBody = {
       riderStartPoint: `${startId}:${startRegion.latitude},${startRegion.longitude}`,
-      rideId: ride_id
+      rideId: ride_id,
     };
-      await axios.post(`${page}/rides/sendRiderRequest`, requestBody, {
-          headers: {
-              'Authorization': token
-          }
+    await axios
+      .post(`${page}/rides/sendRiderRequest`, requestBody, {
+        headers: {
+          Authorization: token,
+        },
       })
-      .then((response) => { 
-        
-      })
-      .catch(error => {
-          throw error;
+      .then((response) => {})
+      .catch((error) => {
+        throw error;
       });
-      
-  
-};
+  }
   // this part is going to show rides that are available
-async function ViewPendingRides() {
-  setIsDownloadingPendingRides(true)
+  async function ViewPendingRides() {
+    setIsDownloadingPendingRides(true);
 
     // Make the POST request
-  axios.post(`${page}/rides/approved`, {}, {
-  headers: {
-    'Authorization': token
+    axios
+      .post(
+        `${page}/rides/approved`,
+        {},
+        {
+          headers: {
+            Authorization: token,
+          },
+        }
+      )
+      .then((response) => {
+        console.log("Response data:", response.data);
+        setIsDownloadingPendingRides(false);
+        setPendingRides(response.data["message"]);
+      })
+      .catch((error) => {
+        console.error(
+          "Error:",
+          error.response ? error.response.data : error.message
+        );
+      });
   }
-})
-.then(response => {
-  setIsDownloadingPendingRides(false)
-  setPendingRides(response.data["message"]);
-})
-.catch(error => {
-  console.error('Error:', error.response ? error.response.data : error.message);
-});
 
-
- 
-};
-
-async function RemoveRequest(token, ride_id) {
-  console.log(token, ride_id);
-  try{
-    console.log(`${page}/rides/riderRequestRemoval`);
-    const response = await axios.post(`${page}/rides/riderRequestRemoval`, {rideId: ride_id}, {
-      headers: {
-        'Authorization': token
-      }
-    });
-    console.log('Response data:', response.data);
+  async function RemoveRequest(token, ride_id) {
+    console.log(token, ride_id);
+    try {
+      console.log(`${page}/rides/riderRequestRemoval`);
+      const response = await axios.post(
+        `${page}/rides/riderRequestRemoval`,
+        { rideId: ride_id },
+        {
+          headers: {
+            Authorization: token,
+          },
+        }
+      );
+      console.log("Response data:", response.data);
+    } catch (error) {
+      console.error(
+        "Error:",
+        error.response ? error.response.data : error.message
+      );
+    }
   }
-  catch(error){
-    console.error('Error:', error.response ? error.response.data : error.message);
-  }
-  
-}
 
   const ViewRidesParent = () => {
-
     const [showChild, setShowChild] = useState(0);
 
-    const children = [
-      <ViewRidesContainer />,
-      <ViewPendingRidesContainer />,
-    ];
+    const children = [<ViewRidesContainer />, <ViewPendingRidesContainer />];
     return (
       <>
-           <View style={styles.ridesContainer}>
+        <View style={styles.ridesContainer}>
           <View style={styles.containerForButtons}>
             <TouchableOpacity
               onPress={() => {
@@ -378,7 +383,7 @@ async function RemoveRequest(token, ride_id) {
               style={[styles.displayBtn, styles.dislayPostBtn]}
               onPress={() => {
                 // setShowScreen(2);
-                ViewOpenRides();
+                // ViewOpenRides();
                 ViewPendingRides();
               }}
             >
@@ -391,7 +396,8 @@ async function RemoveRequest(token, ride_id) {
                 setShowChild(0);
               }}
               style={styles.viewRidesBtn}
-            ><Text style={styles.loginText}>Rides To Join</Text>
+            >
+              <Text style={styles.loginText}>Rides To Join</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.viewPendingBtn]}
@@ -402,40 +408,40 @@ async function RemoveRequest(token, ride_id) {
               <Text style={styles.loginText}>Pending</Text>
             </TouchableOpacity>
           </View>
-        {children[showChild]}
+          {children[showChild]}
         </View>
       </>
-      );
-    };
+    );
+  };
   const ViewRidesContainer = () => {
     return (
       <>
-     
-          <ScrollView style={styles.viewRidesContainer}>
-            {rides.map((item, index) => (
-              <View
-                key={index}
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  padding: 10,
+        <ScrollView style={styles.viewRidesContainer}>
+          {rides.map((item, index) => (
+            <View
+              key={index}
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                padding: 10,
+              }}
+            >
+              <Text>
+                Ride {index + 1} Ride Id:{item.ride_id} Cost:$
+                {item.cost_per_rider}
+              </Text>
+              <TouchableOpacity
+                title="Press me"
+                onPress={() => {
+                  JoinRide(index, (ride_id = item.ride_id));
+                  ViewPendingRides();
                 }}
               >
-                <Text>Ride {index+1} Cost:${item.cost_per_rider} {item.ride_id}</Text>
-                <TouchableOpacity
-                  title="Press me"
-                  onPress={() =>
-                    {JoinRide(index,ride_id=item.ride_id)
-                      ViewPendingRides();
-                    }
-                  }
-                >
-                  <Text>Join</Text>
-                </TouchableOpacity>
-              </View>
-            ))}
-          </ScrollView>
-       
+                <Text> Join</Text>
+              </TouchableOpacity>
+            </View>
+          ))}
+        </ScrollView>
       </>
     );
   };
@@ -444,77 +450,103 @@ async function RemoveRequest(token, ride_id) {
     // usedfor refrencing the viewpending rides request
     const [rideRequestkey, setRideRequestKey] = useState(0);
     return (
-      
-      <ImageBackground
-          source={{uri: background}}
-          style={{flex: 1,
-            resizeMode: "cover"}}
-      >
+      <ImageBackground style={{ flex: 1 }}>
+        <TouchableOpacity onPress={ViewOpenRides}>
+          <Text>Refresh Status</Text>
+        </TouchableOpacity>
         <ScrollView key={rideRequestkey} style={styles.ridesContainer}>
-            {isDownloadingPendingRides ? <Text>Loading...</Text>: null}
-            {pendingRides.map((item, index) => (
-              <View
-                key={index}
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  padding: 10,
+          {isDownloadingPendingRides ? <Text>Loading...</Text> : null}
+          {pendingRides.map((item, index) => (
+            
+            <View
+              key={index}
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                padding: 10,
+              }}
+            >
+              <Text>
+                Ride {index + 1} ride_id{" "}
+                {item.ride_id}{" "}
+              </Text>
+              
+              <Text>
+                {item.accepted == 0 && <Text>Pending</Text>}
+                {item.accepted == 1 && <Text>Accepted</Text>}
+              </Text>
+              <TouchableOpacity
+                onPress={() => {
+                  RemoveRequest(token, item.ride_id);
+                  ViewPendingRides();
+                  setRideRequestKey(rideRequestkey + 1);
                 }}
               >
-                <Text>Ride {index+1} Cost:${item.cost_per_rider}  ride_id {item.ride_id} </Text>
-                <Text>
-                  {item.accepted == 0 && <Text>Pending</Text>}
-                  {item.accepted == 1 && <Text>Accepted</Text>}
-                </Text>
-                <TouchableOpacity onPress={()=>{RemoveRequest(token, item.ride_id);
-                ViewPendingRides();
-                setRideRequestKey(rideRequestkey + 1)  
-
-              } 
-                
-              }><Text>Cancel</Text></TouchableOpacity>
-                
-
-              </View>
-            ))}
-          </ScrollView>
-
+                <Text> Cancel</Text>
+              </TouchableOpacity>
+            </View>
+          ))}
+        </ScrollView>
       </ImageBackground>
-      
     );
   };
-  
 
   if (shouldDisplayPendingRides) {
-    return(
-      <View style={{...googleStyles.test, marginTop: 20}}>
-          <View style={{...styles.SelectionMenu, marginTop: 0, width: '80%', borderRadius: 5, marginHorizontal: '10%' }}>
-            <TouchableOpacity onPress={() => {
+    return (
+      <View style={{ ...googleStyles.test, marginTop: 20 }}>
+        <View
+          style={{
+            ...styles.SelectionMenu,
+            marginTop: 0,
+            width: "80%",
+            borderRadius: 5,
+            marginHorizontal: "10%",
+          }}
+        >
+          <TouchableOpacity
+            onPress={() => {
               setShouldDisplayPendingRides(false);
-              }} style={{...styles.SelectionButton, borderRadius: 5}}>
-              <Text style={{fontSize: 24, textAlign: 'center', }}>Find New Rides</Text>
-            </TouchableOpacity> 
-          </View>
-          <ViewPendingRidesContainer />
+            }}
+            style={{ ...styles.SelectionButton, borderRadius: 5 }}
+          >
+            <Text style={{ fontSize: 24, textAlign: "center" }}>
+              Find New Rides
+            </Text>
+          </TouchableOpacity>
+        </View>
+        <ViewPendingRidesContainer />
       </View>
-    )
+    );
   }
- 
+
   return (
     <View style={styles.container}>
       {/* //below is the input field for the start and end location */}
 
-      <View style={{...googleStyles.test, marginTop: 20}}>
+      <View style={{ ...googleStyles.test, marginTop: 20 }}>
         <View style={[showscreen < 2 ? styles : googleStyles.container]}>
+          <View
+            style={{
+              ...styles.SelectionMenu,
+              marginTop: 0,
+              width: "80%",
+              borderRadius: 5,
+              marginHorizontal: "10%",
+            }}
+          >
+            <TouchableOpacity
+              onPress={() => {
+                setShouldDisplayPendingRides(true);
+                ViewPendingRides();
+              }}
+              style={{ ...styles.SelectionButton, borderRadius: 5 }}
+            >
+              <Text style={{ fontSize: 24, textAlign: "center" }}>
+                View Pending Rides
+              </Text>
+            </TouchableOpacity>
+          </View>
 
-        <View style={{...styles.SelectionMenu, marginTop: 0, width: '80%', borderRadius: 5, marginHorizontal: '10%' }}>
-              <TouchableOpacity onPress={() => {
-                setShouldDisplayPendingRides(true)
-                ViewPendingRides()}} style={{...styles.SelectionButton, borderRadius: 5}}>
-                <Text style={{fontSize: 24, textAlign: 'center', }}>View Pending Rides</Text>
-              </TouchableOpacity> 
-            </View>
-        
           <GooglePlacesAutocomplete
             ref={startref}
             placeholder="Start"
@@ -619,7 +651,7 @@ async function RemoveRequest(token, ride_id) {
         )}
         {showscreen === 2 && (
           <>
-             <ViewRidesParent />
+            <ViewRidesParent />
           </>
         )}
       </View>
@@ -708,24 +740,23 @@ const styles = StyleSheet.create({
     // width: "100%",
   },
   SelectionButton: {
-    borderColor: 'black',
+    borderColor: "black",
     borderWidth: 2,
     height: 50,
     flexGrow: 1,
   },
   SelectionMenu: {
-    display: 'flex',
+    display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
-    backgroundColor: 'white'
+    backgroundColor: "white",
   },
-
 
   displayBtn: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    
+
     // marginTop: 10,
     // backgroundColor: "#F9F3CC",
   },
@@ -742,7 +773,7 @@ const styles = StyleSheet.create({
   },
   postInputTextInputs: {
     width: "80%",
-    marginLeft: '10%',
+    marginLeft: "10%",
     paddingVertical: 5,
     paddingHorizontal: 15,
     borderRadius: 5,
@@ -786,26 +817,23 @@ const styles = StyleSheet.create({
     width: "100%",
     backgroundColor: "#F3EEEA",
   },
-
-
-
 });
 
-export default function HitchLandingPageContainer({ setChildIdx, token, page }) {
+export default function HitchLandingPageContainer({
+  setChildIdx,
+  token,
+  page,
+}) {
   return (
     <NavigationContainer>
       <View style={{ flex: 1 }}>
         {/* <AccountSettings /> */}
-        <HitchLandingPage setChildIdx={setChildIdx} token={token} page={page}/>
+        <HitchLandingPage setChildIdx={setChildIdx} token={token} page={page} />
         {/* <Inputs /> */}
       </View>
     </NavigationContainer>
   );
 }
-
-
-
-
 
 const googleStyles = StyleSheet.create({
   test: {
