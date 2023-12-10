@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   View,
   Pressable,
@@ -7,20 +7,15 @@ import {
   Image,
   ImageBackground,
 } from "react-native";
-import AccountSettings from "./account_setting";
+import AccountSettings from "./AccountSettingsPage";
 
 export default function HomePage({ setChildIdx, removeToken, token, page, showActivePassenger, showActiveDrives}) {
-
-  const [showActiveRide, setShowActiveRide] = useState(false);
   
   const handleHitchPress = () => {
     setChildIdx(4);
 
   };
 
-  const handlePostPress = () => {
-    setChildIdx(3);
-  };
 
   handlePendingRidesPress = () => {
     setChildIdx(5)
@@ -28,7 +23,7 @@ export default function HomePage({ setChildIdx, removeToken, token, page, showAc
 
   return (
     <ImageBackground
-      source={require("./assets/background.png")}
+      source={require("../assets/background.png")}
       style={MenuStyle.backgroundImage}
     >
       <AccountSettings setChilDIdx={setChildIdx} removeToken={removeToken} token={token} page={page}/>
@@ -52,10 +47,10 @@ export default function HomePage({ setChildIdx, removeToken, token, page, showAc
               },
               MenuStyle.Btn,
             ]}
-            onPress={handleHitchPress}
+            onPress={() => setChildIdx(4)}
           >
             <Image
-              source={require("./assets/Hitch.png")}
+              source={require("../assets/Hitch.png")}
               style={{ width: 50, height: 50 }}
             />
             <Text style={{ color: "white" }}>Hitch a Ride</Text>
@@ -63,7 +58,7 @@ export default function HomePage({ setChildIdx, removeToken, token, page, showAc
         </View>
         <View style={MenuStyle.select_box}>
           <Pressable
-            onPress={handlePostPress}
+            onPress={() => setChildIdx(3)}
             style={({ pressed }) => [
               {
                 backgroundColor: pressed ? "lightskyblue" : "royalblue",
@@ -83,7 +78,7 @@ export default function HomePage({ setChildIdx, removeToken, token, page, showAc
             ]}
           >
             <Image
-              source={require("./assets/post.png")}
+              source={require("../assets/post.png")}
               style={{ width: 50, height: 50 }}
             />
             <Text style={{ color: "white" }}>Drivers</Text>
@@ -112,8 +107,8 @@ export default function HomePage({ setChildIdx, removeToken, token, page, showAc
             ]}
           >
             <Image
-              source={require("./assets/post.png")}
-              style={{ width: 150, height: 100 }}
+              source={require("../assets/post.png")}
+              style={{ width: 50, height: 50 }}
             />
             <Text style={{ color: "white" }}>Active Drive</Text>
           </Pressable>
@@ -143,8 +138,8 @@ export default function HomePage({ setChildIdx, removeToken, token, page, showAc
                 ]}
               >
                 <Image
-                  source={require("./assets/post.png")}
-                  style={{ width: 150, height: 100 }}
+                  source={require("../assets/post.png")}
+                  style={{ width: 50, height: 50 }}
                 />
                 <Text style={{ color: "white" }}>Active Passenger</Text>
               </Pressable>

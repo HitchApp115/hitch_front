@@ -56,11 +56,11 @@ function LoginPage({ setChildIdx, storeToken, page }) {
   };
 
   return (
-    // <ImageBackground source={require('./assets/background.png')} style={styles.backgroundImage}>
+    // <ImageBackground source={require('../assets/background.png')} style={styles.backgroundImage}>
     <View style={{ flex: 1 }}>
       <Video
         ref={(ref) => (this.videoRef = ref)}
-        source={require("./assets/video_background.mp4")} // Can be a URL or a local file.
+        source={require("../assets/video_background.mp4")} // Can be a URL or a local file.
         style={styles.backgroundVideo}
         muted={true}
         resizeMode={"cover"}
@@ -76,7 +76,7 @@ function LoginPage({ setChildIdx, storeToken, page }) {
         keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
       >
         <Image
-          source={require("./assets/logo.png")}
+          source={require("../assets/logo.png")}
           style={{ width: "80%", height: "40%", alignSelf: "center" }}
         />
         <InputField
@@ -89,6 +89,7 @@ function LoginPage({ setChildIdx, storeToken, page }) {
           value={password}
           onChangeText={SetPassword}
           secureTextEntry={true}
+          multiline={false}
         />
 
         <TouchableOpacity style={styles.loginBtn} onPress={handleLogin}>

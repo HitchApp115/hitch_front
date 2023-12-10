@@ -5,30 +5,22 @@ import {
   StyleSheet,
   TouchableOpacity,
   Text,
-  KeyboardAvoidingView,
   TextInput,
   ImageBackground,
   ScrollView,
+  ActivityIndicator
 } from "react-native";
-import MapView, {
-  Marker,
-  Circle,
-  PROVIDER_GOOGLE,
-  Polyline,
-} from "react-native-maps";
+import MapView, { Marker, PROVIDER_GOOGLE, Polyline } from "react-native-maps";
+import background from '../assets/background.png'
 
 // import Polyline from '@mapbox/polyline';
 
-import { useNavigation } from "@react-navigation/native";
 import { useIsFocused } from "@react-navigation/native";
-import stickman from "./assets/stickman.png";
-import back from "./assets/back.png";
-import endLocationPin from "./assets/post_ride_end.png";
+import stickman from "../assets/stickman.png";
+import back from "../assets/back.png";
+import endLocationPin from "../assets/post_ride_end.png";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
-import AccountSettings from "./account_setting";
 import axios from "axios";
-import ActiveRide from "./ActiveRide";
-import background from "./assets/background2.png";
 
 /* 
 MapView: displays the actual maps
@@ -54,17 +46,6 @@ function BlackDotMarker() {
 function EndPointMarker() {
   return <Image source={endLocationPin} style={{ width: 75, height: 75 }} />;
 }
-
-const coordinates = [
-  {
-    latitude: 37.79879,
-    longitude: -122.442753,
-  },
-  {
-    latitude: 37.790651,
-    longitude: -122.422497,
-  },
-];
 // displays the map with the user's location will only update when the user is on the page
 
 function decodePolyline(encoded) {
@@ -108,21 +89,15 @@ function HitchLandingPage({ setChildIdx, token, page }) {
   const [endingRegion, setEndingRegion] = useState({
     latitude: 36.9809503330377,
     longitude: -122.05049376286459,
-    // latitudeDelta: 0.0922,
-    // longitudeDelta: 0.0421,
-  }); // the user's end location
-
+  });
   const [coords1, setCoords] = useState([]);
-
-  // startId: name of location for start end-> name of location for endpoint
   const [startId, setStartId] = useState("");
   const [endId, setEndId] = useState("");
   const [buttonPressed, setButtonPressed] = useState(0);
   const [getDirectionsPressed, setGetDirectionsPressed] = useState(false);
-  const [shouldDisplayPendingRides, setShouldDisplayPendingRides] =
-    useState(false);
-  const [isDownloadingPendingRides, setIsDownloadingPendingRides] =
-    useState(false);
+  const [shouldDisplayPendingRides, setShouldDisplayPendingRides] = useState(false);
+  const [isDownloadingPendingRides, setIsDownloadingPendingRides] = useState(false);
+  const [isDownloadingJoinableRides, setIsDownloadingJoinableRides] = useState(false)
 
   const startref = useRef();
   const endref = useRef();
@@ -170,7 +145,6 @@ function HitchLandingPage({ setChildIdx, token, page }) {
         };
       });
       setCoords(array_cords);
-
     } catch (error) {
       console.error(error);
     }
@@ -205,8 +179,6 @@ function HitchLandingPage({ setChildIdx, token, page }) {
       setStartRegion({
         latitude,
         longitude,
-        // latitudeDelta: 0.0922,
-        // longitudeDelta: 0.0421,
       });
     };
 
@@ -250,32 +222,24 @@ function HitchLandingPage({ setChildIdx, token, page }) {
 
   // maxPrice must be a float value
   const [maxPrice, setMaxPrice] = useState("");
-  const [isFocusPrice, SetIsFocusPrice] = useState(false);
   const [rides, setRides] = useState([]);
   const [pendingRides, setPendingRides] = useState([]);
-
-  // 0 = rejected 1 = pending 2 = accepted
-  const addPendingList = (newItem) => {
-    const addItem = {
-      ride_id: newItem.ride_id,
-      cost: newItem.cost_per_rider,
-      status: 1,
-    };
-    setPendingRides([...pendingRides, addItem]);
-  };
+  const [showChild, setShowChild] = useState(0);
 
   async function ViewOpenRides() {
+    setIsDownloadingJoinableRides(true)
     const floatNumber = parseFloat(maxPrice);
 
     const params = {
       startPoint: `${startId}:${startRegion.latitude},${startRegion.longitude}`,
       maxPrice: floatNumber,
     };
-
-    const response = await axios
+    axios
       .get(`${page}/rides/view`, { params })
       .then((response) => {
+        setIsDownloadingJoinableRides(false)
         if (response.data.rides.length == 0) {
+          
         } else {
           setRides(response.data.rides);
         }
@@ -287,17 +251,22 @@ function HitchLandingPage({ setChildIdx, token, page }) {
 
   //currently this function is not working because the backend is not working
   async function JoinRide(index, ride_id) {
-    const requestBody = {
-      riderStartPoint: `${startId}:${startRegion.latitude},${startRegion.longitude}`,
-      rideId: ride_id,
-    };
-    await axios
-      .post(`${page}/rides/sendRiderRequest`, requestBody, {
-        headers: {
-          Authorization: token,
+    axios
+      .post(
+        `${page}/rides/sendRiderRequest`,
+        {
+          riderStartPoint: `${startId}:${startRegion.latitude},${startRegion.longitude}`,
+          rideId: ride_id,
         },
+        {
+          headers: {
+            Authorization: token,
+          },
+        }
+      )
+      .then((response) => {
+        alert("Ride Successfully Requested")
       })
-      .then((response) => {})
       .catch((error) => {
         throw error;
       });
@@ -305,7 +274,7 @@ function HitchLandingPage({ setChildIdx, token, page }) {
   // this part is going to show rides that are available
   async function ViewPendingRides() {
     setIsDownloadingPendingRides(true);
-
+    setPendingRides([])
     // Make the POST request
     axios
       .post(
@@ -322,10 +291,8 @@ function HitchLandingPage({ setChildIdx, token, page }) {
         setPendingRides(response.data["message"]);
       })
       .catch((error) => {
-        console.error(
-          "Error:",
-          error.response ? error.response.data : error.message
-        );
+        setIsDownloadingPendingRides(false);
+        alert("Failed to download pending rides")
       });
   }
 
@@ -349,7 +316,6 @@ function HitchLandingPage({ setChildIdx, token, page }) {
   }
 
   const ViewRidesParent = () => {
-    const [showChild, setShowChild] = useState(0);
 
     const children = [<ViewRidesContainer />, <ViewPendingRidesContainer />];
     return (
@@ -382,7 +348,11 @@ function HitchLandingPage({ setChildIdx, token, page }) {
               }}
               style={styles.viewRidesBtn}
             >
-              <Text style={styles.loginText}>Rides To Join</Text>
+              <Text style={{
+                textAlign: 'center',
+                marginTop: 15,
+                fontSize: 16
+              }}>Rides To Join</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.viewPendingBtn]}
@@ -390,7 +360,11 @@ function HitchLandingPage({ setChildIdx, token, page }) {
                 setShowChild(1);
               }}
             >
-              <Text style={styles.loginText}>Pending</Text>
+              <Text style={{
+                textAlign: 'center',
+                marginTop: 15,
+                fontSize: 16
+              }}>Pending</Text>
             </TouchableOpacity>
           </View>
           {children[showChild]}
@@ -402,27 +376,42 @@ function HitchLandingPage({ setChildIdx, token, page }) {
     return (
       <>
         <ScrollView style={styles.viewRidesContainer}>
-          {rides.map((item, index) => (
+          {isDownloadingJoinableRides ? <ActivityIndicator  size="large" color="#0000ff" /> : 
+          rides.map((item, index) => (
             <View
               key={index}
               style={{
                 flexDirection: "row",
                 alignItems: "center",
                 padding: 10,
+                borderColor: 'black',
+                borderBottomWidth: 1
               }}
             >
+              <View style={{maxWidth: '80%'}}>
               <Text>
-                Ride {index + 1} Ride Id:{item.ride_id} Cost:$
-                {item.cost_per_rider}
+                <Text style={{fontWeight: 'bold'}}>Ride {index + 1}: </Text>
+                ${item.cost_per_rider}
               </Text>
+              <Text><Text style={{fontWeight: 'bold'}}>Destination: </Text> {item['driver_dest'].split(':')[0]}</Text>
+              </View>
+              
               <TouchableOpacity
                 title="Press me"
                 onPress={() => {
                   JoinRide(index, (ride_id = item.ride_id));
                   ViewPendingRides();
                 }}
+                style={{
+                  marginLeft: 'auto',
+                  marginTop: 20,
+                  borderColor: 'black',
+                  borderWidth: 2,
+                  padding: 10,
+                  borderRadius: 5
+                }}
               >
-                <Text> Join</Text>
+                <Text>Join</Text>
               </TouchableOpacity>
             </View>
           ))}
@@ -435,14 +424,34 @@ function HitchLandingPage({ setChildIdx, token, page }) {
     // usedfor refrencing the viewpending rides request
     const [rideRequestkey, setRideRequestKey] = useState(0);
     return (
-      <ImageBackground style={{ flex: 1 }}>
-        <TouchableOpacity onPress={ViewOpenRides}>
+      <View>
+        {shouldDisplayPendingRides && <Text style={{textAlign: 'center', fontSize: 30}}>Pending Rides</Text>}
+
+        <View style={styles.containerForButtons}>
+            <TouchableOpacity
+              onPress={() => {
+                setChildIdx(2);
+              }}
+              style={styles.backBtn}
+            >
+              <Image source={back} style={styles.backBtnImage} />
+            </TouchableOpacity>
+            </View>
+        
+        {shouldDisplayPendingRides && <TouchableOpacity onPress={ViewPendingRides} style={{
+          marginLeft: 'auto',
+          marginRight: 'auto',
+          marginTop: 20,
+          borderColor: 'black',
+          borderWidth: 2,
+          padding: 10,
+          borderRadius: 5
+        }}>
           <Text>Refresh Status</Text>
-        </TouchableOpacity>
+        </TouchableOpacity>}
         <ScrollView key={rideRequestkey} style={styles.ridesContainer}>
-          {isDownloadingPendingRides ? <Text>Loading...</Text> : null}
-          {pendingRides.map((item, index) => (
-            
+          {isDownloadingPendingRides ? <ActivityIndicator  size="large" color="#0000ff" /> : 
+          pendingRides.map((item, index) => (
             <View
               key={index}
               style={{
@@ -451,20 +460,31 @@ function HitchLandingPage({ setChildIdx, token, page }) {
                 padding: 10,
               }}
             >
+              <View style={{maxWidth: '80%'}}>
               <Text>
-                Ride {index + 1} ride_id{" "}
-                {item.ride_id}{" "}
+                <Text style={{fontWeight: 'bold'}}>Ride {index + 1}: </Text>
+                ${item.cost_per_rider}
               </Text>
-              
+              <Text><Text style={{fontWeight: 'bold'}}>Destination: </Text> {item['driver_dest']}</Text>
+              </View>
+
               <Text>
                 {item.accepted == 0 && <Text>Pending</Text>}
                 {item.accepted == 1 && <Text>Accepted</Text>}
               </Text>
               <TouchableOpacity
                 onPress={() => {
-                  RemoveRequest(token, item.ride_id);
-                  ViewPendingRides();
+                  RemoveRequest(token, item.ride_id)
+                    .then(() => ViewPendingRides())
                   setRideRequestKey(rideRequestkey + 1);
+                }}
+                style={{
+                  borderColor: 'black',
+                  borderWidth: 2,
+                  padding: 5,
+                  borderRadius: 5,
+                  marginLeft: 'auto',
+                  marginRight: 20
                 }}
               >
                 <Text> Cancel</Text>
@@ -472,12 +492,17 @@ function HitchLandingPage({ setChildIdx, token, page }) {
             </View>
           ))}
         </ScrollView>
-      </ImageBackground>
+      </View>
     );
   };
 
   if (shouldDisplayPendingRides) {
     return (
+      <ImageBackground
+      source={background}
+      style={{flex: 1,
+        resizeMode: "cover"}}
+  >
       <View style={{ ...googleStyles.test, marginTop: 20 }}>
         <View
           style={{
@@ -488,19 +513,20 @@ function HitchLandingPage({ setChildIdx, token, page }) {
             marginHorizontal: "10%",
           }}
         >
-          <TouchableOpacity
-            onPress={() => {
-              setShouldDisplayPendingRides(false);
-            }}
-            style={{ ...styles.SelectionButton, borderRadius: 5 }}
-          >
-            <Text style={{ fontSize: 24, textAlign: "center" }}>
-              Find New Rides
-            </Text>
-          </TouchableOpacity>
+<TouchableOpacity
+              onPress={() => {
+                setShouldDisplayPendingRides(false);
+              }}
+              style={{ ...styles.SelectionButton, borderRadius: 5, backgroundColor: '#A7D0F1', height: 40, marginTop: 10  }}
+            >
+              <Text style={{ fontSize: 16, textAlign: "center", marginTop: 10}}>
+                Find New Rides
+              </Text>
+            </TouchableOpacity>
         </View>
         <ViewPendingRidesContainer />
       </View>
+      </ImageBackground>
     );
   }
 
@@ -513,7 +539,7 @@ function HitchLandingPage({ setChildIdx, token, page }) {
           <View
             style={{
               ...styles.SelectionMenu,
-              marginTop: 0,
+              marginTop: 10,
               width: "80%",
               borderRadius: 5,
               marginHorizontal: "10%",
@@ -524,13 +550,14 @@ function HitchLandingPage({ setChildIdx, token, page }) {
                 setShouldDisplayPendingRides(true);
                 ViewPendingRides();
               }}
-              style={{ ...styles.SelectionButton, borderRadius: 5 }}
+              style={{ ...styles.SelectionButton, borderRadius: 5, backgroundColor: '#A7D0F1', height: 40  }}
             >
-              <Text style={{ fontSize: 24, textAlign: "center" }}>
+              <Text style={{ fontSize: 16, textAlign: "center", marginTop: 10}}>
                 View Pending Rides
               </Text>
             </TouchableOpacity>
           </View>
+          <Text style={{textAlign: 'center', fontSize: 30}}>Find a Ride</Text>
 
           <GooglePlacesAutocomplete
             ref={startref}
@@ -622,7 +649,7 @@ function HitchLandingPage({ setChildIdx, token, page }) {
                 style={[styles.displayBtn, styles.dislayPostBtn]}
                 onPress={() => {
                   ViewOpenRides();
-                   
+
                   setShowScreen(2);
                 }}
               >

@@ -10,30 +10,34 @@ import {
     TextInput,
     ImageBackground,
     Image,
-    ScrollView
+    ScrollView,
+    ActivityIndicator
   } from "react-native";
-  import back from "./assets/back.png"
-  import background from './assets/background.png';
+  import back from "../assets/back.png"
+  import background from '../assets/background.png';
 import { useScrollToTop } from "@react-navigation/native";
 
 export default PendingRidesPage = ({ setChildIdx, page, token }) => {
-    const [rides, setRides] = useState([
-    ])
+    const [rides, setRides] = useState([])
+    const [isDownloadingCreatedRides, setIsDownloadingCreatedRides] = useState(false)
 
     useEffect(() => {
       updatePendingRides()
     }, [])
 
     const updatePendingRides = () => {
+      setIsDownloadingCreatedRides(true)
       axios.get(`${page}/rides/pending`, {
         headers: {
           Authorization: token
         }
       })
         .then((resp) => {
+          setIsDownloadingCreatedRides(false)
           setRides(resp.data.pendingRides)
         })
         .catch(() => {
+          setIsDownloadingCreatedRides(false)
           alert("Error fetching pending rides")
         })
     }
@@ -87,7 +91,9 @@ return (
         <Image source={back} style={AccountStyles.backbtn}/>
       </TouchableOpacity>
       <ScrollView contentContainerStyle={{paddingBottom: 50}}>
-      {rides.map((ride, idx) => {
+
+      {isDownloadingCreatedRides ? <ActivityIndicator  size="large" color="#0000ff" />: 
+      rides.map((ride, idx) => {
 
         return(
             <View
@@ -121,7 +127,8 @@ return (
                     { padding: 5,
                         borderColor: 'black', 
                         borderWidth: 2 ,
-                      borderRadius: 5}
+                      borderRadius: 5,
+                    marginTop: 5}
                     }
                     
                     onPress={() => removeRide(ride['ride_id'])}
@@ -140,7 +147,7 @@ return (
                             >
                                 <Text>Rider: {rider['first_name']}</Text>
                                 <Text>Rating: {rider['average_rating']}</Text>
-                                <Text>Distance: {rider['distance']}</Text>
+                                <Text>Distance: {rider['distance']} Km</Text>
                 
                                 {/* <Image source={{uri: rider.image}} style={{
                                     width: 100,

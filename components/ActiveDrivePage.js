@@ -8,10 +8,10 @@ import {
   ScrollView,
   Image,
 } from "react-native";
-import back from "./assets/back.png";
+import back from "../assets/back.png";
 import axios from "axios";
 
-import MapWithPolyline from "./Active_ride_map";
+import MapWithPolyline from "./ActiveRideMap";
 
 function decodePolyline(encoded) {
   if (!encoded) {
@@ -273,7 +273,7 @@ export default function ActiveRide({ setChildIdx, removeToken, token, page, acti
             <Text>Cost Per Rider: {cost_per_rider}</Text>
             <Text>Maximum Riders: {maximum_riders}</Text>
             <Text>Is Active: {is_active}</Text>
-            <Text>Pickup Distance: {pickup_dist}</Text>
+            <Text>Pickup Distance: {pickup_dist} Km</Text>
           </View>
           <View style={styles.rideInfo}>
             <Text style={styles.rideInfoText}>Pickup Information</Text>

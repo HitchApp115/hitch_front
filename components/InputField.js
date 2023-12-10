@@ -35,7 +35,7 @@ const InputField = ({ label, value, onChangeText, secure, extraStyles }) => {
             style={inputStyles.clearButton}
             onPress={handleClearButtonPress}
           >
-            <Image style={inputStyles.clearIcon} source={require('./assets/remove.png')} />
+            <Image style={inputStyles.clearIcon} source={require('../assets/remove.png')} />
           </Pressable>
         )}
       </View>

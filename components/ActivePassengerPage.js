@@ -2,18 +2,10 @@ import React from 'react';
 import { useState } from 'react';
 import { View, TouchableOpacity, Text, StyleSheet, ImageBackground, Image} from 'react-native';
 import axios from 'axios';
-import background from './assets/background2.png';
-import back from './assets/back.png';
-const API_URL = 'https://api.example.com';
-
-
-
+import background from '../assets/background2.png';
+import back from '../assets/back.png';
 
 const ActivePassenger = ({page, token, setChildIdx, activeRides}) => {
-
-
-
-
   const ConfirmPickup = async (riderId, rideId) => {
     const requestData = {
       rideId,  // replace with actual ride ID

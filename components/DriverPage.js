@@ -21,14 +21,14 @@ import MapView, {
 
 import { useNavigation } from "@react-navigation/native";
 import { useIsFocused } from "@react-navigation/native";
-import car from "./assets/post.png";
-import back from "./assets/back.png";
-import endLocationPin from "./assets/post_ride_end.png";
+import car from "../assets/post.png";
+import back from "../assets/back.png";
+import endLocationPin from "../assets/post_ride_end.png";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
-import AccountSettings from "./account_setting";
+import AccountSettings from "./AccountSettingsPage";
 import axios from "axios";
 import PendingRidesPage from "./PendingRidesPage";
-import background from './assets/background.png'
+import background from '../assets/background.png'
 /* 
 MapView: displays the actual maps
 Polyline: used to draw the route between the two points
@@ -105,9 +105,6 @@ function decodePolyline(encoded) {
 function MapWithCurrentLocation({ setChildIdx, token, page }) {
   const domain = "https://dolphin-app-7udnd.ondigitalocean.app";
 
-  const startref = useRef();
-  const endref = useRef();
-
   const [showscreen, setShowScreen] = useState(0);
   const [startId, setStartId] = useState("");
   const [endId, setEndId] = useState("");
@@ -117,14 +114,14 @@ function MapWithCurrentLocation({ setChildIdx, token, page }) {
   const [costPerRider, setCostPerRider] = useState(0)
   const [maxDistance, setMaxDistance] = useState(0)
   const [startTime, setStartTime] = useState(new Date())
-
   const [region, setRegion] = useState(null); // the user's location also the start location
   const [startRegion, setStartRegion] = useState(null); // the user's start location
   const [endingRegion, setEndingRegion] = useState(null); // the user's end location
-
   const [coords1, setCoords] = useState([]);
-
   const [ shouldDisplayPage, setShouldDisplayPage ] = useState(false)
+
+  const startref = useRef();
+  const endref = useRef();
 
   const getDirections = async (startLoc, destinationLoc) => {
     const YOUR_API_KEY = "AIzaSyAzaxnuhcqrHyhCKGPsekHS-VC8lGqG7GY";
@@ -282,12 +279,13 @@ function MapWithCurrentLocation({ setChildIdx, token, page }) {
             resizeMode: "cover"}}
       >
           <View style={styles.container}>
-         <View style={{...styles.SelectionMenu, marginTop: 55, width: '80%', borderRadius: 5, marginHorizontal: '10%' }}>
+          <View style={{...styles.SelectionMenu, marginTop: 65, width: '80%', borderRadius: 5, marginHorizontal: '10%', backgroundColor: '#A7D0F1' }}>
               <TouchableOpacity onPress={() => setShouldDisplayPage(false)} style={{...styles.SelectionButton, borderRadius: 5}}>
-                <Text style={{fontSize: 24, textAlign: 'center', }}>Create a ride</Text>
+                <Text style={{fontSize: 16, textAlign: 'center', marginTop: 10}}>Create a ride</Text>
               </TouchableOpacity> 
             </View>           
-            <Text style={{fontSize: 48, textAlign: 'center', }}>Created Rides</Text>
+            <Text style={{fontSize: 30, textAlign: 'center', }}>Created Rides</Text>
+            
         <PendingRidesPage setChildIdx={setChildIdx} token={token} page={page} />
       </View>
       </ImageBackground>
@@ -301,12 +299,17 @@ function MapWithCurrentLocation({ setChildIdx, token, page }) {
 
       <View style={{...googleStyles.test, marginTop: 20}}> 
 
-
-            <View style={{...styles.SelectionMenu, marginTop: 0, width: '80%', borderRadius: 5, marginHorizontal: '10%' }}>
-              <TouchableOpacity onPress={() => setShouldDisplayPage(true)} style={{...styles.SelectionButton, borderRadius: 5}}>
-                <Text style={{fontSize: 24, textAlign: 'center', }}>View Created Rides</Text>
-              </TouchableOpacity> 
-            </View>
+            <TouchableOpacity
+              onPress={() => {
+                setShouldDisplayPage(true)
+              }}
+              style={{ ...styles.SelectionButton, borderRadius: 5, backgroundColor: '#A7D0F1', height: 40, width: '80%', marginLeft: '10%', marginTop: 10  }}
+            >
+              <Text style={{ fontSize: 16, textAlign: "center", marginTop: 10}}>
+                View Created Rides
+              </Text>
+            </TouchableOpacity>
+            <Text style={{textAlign: 'center', fontSize: 30}}>Create a Ride</Text>
 
             <GooglePlacesAutocomplete
               ref={startref}
@@ -389,21 +392,25 @@ function MapWithCurrentLocation({ setChildIdx, token, page }) {
               style={styles.postInputTextInputs}
               placeholder="Maximum Rider Count"
               onChangeText={(text) => setRiders(Number(text))}
+              keyboardType='numeric'
             ></TextInput>
             <TextInput
               style={styles.postInputTextInputs}
               placeholder="Cost Per Rider"
               onChangeText={(text) => setCostPerRider(Number(text))}
+              keyboardType='numeric'
             ></TextInput>
             <TextInput
               style={styles.postInputTextInputs}
               placeholder="Max Distance from Pickup Location"
               onChangeText={(text) => setMaxDistance(Number(text))}
+              keyboardType='numeric'
             ></TextInput>
             <DateTimePicker
               value={startTime}
               onChange={(e, date) => setStartTime(date)}
               mode="datetime"
+              style={{marginRight: 'auto', marginLeft: 'auto', marginVertical: 5}}
             />
             <View style={styles.containerForButtons}>
             <TouchableOpacity onPress={()=>{setShowScreen(0)}} style={styles.backBtn}>
@@ -539,7 +546,7 @@ const styles = StyleSheet.create({
     // height: 320,
   },
   postInputTextInputs: {
-    width: "100%",
+    width: "80%",
     height: 33,
     backgroundColor: "white",
     fontFamily: "Helvetica",
@@ -547,6 +554,9 @@ const styles = StyleSheet.create({
     borderWidth: 3,
     marginTop: 2,
     borderColor: "black",
+    marginLeft: '10%',
+    padding: 5,
+    borderRadius: 5
   },
   screen1:{
     

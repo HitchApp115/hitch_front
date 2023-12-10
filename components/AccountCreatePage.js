@@ -11,9 +11,8 @@ import {
   Image,
 } from "react-native";
 import InputField from "./InputField";
-import { Button } from "react-native-web";
 import axios from "axios";
-import back from "./assets/back.png";
+import back from "../assets/back.png";
 // set where the backend is running here
 
 const AccountCreationPage = ({ setChildIdx, storeToken, page }) => {
@@ -85,25 +84,21 @@ const AccountCreationPage = ({ setChildIdx, storeToken, page }) => {
   const [status, setStatus] = useState({});
   const handleSubmit = async () => {
     checkStateVariables();
-    const body = {
-      first_name: create_first_name,
-      last_name: create_last_name,
-      username: create_username,
-      email: create_email,
-      password: create_password,
-      phone: create_number,
-    }
 
     if (submitError) {
       return;
     } else {
       // setChildIdx(2);
       try {
-        // getting back { status: 'success', loginToken: {TOKEN} }
-        // sends a request to the backend to create an account
-        //const response = await axios.post(page + "/account/create", data);
         const response =  await axios.post(
-          `${page}/account/create`, body)
+          `${page}/account/create`, {
+            first_name: create_first_name,
+            last_name: create_last_name,
+            username: create_username,
+            email: create_email,
+            password: create_password,
+            phone: create_number,
+          })
           .then(response => {
             setChildIdx(2)
           })
@@ -118,7 +113,7 @@ const AccountCreationPage = ({ setChildIdx, storeToken, page }) => {
 
   return (
     <ImageBackground
-      source={require("./assets/background.png")}
+      source={require("../assets/background.png")}
       style={AccountStyles.backgroundImage}
     >
       
@@ -127,7 +122,6 @@ const AccountCreationPage = ({ setChildIdx, storeToken, page }) => {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
       >
-        {/* <View style={AccountStyles.container}> */}
       <TouchableOpacity onPress={backBtnPressed} style = {AccountStyles.backBtnContainer}>
                 <Image source={back} style={AccountStyles.backbtn}/>
       </TouchableOpacity>
@@ -178,20 +172,12 @@ const AccountCreationPage = ({ setChildIdx, storeToken, page }) => {
           <Text style={AccountStyles.errorText}>{submitError}</Text>
         ) : null}
 
-        {/* </View> */}
       </KeyboardAvoidingView>
     </ImageBackground>
   );
 };
 
 const AccountStyles = StyleSheet.create({
-  // container: {
-  //   flex: 1,
-  //   backgroundColor: "white",
-  //   alignItems: "center",
-  //   // marginTop: 70,
-  //   justifyContent: "flex-start",
-  // },
   backgroundImage: {
     flex: 1,
     resizeMode: "cover", // or 'stretch'
@@ -200,12 +186,10 @@ const AccountStyles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    // paddingHorizontal: 20,
     marginBottom: "30%",
   },
   styleScrollview: {
     flex: 1,
-    // backgroundColor: "blue",
     height: "50%",
     width: "100%",
   },
@@ -219,7 +203,6 @@ const AccountStyles = StyleSheet.create({
     height: 50,
     alignItems: "center",
     justifyContent: "center",
-    // marginTop: 40,
     backgroundColor: "#FF1493",
   },
   errorText: {
