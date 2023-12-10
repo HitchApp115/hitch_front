@@ -17,9 +17,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 // where to find the backend
 
 function LoginPage({ setChildIdx, storeToken, page }) {
-  // useEffect(() => {
-  //   console.log("PAGE2:", page)
-  // })
   const [login, SetLogin] = useState("");
   const [password, SetPassword] = useState("");
 
@@ -34,11 +31,7 @@ function LoginPage({ setChildIdx, storeToken, page }) {
 
   const handleLogin = async () => {
     // check if any of the fields are empty
-    console.log("login pressed");
-    console.log(login, password);
-    if (typeof login !== "string" || typeof password !== "string") {
-      console.log("undefined");
-    }
+
     if (checkEmpty(login, password)) {
       alert("Please fill in all fields.");
       return;
@@ -51,14 +44,12 @@ function LoginPage({ setChildIdx, storeToken, page }) {
             setChildIdx(2);
           })
           .catch(response => {
-            console.log("ERRL:", response)
             alert(response.response.data)
           })
 
         // if the login is successful, set the token and go to the home page
 
       } catch (e) {
-        console.log(e);
         // e is an object with a response property that has data and status
       }
     }

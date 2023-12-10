@@ -4,54 +4,27 @@ import {
   Pressable,
   Text,
   StyleSheet,
-  TouchableOpacity,
   Image,
   ImageBackground,
 } from "react-native";
 import AccountSettings from "./account_setting";
-import axios from "axios";
 
-
-
-export default function HomePage({ setChildIdx, removeToken, token, page, showActivePassenger,}) {
+export default function HomePage({ setChildIdx, removeToken, token, page, showActivePassenger, showActiveDrives}) {
 
   const [showActiveRide, setShowActiveRide] = useState(false);
   
-
-
   const handleHitchPress = () => {
     setChildIdx(4);
-    console.log("hitch a ride");
 
   };
 
   const handlePostPress = () => {
     setChildIdx(3);
-    console.log("post a ride");
   };
 
   handlePendingRidesPress = () => {
     setChildIdx(5)
   }
-
-  // useEffect(() => {
-  //   const config = {
-  //     headers: {
-  //         'Authorization': token
-  //     }
-  // };
-  //   if (token != null) {
-  //     axios.get(`${page}/account/rideAwaitingPickup`, config)
-  //   .then(response => {
-  //       console.log('Success:', response.data);
-  //   })
-  //   .catch(error => {
-  //       console.error('Error:', error.response ? error.response.data : error.message);
-  //   });
-  //   }
-  // }, []);
-
-
 
   return (
     <ImageBackground
@@ -116,7 +89,7 @@ export default function HomePage({ setChildIdx, removeToken, token, page, showAc
             <Text style={{ color: "white" }}>Drivers</Text>
           </Pressable>
         </View>
-        {showActiveRide &&(
+        {showActiveDrives &&(
           <View style={MenuStyle.select_box}>
           <Pressable
             onPress={()=>{setChildIdx(6)}}
@@ -142,7 +115,7 @@ export default function HomePage({ setChildIdx, removeToken, token, page, showAc
               source={require("./assets/post.png")}
               style={{ width: 150, height: 100 }}
             />
-            <Text style={{ color: "white" }}>ActiveRide</Text>
+            <Text style={{ color: "white" }}>Active Drive</Text>
           </Pressable>
         </View>
         )    
@@ -150,7 +123,7 @@ export default function HomePage({ setChildIdx, removeToken, token, page, showAc
         {showActivePassenger &&(
               <View style={MenuStyle.select_box}>
               <Pressable
-                onPress={()=>{setChildIdx(8)}}
+                onPress={()=>{setChildIdx(7)}}
                 style={({ pressed }) => [
                   {
                     backgroundColor: pressed ? "lightskyblue" : "royalblue",
@@ -173,7 +146,7 @@ export default function HomePage({ setChildIdx, removeToken, token, page, showAc
                   source={require("./assets/post.png")}
                   style={{ width: 150, height: 100 }}
                 />
-                <Text style={{ color: "white" }}>ActivePassenger</Text>
+                <Text style={{ color: "white" }}>Active Passenger</Text>
               </Pressable>
             </View>
         )}

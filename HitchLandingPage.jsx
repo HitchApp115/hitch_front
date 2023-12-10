@@ -171,7 +171,6 @@ function HitchLandingPage({ setChildIdx, token, page }) {
       });
       setCoords(array_cords);
 
-      console.log("directions was called");
     } catch (error) {
       console.error(error);
     }
@@ -192,7 +191,6 @@ function HitchLandingPage({ setChildIdx, token, page }) {
     const getLocationAsync = async () => {
       const { granted } = await requestForegroundPermissionsAsync();
       if (!granted) {
-        console.log("Permission to access location was denied");
         return;
       }
 
@@ -248,8 +246,6 @@ function HitchLandingPage({ setChildIdx, token, page }) {
   function handleSubmit() {
     setShowScreen(2);
     alert(setShowScreen);
-    console.log("submit pressed");
-    console.log(showscreen);
   }
 
   // maxPrice must be a float value
@@ -269,24 +265,17 @@ function HitchLandingPage({ setChildIdx, token, page }) {
   };
 
   async function ViewOpenRides() {
-    console.log(token);
     const floatNumber = parseFloat(maxPrice);
 
     const params = {
       startPoint: `${startId}:${startRegion.latitude},${startRegion.longitude}`,
       maxPrice: floatNumber,
     };
-    console.log(params);
-
-    console.log(`${page}/rides/view`);
 
     const response = await axios
       .get(`${page}/rides/view`, { params })
       .then((response) => {
-        console.log("Response data:", response.data);
-        // console.log('rides', response.data.rides);
         if (response.data.rides.length == 0) {
-          console.log("No rides found");
         } else {
           setRides(response.data.rides);
         }
@@ -329,7 +318,6 @@ function HitchLandingPage({ setChildIdx, token, page }) {
         }
       )
       .then((response) => {
-        console.log("Response data:", response.data);
         setIsDownloadingPendingRides(false);
         setPendingRides(response.data["message"]);
       })
@@ -342,9 +330,7 @@ function HitchLandingPage({ setChildIdx, token, page }) {
   }
 
   async function RemoveRequest(token, ride_id) {
-    console.log(token, ride_id);
     try {
-      console.log(`${page}/rides/riderRequestRemoval`);
       const response = await axios.post(
         `${page}/rides/riderRequestRemoval`,
         { rideId: ride_id },
@@ -354,7 +340,6 @@ function HitchLandingPage({ setChildIdx, token, page }) {
           },
         }
       );
-      console.log("Response data:", response.data);
     } catch (error) {
       console.error(
         "Error:",
@@ -557,7 +542,6 @@ function HitchLandingPage({ setChildIdx, token, page }) {
             getCurrentPositionAsync={true}
             onPress={(data, details = null) => {
               // 'details' is provided when fetchDetails = true
-              // console.log("start ->" + JSON.stringify(details.geometry.location));
 
               moveToLocation(
                 details?.geometry?.location.lat,
@@ -582,8 +566,6 @@ function HitchLandingPage({ setChildIdx, token, page }) {
             // contains lat and long
             onPress={(data, details = null) => {
               // 'details' is provided when fetchDetails = true
-              // console.log(data, details);
-              // console.log("end ->" + JSON.stringify(details?.geometry?.location));
 
               moveToLocation(
                 details?.geometry?.location.lat,

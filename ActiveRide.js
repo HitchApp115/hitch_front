@@ -65,14 +65,13 @@ const parseCoordinates = (coordString) => {
   };
 };
 
-export default function ActiveRide({ setChildIdx, removeToken, token, page }) {
+export default function ActiveRide({ setChildIdx, removeToken, token, page, activeDrives }) {
+
   const [start, setStart] = useState([]);
   const [destination, setDestination] = useState([]);
   const [waypoints, setWaypoints] = useState([]);
   const [showMap, setShowMap] = useState(false);
-  // the function below is used to extract the pickup spots from the data
   const [coords, setCoords] = useState([]);
-  // below is the coords for the markers of the map
   const [startCoord, setStartCoord] = useState([]);
   const [endCoord, setEndCoord] = useState([]);
   const [waypointsCoord, setWaypointsCoord] = useState([]);
@@ -88,23 +87,10 @@ export default function ActiveRide({ setChildIdx, removeToken, token, page }) {
 
   const [directionsCalled, setDirectionsCalled] = useState(false);
 
-
-  function testing(startLocation, endLocation, waypoints) {
-    const startPoint = extractDataBeforeColon(startLocation);
-    const driverDest = extractDataBeforeColon(endLocation);
-    const pickupSpots = waypoints.map((waypoint) =>
-      extractDataBeforeColon(waypoint)
-    );
-    console.log("testing the input");
-    console.log(
-      "start",
-      startPoint,
-      "\nwaypoints",
-      pickupSpots,
-      "\nend",
-      driverDest
-    );
-  }
+  useEffect(() => {
+    console.log("222:", activeDrives)
+    extractRoutePoints(activeDrives)
+  }, [])
 
   const getDirections = async (startLocation, endLocation, waypoints) => {
     //convert the input to a format that the API can understand y extracting value before colon
@@ -128,8 +114,6 @@ export default function ActiveRide({ setChildIdx, removeToken, token, page }) {
           driverDest
         )}&waypoints=${encodeURIComponent(waypointInput)}&key=${YOUR_API_KEY}`
       );
-      // console.log("response", response.data);
-      console.log("response", response.status);
       const points = decodePolyline(
         response.data.routes[0].overview_polyline.points
       );
@@ -196,43 +180,6 @@ export default function ActiveRide({ setChildIdx, removeToken, token, page }) {
     // Combine the points into a single flat array
   }
 
-  async function getActiveRide() {
-    axios
-      .get(`${page}/rides/active`, {
-        headers: {
-          Authorization: token,
-        },
-      })
-      .then((response) => {
-        // console.log('Status:', response.status);
-        // console.log('Data:', response.data);
-        const data = response.data;
-        console.log("Correctly got Data", data);
-        extractRoutePoints(data);
-      })
-      .catch((error) => {
-        if (error.response) {
-          // Request made and server responded
-          // console.log('Error data:', error.response.data);
-          // console.log('Error status:', error.response.status);
-        } else if (error.request) {
-          // The request was made but no response was received
-          console.log("Error request:", error.request);
-        } else {
-          // Something happened in setting up the request that triggered an Error
-          console.log("Error message:", error.message);
-        }
-      });
-  }
-  useEffect(() => {
-    getActiveRide();
-    // console.log("Pickup corrdinates",pickupCoordinates);
-    // console.log(startCoord, endCoord, waypointsCoord);
-    console.log("start", start, "\nwaypoints", waypoints, "\nend", destination);
-  }, []);
-
-  // console.log("start", start, "\nwaypoints", waypoints, "\nend", destination);
-
   const startText = "start\n" + start + "\n";
   const ArrayToTextWithLineBreaks = ({ items }) => {
     return (
@@ -253,27 +200,27 @@ export default function ActiveRide({ setChildIdx, removeToken, token, page }) {
   
   async function CompletedRides() {
     const config = {
-      headers: {
-          'Authorization': token
-      }
-  };
+        headers: {
+            'Authorization': token
+        }
+    };
   
   // Data to be sent in the body of the POST request
-  const data = {
-      rideId: ride_id
-  };
-  
+    const data = {
+        rideId: ride_id
+    };
+    
   // Making the POST request
-  axios.post(`${page}/rides/end`, data, config)
+    axios.post(`${page}/rides/end`, data, config)
       .then(response => {
-          console.log('Success:', response.data);
           alert("Ride Completed!");
           setChildIdx(2); 
       })
       .catch(error => {
           console.error('Error:', error.response ? error.response.data : error.message);
       });
-    }
+  }
+    
   return (
     <View style={styles.container}>
       <View>

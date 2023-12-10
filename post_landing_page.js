@@ -143,9 +143,6 @@ function MapWithCurrentLocation({ setChildIdx, token, page }) {
         };
       });
       setCoords(array_cords);
-      // console.log(coords1);
-      console.log("directions was called");
-      // console.log(array_cords);
     } catch (error) {
       console.error(error);
     }
@@ -166,7 +163,6 @@ function MapWithCurrentLocation({ setChildIdx, token, page }) {
     // getDirections(startId, endId);
     //the start and end id are the names of the locations
     //intial mount will have the startId and the endId as null
-    console.log("startId: " + startId + " Directions to" + " endId: " + endId);
     if (startId!="" && endId!="") {
       if (getDirectionsPressed == true){
         getDirections(startId, endId);
@@ -201,7 +197,6 @@ function MapWithCurrentLocation({ setChildIdx, token, page }) {
     const getLocationAsync = async () => {
       const { granted } = await requestForegroundPermissionsAsync();
       if (!granted) {
-        console.log("Permission to access location was denied");
         return;
       }
 
@@ -254,12 +249,8 @@ function MapWithCurrentLocation({ setChildIdx, token, page }) {
     });
   }
 
-  function switchToPost() {
-    setShowScreen(1);
-  }
-
   const submitRoute = () => {
-    console.log("SSS: creating ride", {
+    axios.post(page + "/rides/create", {
         startPointName: startId,
         endPointName: endId,
         startPoint: startRegion,
@@ -267,18 +258,8 @@ function MapWithCurrentLocation({ setChildIdx, token, page }) {
         riders,
         costPerRider,
         pickUpDistance: maxDistance,
-        rideStartTime: startTime.toLocaleString()
-      })
-    axios.post(page + "/rides/create", {
-      startPointName: startId,
-      endPointName: endId,
-      startPoint: startRegion,
-      destination: endingRegion,
-      riders,
-      costPerRider,
-      pickUpDistance: maxDistance,
-      rideStartTime: startTime.toString()
-    }, {
+        rideStartTime: startTime.toString()
+      }, {
       headers: {
         authorization: token
       }
@@ -294,7 +275,6 @@ function MapWithCurrentLocation({ setChildIdx, token, page }) {
   }
 
   if (shouldDisplayPage) {
-    console.log('page: ',page)
     return (
       <ImageBackground
           source={background}
@@ -339,7 +319,6 @@ function MapWithCurrentLocation({ setChildIdx, token, page }) {
               getCurrentPositionAsync={true}
               onPress={(data, details = null) => {
                 // 'details' is provided when fetchDetails = true
-                // console.log("start ->" + JSON.stringify(details.geometry.location));
                 
                 moveToLocation(
                   details?.geometry?.location.lat,
@@ -364,8 +343,6 @@ function MapWithCurrentLocation({ setChildIdx, token, page }) {
               // contains lat and long
               onPress={(data, details = null) => {
                 // 'details' is provided when fetchDetails = true
-                // console.log(data, details);
-                // console.log("end ->" + JSON.stringify(details?.geometry?.location));
 
                 moveToLocation(
                   details?.geometry?.location.lat,

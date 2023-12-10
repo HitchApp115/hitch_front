@@ -9,115 +9,67 @@ const API_URL = 'https://api.example.com';
 
 
 
-const ActivePassenger = ({page, token, setChildIdx}) => {
+const ActivePassenger = ({page, token, setChildIdx, activeRides}) => {
 
-  const [showActiveRide, setShowActiveRide] = useState(false);
-  const [rider_id, setRiderId] = useState("");
-  const [rideId, setRideId] = useState("" );
 
-  async function rideAwaitingPickup() {
-    console.log("token", token, page);
-    axios.get(`${page}/account/rideAwaitingPickup`, {
+
+
+  const ConfirmPickup = async (riderId, rideId) => {
+    const requestData = {
+      rideId,  // replace with actual ride ID
+      riderId // replace with actual rider ID
+    };
+
+
+    axios.post(`${page}/rides/pickup`, requestData, {
       headers: {
         Authorization: token
       }
     })
     .then(response => {
       // Handle the response data
-      console.log('Rides Awaiting Pickup:', response.data);
-      if (response.data.rides.length > 0) {
-        // setChildIdx(7);
-        setShowActiveRide(true);
-      }
-      else {
-        return;
-      }
-      // setShowActiveRide(true);
-      setRiderId(response.data.rides[0].rider_id);
-      setRideId(response.data.rides[0].ride_id);
-      // setShowActiveRide(true);
+      
+      setChildIdx(2)
     })
     .catch(error => {
       // Handle errors here
       if (error.response) {
         // The request was made and the server responded with a status code
         // that falls out of the range of 2xx
-        console.log(error.response.data);
-        console.log(error.response.status);
-        console.log(error.response.headers);
+
       } else if (error.request) {
         // The request was made but no response was received
-        console.log(error.request);
       } else {
         // Something happened in setting up the request that triggered an Error
-        console.log('Error', error.message);
       }
     });
-}
-
-async function ConfirmPickup() {
-  const requestData = {
-    rideId: rideId,  // replace with actual ride ID
-    riderId: rider_id // replace with actual rider ID
-  };
-
-
-  axios.post(`${page}/rides/pickup`, requestData, {
-    headers: {
-      Authorization: token
-    }
-  })
-  .then(response => {
-    // Handle the response data
-    console.log('Response:', response.data);
-  })
-  .catch(error => {
-    // Handle errors here
-    if (error.response) {
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx
-      console.log('Error Response:', error.response.data);
-      console.log('Status:', error.response.status);
-      console.log('Headers:', error.response.headers);
-    } else if (error.request) {
-      // The request was made but no response was received
-      console.log('Error Request:', error.request);
-    } else {
-      // Something happened in setting up the request that triggered an Error
-      console.log('Error Message:', error.message);
-    }
-  });
-}
+  }
 
 
   return (
-
-
     <ImageBackground source={background} style={styles.backgroundImage}>
       <View >
-      <View>
-        <TouchableOpacity onPress={() => setChildIdx(2)}>
-          <Image source={back} />
-        </TouchableOpacity>
-      </View>
-      <TouchableOpacity style ={styles.select_box} onPress={()=>{rideAwaitingPickup()}}>
-        <Text>Check For active Rides</Text>
-      </TouchableOpacity>
-      {showActiveRide && 
-        <View >
-          <View style={styles.container}>
-          <Text>Active Ride</Text>
-          <Text>Rider ID: {rider_id}</Text>
-          <Text>Ride ID: {rideId}</Text>
-        </View>
-        <TouchableOpacity style={styles.select_box} onPress={ConfirmPickup}>
-            <Text>Confirm Pickup</Text>
+        <View>
+          <TouchableOpacity onPress={() => setChildIdx(2)}>
+            <Image source={back} />
           </TouchableOpacity>
         </View>
+
+        {activeRides.map(
+          activeRide => <View>
+              <View style={styles.container}>
+                <Text>Active Ride</Text>
+                <Text>Rider ID: {activeRide['rider_id']}</Text>
+                <Text>Ride ID: {activeRide['ride_id']}</Text>
+                <TouchableOpacity style={styles.select_box} onPress={() => ConfirmPickup(activeRide['rider_id'], activeRide['ride_id'])}>
+            <Text>Confirm Pickup</Text>
+          </TouchableOpacity>
+            </View>
+            </View>
+        )}
       
       
 
-      } 
     </View>
     </ImageBackground>
     
