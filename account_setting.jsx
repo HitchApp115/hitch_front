@@ -38,7 +38,6 @@ const AccountSettings = ({ setChilDIdx, removeToken, token, page }) => {
     // Handle logout logic here
     setChilDIdx(0);
     removeToken();
-    console.log("Logged out");
   };
 
   return (

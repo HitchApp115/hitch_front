@@ -9,34 +9,37 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import MapWithCurrentLocation from "./post_landing_page";
 import PendingRidesPage from './PendingRidesPage'
 import HitchLandingPageContainer from "./HitchLandingPage";
-import PostLandingPage from "./post_landing_page";
-import { createStackNavigator } from "@react-navigation/stack";
-import Constants from "expo-constants";
 import axios, { Axios } from "axios";
 import ActiveRide from "./ActiveRide";
 import ActivePassenger from "./ActivePassenger";
 
-const { expoConfig } = Constants;
 
-
-
-// const page = `http://${expoConfig.debuggerHost.split(":").shift()}:3000`;
-// import { ScrollView } from 'react-native-web';
-
-const Stack = createStackNavigator();
 
 // where to find the backend
 const page = "https://dolphin-app-7udnd.ondigitalocean.app";
-// const page =  "http://10.0.0.157:3000";
 
 
 // const response= await axios.get(page);
-// console.log(response);
 export default function App() {
   // token used to keep track of whether the user is logged in
   const [token, setToken] = useState(null);
   const [childIdx, setChildIdx] = useState(0);
-  const [showActivePassenger, setShowActivePassenger] = useState(false);
+  const [activeRides, setActiveRides] = useState([])
+  const [activeDrives, setActiveDrives] = useState({})
+
+
+  useEffect(() => {
+    getToken();
+  }, []);
+
+  useEffect(() => {
+    if (token){
+      activeDriveCheck()
+      activeRideCheck()
+    }
+      
+}, [childIdx, token]);
+
   // function that stores the token in the device's storage
   const storeToken = async (userToken) => {
     try {
@@ -44,7 +47,6 @@ export default function App() {
       setToken(userToken); // Update the state
     } catch (error) {
       // Handle errors here
-      console.log("Error saving data", error);
     }
   };
 
@@ -53,33 +55,27 @@ export default function App() {
     try {
       const userToken = await AsyncStorage.getItem("userToken");
       if (userToken === undefined || userToken === null){
-        console.log("INVALID TOKEN")
         setToken(userToken)
         setChildIdx(0);
         return userToken
       }
-      console.log("VALID TOKEN")
-
          axios.get(`${page}/account/verifyToken`, {
-          headers: {
-            Authorization: userToken
-          }
-        })
-          .then(resp => {
-
-            setToken(userToken); // Update the state
-            setChildIdx(2);
-            return userToken
+            headers: {
+              Authorization: userToken
+            }
           })
-          .catch((e) => {
-            console.log('bad Token')
-          setToken(null)
-          setChildIdx(0);
-          return userToken
-          })
+            .then(resp => {
+              setToken(userToken); // Update the state
+              setChildIdx(2);
+              return userToken
+            })
+            .catch((e) => {
+              setToken(null)
+              setChildIdx(0);
+              return userToken
+            })
     } catch (error) {
       // Handle errors here
-      console.log("Error retrieving data", error);
     }
   };
 
@@ -95,57 +91,36 @@ export default function App() {
       setToken(null); // Update the state
     } catch (error) {
       // Handle errors here
-      console.log("Error removing data", error);
     }
   };
 
   // function that retrives the token from the device's storage and sets it into state
-  useEffect(() => {
-    getToken();
-  }, []);
 
 
-
-  async function checkRidesActive() {
-    console.log("token", token);
-    try {
-      const response = await axios.get(`${page}/account/rideAwaitingPickup`, {
-        headers: {
-          Authorization: token
-        }
-      });
-      console.log(response.data);
-      if (response.data.rideId != null) {
-        // setChildIdx(7);
-        setShowActivePassenger(true);
-      }
-      // Handle the API response here
-    } catch (error) {
-      console.error(error);
-      // Handle the error here
-    }
-
-  }
-
-
-  const penisFunc = () => {
-    console.log("PENIS FUNCTION")
+  const activeRideCheck = () => {
     axios.get(`${page}/account/rideAwaitingPickup`, {
         headers: {
           Authorization: token
         }})
-        .then(resp => console.log("AAAAA:", resp))
-        .catch(resp => console.log("AAAAAL:", resp))
+        .then(resp => setActiveRides(resp.data.rides))
   }
 
-  useEffect(() => {
-    penisFunc()
-}, [childIdx]);
-
-  // if the user is logged in, go to the home page
-  // if(token != null) {
-  //   setChildIdx(2);
-  // }
+  const activeDriveCheck = () => {
+    axios.get(`${page}/rides/active`, {
+        headers: {
+          Authorization: token
+        }})
+        .then(resp => {
+          if (!resp.data.ride.length) {
+            setActiveDrives({})
+            return
+          }
+          setActiveDrives({
+            ride: resp.data.ride,
+            riders: resp.data.riders
+          })
+        })
+  }
 
   const children = [
     <LoginPage setChildIdx={setChildIdx} storeToken={storeToken} page={page} />,
@@ -156,12 +131,18 @@ export default function App() {
       token={token}
       page={page}
     />,
-    <HomePage setChildIdx={setChildIdx} removeToken={removeToken} page={page} token={token} showActivePassenger={showActivePassenger}/>,
+    <HomePage 
+      setChildIdx={setChildIdx} 
+      removeToken={removeToken} 
+      page={page} token={token} 
+      showActivePassenger={!!activeRides.length} 
+      showActiveDrives={!!Object.keys(activeDrives).length}
+    />,
     <MapWithCurrentLocation setChildIdx={setChildIdx} token={token} page={page} />,
     <HitchLandingPageContainer setChildIdx={setChildIdx} token={token} page={page} />,
     <PendingRidesPage  setChildIdx={setChildIdx} page={page} token={token} />,
-    <ActiveRide setChildIdx={setChildIdx} token={token} page={page}/>,
-    <ActivePassenger page={page} token={token} showActivePassenger={showActivePassenger} setChildIdx={setChildIdx}/>,
+    <ActiveRide setChildIdx={setChildIdx} token={token} page={page} activeDrives={activeDrives} />,
+    <ActivePassenger page={page} token={token} activeRides={activeRides} setChildIdx={setChildIdx}/>,
     // <PostLandingPage setChildIdx={setChildIdx} />,
     // <GooglePlacesInput />,
   //<TestDirections />

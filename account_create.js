@@ -45,7 +45,6 @@ const AccountCreationPage = ({ setChildIdx, storeToken, page }) => {
     phone: create_number,
   });
 
-  // console.log("111:", process.env, process.env?.ENVIORNMENT);
 
   // checks if any of the input fields are incorrect
   function checkStateVariables() {
@@ -54,7 +53,6 @@ const AccountCreationPage = ({ setChildIdx, storeToken, page }) => {
       if (variable.trim() === "") {
         setSubmitError(true);
         alert("Please fill in all fields.");
-        console.log("empty");
         break;
       }
       // checks if phone number is a number
@@ -63,7 +61,6 @@ const AccountCreationPage = ({ setChildIdx, storeToken, page }) => {
           setSubmitError(true);
           SetIsNumber(false);
           alert("Please enter a valid phone number.");
-          console.log("not a number");
           break;
         }
       }
@@ -72,7 +69,6 @@ const AccountCreationPage = ({ setChildIdx, storeToken, page }) => {
         if (variable != create_password) {
           setSubmitError(true);
           alert("Passwords do not match.");
-          console.log("passwords dont match");
           break;
         }
       }
@@ -112,7 +108,6 @@ const AccountCreationPage = ({ setChildIdx, storeToken, page }) => {
             setChildIdx(2)
           })
           .catch(response => {
-            console.log("ERR:", response)
             alert(response.response.data.message)
           })
       } catch (error) {

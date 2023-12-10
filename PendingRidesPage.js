@@ -71,10 +71,12 @@ export default PendingRidesPage = ({ setChildIdx, page, token }) => {
       }, {
         headers: { Authorization: token}
       })
-        .then(() => {
+        .then((resp) => {
+          alert(resp.data.message)
           updatePendingRides()
           // Move to the active ride page
         })
+
     }
 
 

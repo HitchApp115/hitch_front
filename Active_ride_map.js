@@ -474,8 +474,6 @@ const MapWithPolyline = ({ polylineCoordinates,  startMarkerCoord, endMarkerCoor
     if (polylineCoordinates.length > 0) {
       setRegion(calculateRegion(polylineCoordinates));
     }
-    console.log("start coordiante", startMarkerCoord);
-    console.log("end coordinate", endMarkerCoord);
   }, [polylineCoordinates]);
 
 
