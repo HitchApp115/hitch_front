@@ -116,7 +116,8 @@ const AccountSettings = ({ setChilDIdx, removeToken, token, page }) => {
             {isLoadingCompletedRides ? 
               <ActivityIndicator  size="large" color="#0000ff" style={{marginTop: 20}} />: 
               
-              <View style={{marginTop: 50, height: '70%'}}>
+              <View style={{marginTop: 50, height: '70%', flexDirection: 'column'}}>
+                <View>
 
               <Text style={[styles.accountInfoText]}>Rides Taken</Text>
               <ScrollView>
@@ -129,6 +130,8 @@ const AccountSettings = ({ setChilDIdx, removeToken, token, page }) => {
                   </View>
                 ))}
               </ScrollView>
+              </View>
+              <View>
               <Text style={{...styles.accountInfoText, marginTop: 50}}>Drives Made</Text>
               <ScrollView>
                 {completedDrives.map((ride, idx) => (
@@ -141,14 +144,17 @@ const AccountSettings = ({ setChilDIdx, removeToken, token, page }) => {
                   </View>
                 ))}
               </ScrollView>
+              </View>
             </View>}
-            
+            <View>
+
             <TouchableOpacity
               onPress={() => setShouldDisplayCompletedRides(false)}
               style={{...styles.completedRidesButton, marginTop: 50}}
             >
               <Text>Show Account Info</Text>
             </TouchableOpacity>
+            </View>
           </View>
         ) : (
           <View style={styles.accountInfo}>

@@ -11,7 +11,6 @@ import {
   ActivityIndicator,
 } from "react-native";
 import MapView, { Marker, PROVIDER_GOOGLE, Polyline } from "react-native-maps";
-import background from "../assets/background.png";
 
 // import Polyline from '@mapbox/polyline';
 
@@ -82,7 +81,7 @@ function decodePolyline(encoded) {
   return poly;
 }
 
-function HitchLandingPage({ setChildIdx, token, page }) {
+function HitchLandingPage({ setChildIdx, token, page, background }) {
   const [showscreen, setShowScreen] = useState(0); // 0 = start and end location input, 1 = route display, 2 = ride joining
   const [region, setRegion] = useState(null); // the user's location also the start location
   const [startRegion, setStartRegion] = useState(null); // the user's start location
@@ -95,12 +94,13 @@ function HitchLandingPage({ setChildIdx, token, page }) {
   const [endId, setEndId] = useState("");
   const [buttonPressed, setButtonPressed] = useState(0);
   const [getDirectionsPressed, setGetDirectionsPressed] = useState(false);
-  const [shouldDisplayPendingRides, setShouldDisplayPendingRides] =
-    useState(false);
-  const [isDownloadingPendingRides, setIsDownloadingPendingRides] =
-    useState(false);
-  const [isDownloadingJoinableRides, setIsDownloadingJoinableRides] =
-    useState(false);
+  const [shouldDisplayPendingRides, setShouldDisplayPendingRides] = useState(false);
+  const [isDownloadingPendingRides, setIsDownloadingPendingRides] = useState(false);
+  const [isDownloadingJoinableRides, setIsDownloadingJoinableRides] =useState(false);
+  const [maxPrice, setMaxPrice] = useState("");
+  const [rides, setRides] = useState([]);
+  const [pendingRides, setPendingRides] = useState([]);
+  const [showChild, setShowChild] = useState(0);
 
   const startref = useRef();
   const endref = useRef();
@@ -222,12 +222,6 @@ function HitchLandingPage({ setChildIdx, token, page }) {
     setShowScreen(2);
     alert(setShowScreen);
   }
-
-  // maxPrice must be a float value
-  const [maxPrice, setMaxPrice] = useState("");
-  const [rides, setRides] = useState([]);
-  const [pendingRides, setPendingRides] = useState([]);
-  const [showChild, setShowChild] = useState(0);
 
   async function ViewOpenRides() {
     setIsDownloadingJoinableRides(true);
@@ -493,7 +487,9 @@ function HitchLandingPage({ setChildIdx, token, page }) {
         )}
         <ScrollView key={rideRequestkey} style={{width: '100%'}}>
           {isDownloadingPendingRides ? (
-            <ActivityIndicator size="large" color="#0000ff" style={{marginTop: 20}} />
+            <View style={{marginTop: 20, backgroundColor: 'white', padding: 20, width: 70, borderRadius: 5, marginLeft: 'auto', marginRight: 'auto' }}>
+              <ActivityIndicator size="large" color="#0000ff"  />
+              </View>
           ) : (
             <View style={{ marginTop: 20 }}>
               {pendingRides.map((item, index) => (
@@ -934,12 +930,13 @@ export default function HitchLandingPageContainer({
   setChildIdx,
   token,
   page,
+  background
 }) {
   return (
     <NavigationContainer>
       <View style={{ flex: 1 }}>
         {/* <AccountSettings /> */}
-        <HitchLandingPage setChildIdx={setChildIdx} token={token} page={page} />
+        <HitchLandingPage setChildIdx={setChildIdx} token={token} page={page}  background={background}/>
         {/* <Inputs /> */}
       </View>
     </NavigationContainer>

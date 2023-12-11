@@ -101,7 +101,9 @@ export default PendingRidesPage = ({ setChildIdx, page, token }) => {
       </TouchableOpacity>
       <ScrollView contentContainerStyle={{ paddingBottom: 50 }}>
         {isDownloadingCreatedRides ? (
-          <ActivityIndicator size="large" color="#0000ff" style={{marginTop: 20}} />
+          <View style={{marginTop: 20, backgroundColor: 'white', padding: 20, width: 70, borderRadius: 5, marginLeft: 'auto', marginRight: 'auto' }}>
+          <ActivityIndicator size="large" color="#0000ff"  />
+          </View>
         ) : (
           rides.map((ride, idx) => {
             return (

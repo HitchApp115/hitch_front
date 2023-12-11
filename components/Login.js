@@ -4,9 +4,9 @@ import {
   Text,
   TouchableOpacity,
   StyleSheet,
-  ImageBackground,
   Image,
   KeyboardAvoidingView,
+  ActivityIndicator
 } from "react-native";
 import InputField from "./InputField";
 // import Video from 'react-native-video';
@@ -19,6 +19,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 function LoginPage({ setChildIdx, storeToken, page, backgroundVideo }) {
   const [login, SetLogin] = useState("");
   const [password, SetPassword] = useState("");
+
+  const [isLoggingIn, setIsLoggingIn] = useState(false)
 
   function checkEmpty(login, password) {
     return login.trim() === "" || password.trim() === "";
@@ -84,13 +86,13 @@ function LoginPage({ setChildIdx, storeToken, page, backgroundVideo }) {
           label="Password"
           value={password}
           onChangeText={SetPassword}
-          secureTextEntry={true}
-          multiline={false}
+          secure={true}
         />
 
         <TouchableOpacity style={styles.loginBtn} onPress={handleLogin}>
           <Text style={styles.loginText}>LOGIN</Text>
         </TouchableOpacity>
+        {isLoggingIn ? <ActivityIndicator  size="large" color="#0000ff" style={{marginTop: 20}} /> : null }
         <TouchableOpacity
           style={styles.signupBtn}
           onPress={() => setChildIdx(1)}

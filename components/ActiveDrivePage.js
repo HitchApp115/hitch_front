@@ -13,7 +13,6 @@ import axios from "axios";
 
 import ActiveRideMap from "./ActiveRideMap";
 import back from "../assets/back.png";
-import background from '../assets/background.png'
 
 function decodePolyline(encoded) {
   if (!encoded) {
@@ -72,6 +71,7 @@ export default function ActiveRide({
   token,
   page,
   activeDrives,
+  background
 }) {
   const [start, setStart] = useState(":");
   const [destination, setDestination] = useState(":");

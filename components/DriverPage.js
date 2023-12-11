@@ -7,9 +7,9 @@ import {
   Text,
   KeyboardAvoidingView,
   TextInput,
-  ImageBackground
+  ImageBackground,
 } from "react-native";
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePicker from "@react-native-community/datetimepicker";
 import MapView, {
   Marker,
   Circle,
@@ -43,8 +43,6 @@ import {
 import InputField from "./InputField";
 import { NavigationContainer } from "@react-navigation/native";
 import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
-
-
 
 // displays the stickman indicating the user's location
 function BlackDotMarker() {
@@ -109,15 +107,15 @@ function MapWithCurrentLocation({ setChildIdx, token, page, background }) {
   const [endId, setEndId] = useState("");
   const [buttonPressed, setButtonPressed] = useState(0);
   const [getDirectionsPressed, setGetDirectionsPressed] = useState(false);
-  const [riders, setRiders] = useState(0)
-  const [costPerRider, setCostPerRider] = useState(0)
-  const [maxDistance, setMaxDistance] = useState(0)
-  const [startTime, setStartTime] = useState(new Date())
+  const [riders, setRiders] = useState(0);
+  const [costPerRider, setCostPerRider] = useState(0);
+  const [maxDistance, setMaxDistance] = useState(0);
+  const [startTime, setStartTime] = useState(new Date());
   const [region, setRegion] = useState(null); // the user's location also the start location
   const [startRegion, setStartRegion] = useState(null); // the user's start location
   const [endingRegion, setEndingRegion] = useState(null); // the user's end location
   const [coords1, setCoords] = useState([]);
-  const [ shouldDisplayPage, setShouldDisplayPage ] = useState(false)
+  const [shouldDisplayPage, setShouldDisplayPage] = useState(false);
 
   const startref = useRef();
   const endref = useRef();
@@ -148,8 +146,11 @@ function MapWithCurrentLocation({ setChildIdx, token, page, background }) {
     setStartId(startref.current?.getAddressText());
     setEndId(endref.current?.getAddressText());
 
-    if (startref.current?.getAddressText() && endref.current?.getAddressText()){
-      setGetDirectionsPressed(true)
+    if (
+      startref.current?.getAddressText() &&
+      endref.current?.getAddressText()
+    ) {
+      setGetDirectionsPressed(true);
     } else {
       setGetDirectionsPressed(false);
     }
@@ -159,21 +160,16 @@ function MapWithCurrentLocation({ setChildIdx, token, page, background }) {
     // getDirections(startId, endId);
     //the start and end id are the names of the locations
     //intial mount will have the startId and the endId as null
-    if (startId!="" && endId!="") {
-      if (getDirectionsPressed == true){
+    if (startId != "" && endId != "") {
+      if (getDirectionsPressed == true) {
         getDirections(startId, endId);
         setShowScreen(1);
-      } 
-      
-    }
-    else{
-    
-      if (getDirectionsPressed == true){
+      }
+    } else {
+      if (getDirectionsPressed == true) {
         setShowScreen(0);
-        alert("Please enter a valid start and end location" )
-      } 
-      
-      ;
+        alert("Please enter a valid start and end location");
+      }
     }
     setGetDirectionsPressed(false);
   }, [getDirectionsPressed]);
@@ -184,7 +180,7 @@ function MapWithCurrentLocation({ setChildIdx, token, page, background }) {
 
   const handleDirections = () => {
     setButtonPressed(buttonPressed + 1);
-    // setShowScreen(1);
+    setShowScreen(1);
   };
 
   const isFocused = useIsFocused();
@@ -246,145 +242,169 @@ function MapWithCurrentLocation({ setChildIdx, token, page, background }) {
   }
 
   const submitRoute = () => {
-    axios.post(page + "/rides/create", {
-        startPointName: startId,
-        endPointName: endId,
-        startPoint: startRegion,
-        destination: endingRegion,
-        riders,
-        costPerRider,
-        pickUpDistance: maxDistance,
-        rideStartTime: startTime.toString()
-      }, {
-      headers: {
-        authorization: token
-      }
-    })
-      .then(response => {
-        alert("Ride Created Successfully")
-        setShouldDisplayPage(true)
+    axios
+      .post(
+        page + "/rides/create",
+        {
+          startPointName: startId,
+          endPointName: endId,
+          startPoint: startRegion,
+          destination: endingRegion,
+          riders,
+          costPerRider,
+          pickUpDistance: maxDistance,
+          rideStartTime: startTime.toString(),
+        },
+        {
+          headers: {
+            authorization: token,
+          },
+        }
+      )
+      .then((response) => {
+        alert("Ride Created Successfully");
+        setShouldDisplayPage(true);
       })
-      .catch(response => {
-        alert(response.response.data.message)
-      })
-  
-  }
+      .catch((response) => {
+        alert(response.response.data.message);
+      });
+  };
 
   if (shouldDisplayPage) {
     return (
       <ImageBackground
-          source={background}
-          style={{flex: 1,
-            resizeMode: "cover"}}
+        source={background}
+        style={{ flex: 1, resizeMode: "cover" }}
       >
-          <View style={styles.container}>
+        <View style={styles.container}>
           <TouchableOpacity
-              onPress={() => {
-                setShouldDisplayPage(false)
-              }}
-              style={{ ...styles.SelectionButton, flexGrow: 0, borderRadius: 5, backgroundColor: '#A7D0F1', height: 40, width: '80%', marginLeft: '10%', marginTop: 65 }}
-            >
-              <Text style={{ fontSize: 16, textAlign: "center", marginTop: 10}}>
-                Create a Ride
-              </Text>
-            </TouchableOpacity>
-              
+            onPress={() => {
+              setShouldDisplayPage(false);
+            }}
+            style={{
+              ...styles.SelectionButton,
+              flexGrow: 0,
+              borderRadius: 5,
+              backgroundColor: "#A7D0F1",
+              height: 40,
+              width: "80%",
+              marginLeft: "10%",
+              marginTop: 65,
+            }}
+          >
+            <Text style={{ fontSize: 16, textAlign: "center", marginTop: 10 }}>
+              Create a Ride
+            </Text>
+          </TouchableOpacity>
 
-            <View style={{
-                padding: 5,
-                borderRadius: 5,
-                fontSize: 30, 
-                textAlign: 'center', 
-                backgroundColor: 'white',
-                width: '70%',
-                marginLeft: 'auto', 
-                marginRight: 'auto',
-                marginTop: 5
-            }}>
-            <Text style={{
+          <View
+            style={{
+              padding: 5,
+              borderRadius: 5,
+              fontSize: 30,
+              textAlign: "center",
+              backgroundColor: "white",
+              width: "70%",
+              marginLeft: "auto",
+              marginRight: "auto",
+              marginTop: 5,
+            }}
+          >
+            <Text
+              style={{
                 fontSize: 30,
-                textAlign: 'center'
-                  }}>Created Rides</Text>
-            </View>          
-            
-            
-        <PendingRidesPage setChildIdx={setChildIdx} token={token} page={page} />
-      </View>
+                textAlign: "center",
+              }}
+            >
+              Created Rides
+            </Text>
+          </View>
+
+          <PendingRidesPage
+            setChildIdx={setChildIdx}
+            token={token}
+            page={page}
+          />
+        </View>
       </ImageBackground>
-    )
+    );
   }
 
   return (
     <View style={styles.container}>
       {/* //below is the input field for the start and end location */}
-     
 
-      <View style={{...googleStyles.test, marginTop: 20}}> 
+      <View style={{ ...googleStyles.test, marginTop: 20 }}>
+        <TouchableOpacity
+          onPress={() => {
+            setShouldDisplayPage(true);
+          }}
+          style={{
+            ...styles.SelectionButton,
+            borderRadius: 5,
+            backgroundColor: "#A7D0F1",
+            height: 40,
+            width: "80%",
+            marginLeft: "10%",
+            marginTop: 10,
+          }}
+        >
+          <Text style={{ fontSize: 16, textAlign: "center", marginTop: 10 }}>
+            View Created Rides
+          </Text>
+        </TouchableOpacity>
 
-            <TouchableOpacity
-              onPress={() => {
-                setShouldDisplayPage(true)
-              }}
-              style={{ ...styles.SelectionButton, borderRadius: 5, backgroundColor: '#A7D0F1', height: 40, width: '80%', marginLeft: '10%', marginTop: 10  }}
-            >
-              <Text style={{ fontSize: 16, textAlign: "center", marginTop: 10}}>
-                View Created Rides
-              </Text>
-            </TouchableOpacity>
-            
-            <Text style={{textAlign: 'center', fontSize: 30}}>Create a Ride</Text>
+        <Text style={{ textAlign: "center", fontSize: 30 }}>Create a Ride</Text>
 
-            <GooglePlacesAutocomplete
-              ref={startref}
-              placeholder="Start"
-              
-              fetchDetails={true}
-              // when turned on fetchDetails will return the details of the location that is selected
-              // data is the name of the location which is all the details that are returned
-              // contains lat and long
-              getCurrentPositionAsync={true}
-              onPress={(data, details = null) => {
-                // 'details' is provided when fetchDetails = true
-                
-                moveToLocation(
-                  details?.geometry?.location.lat,
-                  details?.geometry?.location.lng
-                );
-                updateRegion(details);
-              }}
-              query={{
-                key: "AIzaSyAzaxnuhcqrHyhCKGPsekHS-VC8lGqG7GY",
-                language: "en",
-              }}
-              get
-              onFail={(error) => console.error(error)}
-            />
-            <GooglePlacesAutocomplete
-              ref={endref}
-              styles={{ flex: 1 }}
-              placeholder="Destination"
-              fetchDetails={true}
-              // when turned on fetchDetails will return the details of the location that is selected
-              // data is the name of the location which is all the details that are returned
-              // contains lat and long
-              onPress={(data, details = null) => {
-                // 'details' is provided when fetchDetails = true
+        <GooglePlacesAutocomplete
+          ref={startref}
+          placeholder="Start"
+          fetchDetails={true}
+          // when turned on fetchDetails will return the details of the location that is selected
+          // data is the name of the location which is all the details that are returned
+          // contains lat and long
+          getCurrentPositionAsync={true}
+          onPress={(data, details = null) => {
+            // 'details' is provided when fetchDetails = true
 
-                moveToLocation(
-                  details?.geometry?.location.lat,
-                  details?.geometry?.location.lng
-                );
-                updateEndingRegion(details);
-              }}
-              query={{
-                key: "AIzaSyAzaxnuhcqrHyhCKGPsekHS-VC8lGqG7GY",
-                language: "en",
-              }}
-              onFail={(error) => console.error(error)}
-            />
-    
-            
-              {showscreen == 0 && (
+            moveToLocation(
+              details?.geometry?.location.lat,
+              details?.geometry?.location.lng
+            );
+            updateRegion(details);
+          }}
+          query={{
+            key: "AIzaSyAzaxnuhcqrHyhCKGPsekHS-VC8lGqG7GY",
+            language: "en",
+          }}
+          get
+          onFail={(error) => console.error(error)}
+        />
+        <GooglePlacesAutocomplete
+          ref={endref}
+          styles={{ flex: 1 }}
+          placeholder="Destination"
+          fetchDetails={true}
+          // when turned on fetchDetails will return the details of the location that is selected
+          // data is the name of the location which is all the details that are returned
+          // contains lat and long
+          onPress={(data, details = null) => {
+            // 'details' is provided when fetchDetails = true
+
+            moveToLocation(
+              details?.geometry?.location.lat,
+              details?.geometry?.location.lng
+            );
+            updateEndingRegion(details);
+          }}
+          query={{
+            key: "AIzaSyAzaxnuhcqrHyhCKGPsekHS-VC8lGqG7GY",
+            language: "en",
+          }}
+          onFail={(error) => console.error(error)}
+        />
+
+        {!showscreen ? (
           <>
             <View style={styles.containerForButtons}>
               <TouchableOpacity onPress={backBtnPressed} style={styles.backBtn}>
@@ -406,37 +426,43 @@ function MapWithCurrentLocation({ setChildIdx, token, page, background }) {
               </TouchableOpacity> */}
             </View>
           </>
-        )}
-
-        {showscreen === 1 && (
+        ) : (
           <View style={styles.adjustingRideCreationContainer}>
-
             <TextInput
               style={styles.postInputTextInputs}
               placeholder="Maximum Rider Count"
               onChangeText={(text) => setRiders(Number(text))}
-              keyboardType='numeric'
+              keyboardType="numeric"
             ></TextInput>
             <TextInput
               style={styles.postInputTextInputs}
               placeholder="Cost Per Rider"
               onChangeText={(text) => setCostPerRider(Number(text))}
-              keyboardType='numeric'
+              keyboardType="numeric"
             ></TextInput>
             <TextInput
               style={styles.postInputTextInputs}
               placeholder="Max Distance from Pickup Location"
               onChangeText={(text) => setMaxDistance(Number(text))}
-              keyboardType='numeric'
+              keyboardType="numeric"
             ></TextInput>
             <DateTimePicker
               value={startTime}
               onChange={(e, date) => setStartTime(date)}
               mode="datetime"
-              style={{marginRight: 'auto', marginLeft: 'auto', marginVertical: 5}}
+              style={{
+                marginRight: "auto",
+                marginLeft: "auto",
+                marginVertical: 5,
+              }}
             />
             <View style={styles.containerForButtons}>
-            <TouchableOpacity onPress={()=>{setShowScreen(0)}} style={styles.backBtn}>
+              <TouchableOpacity
+                onPress={() => {
+                  setShowScreen(0);
+                }}
+                style={styles.backBtn}
+              >
                 <Image source={back} style={styles.backBtnImage} />
               </TouchableOpacity>
               <TouchableOpacity
@@ -447,7 +473,6 @@ function MapWithCurrentLocation({ setChildIdx, token, page, background }) {
               </TouchableOpacity>
             </View>
           </View>
-
         )}
       </View>
 
@@ -458,14 +483,13 @@ function MapWithCurrentLocation({ setChildIdx, token, page, background }) {
         provider={PROVIDER_GOOGLE}
         style={styles.map}
         initialRegion={{
-          latitude:  36.99126994890912,
-      longitude: -122.05864519201934,
-      latitudeDelta: 0.0922,
-      longitudeDelta: 0.0421,
+          latitude: 36.99126994890912,
+          longitude: -122.05864519201934,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
         }}
         showsUserLocation={true}
         region={region}
-
       >
         {startRegion && (
           <Marker coordinate={startRegion} title={"Start"}>
@@ -492,16 +516,16 @@ function MapWithCurrentLocation({ setChildIdx, token, page, background }) {
 
 const styles = StyleSheet.create({
   SelectionButton: {
-    borderColor: 'black',
+    borderColor: "black",
     borderWidth: 2,
     height: 50,
     flexGrow: 1,
   },
   SelectionMenu: {
-    display: 'flex',
+    display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
-    backgroundColor: 'white'
+    backgroundColor: "white",
   },
 
   container: {
@@ -577,33 +601,39 @@ const styles = StyleSheet.create({
     borderWidth: 3,
     marginTop: 2,
     borderColor: "black",
-    marginLeft: '10%',
+    marginLeft: "10%",
     padding: 5,
-    borderRadius: 5
+    borderRadius: 5,
   },
-  screen1:{
-    
+  screen1: {
     // position: "absolute",
     zIndex: 3,
     width: "100%",
-
-
   },
   visible: {
     opacity: 1,
-   
   },
   hidden: {
     opacity: 0,
   },
 });
 
-export default function PostLandingPage({ setChildIdx, token, page, background }) {
+export default function PostLandingPage({
+  setChildIdx,
+  token,
+  page,
+  background,
+}) {
   return (
     <NavigationContainer>
       <View style={{ flex: 1 }}>
         {/* <AccountSettings /> */}
-        <MapWithCurrentLocation setChildIdx={setChildIdx} token={token} page={page} background={background}/>
+        <MapWithCurrentLocation
+          setChildIdx={setChildIdx}
+          token={token}
+          page={page}
+          background={background}
+        />
         {/* <Inputs /> */}
       </View>
     </NavigationContainer>

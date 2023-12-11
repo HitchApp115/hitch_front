@@ -2,6 +2,7 @@ import axios, { Axios } from "axios";
 import AccountCreationPage from "./components/AccountCreatePage";
 import React, { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Asset } from 'expo-asset';
 
 import HomePage from "./components/Home";
 import LoginPage from "./components/Login";
@@ -17,12 +18,49 @@ import backgroundVideo from './assets/video_background.mp4'
 // where to find the backend
 const page = "https://dolphin-app-7udnd.ondigitalocean.app";
 
+
+function cacheImages(images) {
+  return images.map(image => {
+    if (typeof image === 'string') {
+      return Image.prefetch(image);
+    } else {
+      return Asset.fromModule(image).downloadAsync();
+    }
+  });
+}
+
+
 export default function App() {
   // token used to keep track of whether the user is logged in
   const [token, setToken] = useState(null);
   const [childIdx, setChildIdx] = useState(0);
   const [activeRides, setActiveRides] = useState([]);
   const [activeDrives, setActiveDrives] = useState({});
+  const [appIsReady, setAppIsReady] = useState(false)
+
+  useEffect(() => {
+    async function loadResourcesAndDataAsync() {
+      try {
+        const imageAssets = cacheImages([
+          require('./assets/background.png'),
+          require('./assets/video_background.mp4'),
+          require('./assets/Hitch.png'),
+          require('./assets/logo.png'),
+          require('./assets/post.png')
+        ]);
+
+
+        await Promise.all([...imageAssets]);
+      } catch (e) {
+        // You might want to provide this error information to an error reporting service
+        console.warn(e);
+      } finally {
+        setAppIsReady(true);
+      }
+    }
+
+    loadResourcesAndDataAsync();
+  }, []);
 
   useEffect(() => {
     getToken();
@@ -141,22 +179,24 @@ export default function App() {
       page={page}
       background={background}
     />,
-    <RiderPage setChildIdx={setChildIdx} token={token} page={page} />,
-    <PendingRidesPage setChildIdx={setChildIdx} page={page} token={token} />,
+    <RiderPage setChildIdx={setChildIdx} token={token} page={page} background={background} />,
+    <PendingRidesPage setChildIdx={setChildIdx} page={page} token={token}  />,
     <ActiveDrivePage
       setChildIdx={setChildIdx}
       token={token}
       page={page}
       activeDrives={activeDrives}
+      background={background}
     />,
     <ActivePassengerPage
       page={page}
       token={token}
       activeRides={activeRides}
       setChildIdx={setChildIdx}
+      background={background}
     />,
   ];
 
-  return children[childIdx];
+  return appIsReady ? children[childIdx] : null;
 }
 
