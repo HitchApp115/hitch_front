@@ -444,6 +444,17 @@ function HitchLandingPage({ setChildIdx, token, page, background }) {
     return (
       <View>
         {shouldDisplayPendingRides && (
+          <View style={{ flexDirection: 'row', }}>
+               <View style={styles.containerForButtons}>
+           <TouchableOpacity
+             onPress={() => {
+               setChildIdx(2);
+             }}
+             style={styles.backBtn}
+           >
+             <Image source={back} style={styles.backBtnImage} />
+           </TouchableOpacity>
+         </View>
           <View
             style={{
               padding: 5,
@@ -452,7 +463,7 @@ function HitchLandingPage({ setChildIdx, token, page, background }) {
               textAlign: "center",
               backgroundColor: "white",
               width: "70%",
-              marginLeft: "auto",
+              marginLeft: "4%",
               marginRight: "auto",
               marginTop: 5,
             }}
@@ -466,9 +477,13 @@ function HitchLandingPage({ setChildIdx, token, page, background }) {
               Pending Rides
             </Text>
           </View>
+
+          </View>
+
+        
         )}
 
-        {shouldDisplayPendingRides && (
+        {/* {shouldDisplayPendingRides && (
           <View style={styles.containerForButtons}>
             <TouchableOpacity
               onPress={() => {
@@ -479,7 +494,7 @@ function HitchLandingPage({ setChildIdx, token, page, background }) {
               <Image source={back} style={styles.backBtnImage} />
             </TouchableOpacity>
           </View>
-        )}
+        )} */}
 
         {shouldDisplayPendingRides && (
           <TouchableOpacity
