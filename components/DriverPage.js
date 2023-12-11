@@ -319,7 +319,7 @@ function MapWithCurrentLocation({ setChildIdx, token, page, background }) {
       {/* //below is the input field for the start and end location */}
      
 
-      <View style={{...googleStyles.test, marginTop: 20}}> 
+      <View style={{...googleStyles.test, marginTop: 0}}> 
 
             <TouchableOpacity
               onPress={() => {
