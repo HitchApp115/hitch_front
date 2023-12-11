@@ -48,7 +48,8 @@ export default function App() {
           require('./assets/Hitch.png'),
           require('./assets/logo.png'),
           require('./assets/post.png'),
-          require('./assets/activeDrive.png')
+          require('./assets/activeDrive.png'),
+          require('./assets/openCar.png')
         ]);
 
 

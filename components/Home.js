@@ -146,7 +146,7 @@ export default function HomePage({ setChildIdx, removeToken, token, page, showAc
                 ]}
               >
                 <Image
-                  source={require("../assets/post.png")}
+                  source={require('../assets/openCar.png')}
                   style={{ width: 100, height: 100 }}
                 />
                 <Text style={{ color: "white",fontSize:25, fontWeight: 700,textShadowRadius: 8 ,textShadowColor: 'black', }}>Active Passenger</Text>
