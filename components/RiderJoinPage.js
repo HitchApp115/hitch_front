@@ -315,7 +315,7 @@ function HitchLandingPage({ setChildIdx, token, page, background }) {
     const children = [<ViewRidesContainer />, <ViewPendingRidesContainer />];
     return (
       <>
-        <View style={styles.ridesContainer}>
+        <View style={{...styles.ridesContainer, height: 400}}>
           <View style={styles.containerForButtons}>
             <TouchableOpacity
               onPress={() => {
@@ -485,7 +485,7 @@ function HitchLandingPage({ setChildIdx, token, page, background }) {
             <Text>Refresh Status</Text>
           </TouchableOpacity>
         )}
-        <ScrollView key={rideRequestkey} style={{width: '100%'}}>
+        <ScrollView key={rideRequestkey} style={{width: '100%', height: shouldDisplayPendingRides ? '100%': 300}}>
           {isDownloadingPendingRides ? (
             <View style={{marginTop: 20, backgroundColor: 'white', padding: 20, width: 70, borderRadius: 5, marginLeft: 'auto', marginRight: 'auto' }}>
               <ActivityIndicator size="large" color="#0000ff"  />
@@ -905,7 +905,6 @@ const styles = StyleSheet.create({
   },
 
   ridesContainer: {
-    height: 250,
     width: "100%",
     // backgroundColor: "grey",
   },
@@ -920,7 +919,7 @@ const styles = StyleSheet.create({
     width: "50%",
   },
   viewRidesContainer: {
-    height: 250,
+    height: '50%',
     width: "100%",
     backgroundColor: "#F3EEEA",
   },

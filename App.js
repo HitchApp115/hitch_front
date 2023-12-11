@@ -8,7 +8,7 @@ import HomePage from "./components/Home";
 import LoginPage from "./components/Login";
 import DriverPage from "./components/DriverPage";
 import PendingRidesPage from "./components/PendingRidesPage";
-import RiderPage from "./components/RiderPage";
+import RiderPage from "./components/RiderJoinPage";
 import ActiveDrivePage from "./components/ActiveDrivePage";
 import ActivePassengerPage from "./components/ActivePassengerPage";
 
