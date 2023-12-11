@@ -354,7 +354,7 @@ function MapWithCurrentLocation({ setChildIdx, token, page, background }) {
           </Text>
         </TouchableOpacity>
 
-        <Text style={{ textAlign: "center", fontSize: 30 }}>Create a Ride</Text>
+        <Text style={{ textAlign: "center", fontSize: 30, marginTop: 10 }}>Create a Ride</Text>
 
         <GooglePlacesAutocomplete
           ref={startref}
