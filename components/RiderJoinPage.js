@@ -483,20 +483,6 @@ function HitchLandingPage({ setChildIdx, token, page, background }) {
 
         
         )}
-
-        {/* {shouldDisplayPendingRides && (
-          <View style={styles.containerForButtons}>
-            <TouchableOpacity
-              onPress={() => {
-                setChildIdx(2);
-              }}
-              style={styles.backBtn}
-            >
-              <Image source={back} style={styles.backBtnImage} />
-            </TouchableOpacity>
-          </View>
-        )} */}
-
         {shouldDisplayPendingRides && (
           <TouchableOpacity
             onPress={ViewPendingRides}
@@ -554,6 +540,10 @@ function HitchLandingPage({ setChildIdx, token, page, background }) {
                         Ride {index + 1}:{" "}
                       </Text>
                       ${item.cost_per_rider}{"\n"}
+                    </Text>
+                    <Text>
+                      <Text style={{ fontWeight: "bold" }}>Pickup Time:</Text>{" "}
+                      {new Date(item["ride_start_time"]).toLocaleString()}{" \n"}
                     </Text>
                     <Text>
                       <Text style={{ fontWeight: "bold" }}>Pickup Spot:</Text>{" "}
@@ -809,7 +799,7 @@ function HitchLandingPage({ setChildIdx, token, page, background }) {
                 style={[styles.displayBtn, styles.dislayPostBtn]}
                 onPress={() => {
                   ViewOpenRides();
-
+                  ViewPendingRides();
                   setShowScreen(2);
                 }}
               >

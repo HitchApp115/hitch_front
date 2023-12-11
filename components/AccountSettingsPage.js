@@ -92,176 +92,186 @@ const AccountSettings = ({ setChilDIdx, removeToken, token, page }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <TouchableOpacity
-        onPress={toggleAccountInfo}
-        style={[
-          styles.icon,
-          !showAccountInfo && { borderWidth: 3, borderColor: "black" },
-        ]}
-      >
-        {showAccountInfo ? (
-          <Image source={x_fill} />
-        ) : (
-          <Image source={account_icon} />
-        )}
-      </TouchableOpacity>
+      <View style={styles.container}>
+        <TouchableOpacity
+          onPress={toggleAccountInfo}
+          style={[
+            styles.icon,
+            !showAccountInfo && { borderWidth: 3, borderColor: "black" },
+          ]}
+        >
+          {showAccountInfo ? (
+            <Image source={x_fill} />
+          ) : (
+            <Image source={account_icon} />
+          )}
+        </TouchableOpacity>
 
-      {showAccountInfo &&
-        (shouldDisplayCompletedRides ? (
-          <View style={{ ...styles.accountInfo }}>
-            <View>
-              <Text style={[styles.accountInfoTitle]}>Completed Rides</Text>
-            </View>
-
-            {isLoadingCompletedRides ? (
-              <ActivityIndicator
-                size="large"
-                color="#0000ff"
-                style={{ marginTop: 20 }}
-              />
-            ) : (
-              <View
-                style={{
-                  marginTop: 50,
-                  height: "75%",
-                  flexDirection: "column",
-                }}
-              >
-                <View style={{ flex: 1 }}>
-                  <Text style={[styles.accountInfoText]}>Rides Taken</Text>
-                  <ScrollView>
-                    {!completedRides.length ? (
-                      <Text
-                        style={{
-                          ...styles.rideDataTitle,
-                          fontSize: 16,
-                          textAlign: "center",
-                          marginTop: 20,
-                        }}
-                      >
-                        No Rides Taken Yet
-                      </Text>
-                    ) : null}
-                    {completedRides.map((ride, idx) => (
-                      <View key={idx} style={styles.completedRideBox}>
-                        <Text style={styles.rideInfoText}>
-                          <Text style={styles.rideDataTitle}>Ride Id: </Text>
-                          {ride["ride_id"]}
-                        </Text>
-                        <Text style={styles.rideInfoText}>
-                          <Text style={styles.rideDataTitle}>
-                            Start Point:{" "}
-                          </Text>
-                          {ride["start_point"].split(":")[0]}
-                        </Text>
-                        <Text style={styles.rideInfoText}>
-                          <Text style={styles.rideDataTitle}>End Point: </Text>
-                          {ride["destination"].split(":")[0]}
-                        </Text>
-                        <Text style={styles.rideInfoText}>
-                          <Text style={styles.rideDataTitle}>Ride Cost: </Text>$
-                          {ride["rider_cost"]}
-                        </Text>
-                      </View>
-                    ))}
-                  </ScrollView>
-                </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={{ ...styles.accountInfoText }}>Drives Made</Text>
-                  <ScrollView>
-                    {!completedDrives.length ? (
-                      <Text
-                        style={{
-                          ...styles.rideDataTitle,
-                          fontSize: 16,
-                          textAlign: "center",
-                          marginTop: 20,
-                        }}
-                      >
-                        No Drives Taken Yet
-                      </Text>
-                    ) : null}
-
-                    {completedDrives.map((ride, idx) => (
-                      <View key={idx} style={styles.completedRideBox}>
-                        <Text style={styles.rideInfoText}>
-                          <Text style={styles.rideDataTitle}>Ride Id: </Text>
-                          {ride["ride_id"]}
-                        </Text>
-                        <Text style={styles.rideInfoText}>
-                          <Text style={styles.rideDataTitle}>
-                            Start Point:{" "}
-                          </Text>
-                          {ride["start_point"].split(":")[0]}
-                        </Text>
-                        <Text style={styles.rideInfoText}>
-                          <Text style={styles.rideDataTitle}>End Point: </Text>
-                          {ride["destination"].split(":")[0]}
-                        </Text>
-                        <Text style={styles.rideInfoText}>
-                          <Text style={styles.rideDataTitle}>
-                            Amount Made:{" "}
-                          </Text>
-                          ${ride["driver_earnings"]}
-                        </Text>
-                        <Text style={styles.rideInfoText}>
-                          <Text style={styles.rideDataTitle}>Time Taken: </Text>
-                          {ride["duration"]}
-                        </Text>
-                      </View>
-                    ))}
-                  </ScrollView>
-                </View>
-              </View>
-            )}
-            <View>
-              <TouchableOpacity
-                onPress={() => setShouldDisplayCompletedRides(false)}
-                style={{ ...styles.completedRidesButton, marginTop: 20 }}
-              >
-                <Text>Show Account Info</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        ) : (
-          <View style={styles.accountInfo}>
-            <View style={styles.account_container}>
+        {showAccountInfo &&
+          (shouldDisplayCompletedRides ? (
+            <View style={{ ...styles.accountInfo }}>
               <View>
-                <Text style={[styles.accountInfoTitle]}>
-                  Account Information
-                </Text>
-              </View>
-              <View style={styles.info_container}>
-                <Text style={styles.header}>Username</Text>
-                <Text>{username}</Text>
-              </View>
-              <View style={styles.info_container}>
-                <Text style={styles.header}>Email</Text>
-                <Text>{email}</Text>
-              </View>
-              <View style={styles.info_container}>
-                <Text style={styles.header}>Phone Number</Text>
-                <Text>{phone}</Text>
+                <Text style={[styles.accountInfoTitle]}>Completed Rides</Text>
               </View>
 
-              {/* Display account information here */}
-              <TouchableOpacity
-                onPress={handleLogout}
-                style={styles.logoutButton}
-              >
-                <Text>Logout</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => setShouldDisplayCompletedRides(true)}
-                style={styles.completedRidesButton}
-              >
-                <Text>Show Completed Rides</Text>
-              </TouchableOpacity>
+              {isLoadingCompletedRides ? (
+                <ActivityIndicator
+                  size="large"
+                  color="#0000ff"
+                  style={{ marginTop: 20 }}
+                />
+              ) : (
+                <View
+                  style={{
+                    marginTop: 50,
+                    height: "75%",
+                    flexDirection: "column",
+                  }}
+                >
+                  <View style={{ flex: 1 }}>
+                    <Text style={[styles.accountInfoText]}>Rides Taken</Text>
+                    <ScrollView>
+                      {!completedRides.length ? (
+                        <Text
+                          style={{
+                            ...styles.rideDataTitle,
+                            fontSize: 16,
+                            textAlign: "center",
+                            marginTop: 20,
+                          }}
+                        >
+                          No Rides Taken Yet
+                        </Text>
+                      ) : null}
+                      {completedRides.map((ride, idx) => (
+                        <View key={idx} style={styles.completedRideBox}>
+                          <Text style={styles.rideInfoText}>
+                            <Text style={styles.rideDataTitle}>Ride Id: </Text>
+                            {ride["ride_id"]}
+                          </Text>
+                          <Text style={styles.rideInfoText}>
+                            <Text style={styles.rideDataTitle}>
+                              Start Point:{" "}
+                            </Text>
+                            {ride["start_point"].split(":")[0]}
+                          </Text>
+                          <Text style={styles.rideInfoText}>
+                            <Text style={styles.rideDataTitle}>
+                              End Point:{" "}
+                            </Text>
+                            {ride["destination"].split(":")[0]}
+                          </Text>
+                          <Text style={styles.rideInfoText}>
+                            <Text style={styles.rideDataTitle}>
+                              Ride Cost:{" "}
+                            </Text>
+                            ${ride["rider_cost"]}
+                          </Text>
+                        </View>
+                      ))}
+                    </ScrollView>
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={{ ...styles.accountInfoText }}>
+                      Drives Made
+                    </Text>
+                    <ScrollView>
+                      {!completedDrives.length ? (
+                        <Text
+                          style={{
+                            ...styles.rideDataTitle,
+                            fontSize: 16,
+                            textAlign: "center",
+                            marginTop: 20,
+                          }}
+                        >
+                          No Drives Taken Yet
+                        </Text>
+                      ) : null}
+
+                      {completedDrives.map((ride, idx) => (
+                        <View key={idx} style={styles.completedRideBox}>
+                          <Text style={styles.rideInfoText}>
+                            <Text style={styles.rideDataTitle}>Ride Id: </Text>
+                            {ride["ride_id"]}
+                          </Text>
+                          <Text style={styles.rideInfoText}>
+                            <Text style={styles.rideDataTitle}>
+                              Start Point:{" "}
+                            </Text>
+                            {ride["start_point"].split(":")[0]}
+                          </Text>
+                          <Text style={styles.rideInfoText}>
+                            <Text style={styles.rideDataTitle}>
+                              End Point:{" "}
+                            </Text>
+                            {ride["destination"].split(":")[0]}
+                          </Text>
+                          <Text style={styles.rideInfoText}>
+                            <Text style={styles.rideDataTitle}>
+                              Amount Made:{" "}
+                            </Text>
+                            ${ride["driver_earnings"]}
+                          </Text>
+                          <Text style={styles.rideInfoText}>
+                            <Text style={styles.rideDataTitle}>
+                              Time Taken:{" "}
+                            </Text>
+                            {ride["duration"]}
+                          </Text>
+                        </View>
+                      ))}
+                    </ScrollView>
+                  </View>
+                </View>
+              )}
+              <View>
+                <TouchableOpacity
+                  onPress={() => setShouldDisplayCompletedRides(false)}
+                  style={{ ...styles.completedRidesButton, marginTop: 20 }}
+                >
+                  <Text>Show Account Info</Text>
+                </TouchableOpacity>
+              </View>
             </View>
-          </View>
-        ))}
-    </View>
+          ) : (
+            <View style={styles.accountInfo}>
+              <View style={styles.account_container}>
+                <View>
+                  <Text style={[styles.accountInfoTitle]}>
+                    Account Information
+                  </Text>
+                </View>
+                <View style={styles.info_container}>
+                  <Text style={styles.header}>Username</Text>
+                  <Text>{username}</Text>
+                </View>
+                <View style={styles.info_container}>
+                  <Text style={styles.header}>Email</Text>
+                  <Text>{email}</Text>
+                </View>
+                <View style={styles.info_container}>
+                  <Text style={styles.header}>Phone Number</Text>
+                  <Text>{phone}</Text>
+                </View>
+
+                {/* Display account information here */}
+                <TouchableOpacity
+                  onPress={handleLogout}
+                  style={styles.logoutButton}
+                >
+                  <Text>Logout</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => setShouldDisplayCompletedRides(true)}
+                  style={styles.completedRidesButton}
+                >
+                  <Text>Show Completed Rides</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          ))}
+      </View>
   );
 };
 

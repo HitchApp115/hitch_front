@@ -1,4 +1,4 @@
-import axios, { Axios } from "axios";
+import axios from "axios";
 import AccountCreationPage from "./components/AccountCreatePage";
 import React, { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -49,7 +49,8 @@ export default function App() {
           require('./assets/logo.png'),
           require('./assets/post.png'),
           require('./assets/activeDrive.png'),
-          require('./assets/openCar.png')
+          require('./assets/openCar.png'),
+          require('./assets/background2.png')
         ]);
 
 

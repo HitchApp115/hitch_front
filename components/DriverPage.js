@@ -25,7 +25,6 @@ import car from "../assets/post.png";
 import back from "../assets/back.png";
 import endLocationPin from "../assets/post_ride_end.png";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
-import AccountSettings from "./AccountSettingsPage";
 import axios from "axios";
 import PendingRidesPage from "./PendingRidesPage";
 /* 
