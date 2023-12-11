@@ -94,9 +94,12 @@ function HitchLandingPage({ setChildIdx, token, page, background }) {
   const [endId, setEndId] = useState("");
   const [buttonPressed, setButtonPressed] = useState(0);
   const [getDirectionsPressed, setGetDirectionsPressed] = useState(false);
-  const [shouldDisplayPendingRides, setShouldDisplayPendingRides] = useState(false);
-  const [isDownloadingPendingRides, setIsDownloadingPendingRides] = useState(false);
-  const [isDownloadingJoinableRides, setIsDownloadingJoinableRides] =useState(false);
+  const [shouldDisplayPendingRides, setShouldDisplayPendingRides] =
+    useState(false);
+  const [isDownloadingPendingRides, setIsDownloadingPendingRides] =
+    useState(false);
+  const [isDownloadingJoinableRides, setIsDownloadingJoinableRides] =
+    useState(false);
   const [maxPrice, setMaxPrice] = useState("");
   const [rides, setRides] = useState([]);
   const [pendingRides, setPendingRides] = useState([]);
@@ -380,7 +383,11 @@ function HitchLandingPage({ setChildIdx, token, page, background }) {
       <>
         <ScrollView style={styles.viewRidesContainer}>
           {isDownloadingJoinableRides ? (
-            <ActivityIndicator size="large" color="#0000ff" style={{marginTop: 20}} />
+            <ActivityIndicator
+              size="large"
+              color="#0000ff"
+              style={{ marginTop: 20 }}
+            />
           ) : (
             rides.map((item, index) => (
               <View
@@ -437,22 +444,28 @@ function HitchLandingPage({ setChildIdx, token, page, background }) {
     return (
       <View>
         {shouldDisplayPendingRides && (
-           <View style={{
-            padding: 5,
-            borderRadius: 5,
-            fontSize: 30, 
-            textAlign: 'center', 
-            backgroundColor: 'white',
-            width: '70%',
-            marginLeft: 'auto', 
-            marginRight: 'auto',
-            marginTop: 5
-        }}>
-        <Text style={{
-            fontSize: 30,
-            textAlign: 'center'
-              }}>Pending Rides</Text>
-        </View>       
+          <View
+            style={{
+              padding: 5,
+              borderRadius: 5,
+              fontSize: 30,
+              textAlign: "center",
+              backgroundColor: "white",
+              width: "70%",
+              marginLeft: "auto",
+              marginRight: "auto",
+              marginTop: 5,
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 30,
+                textAlign: "center",
+              }}
+            >
+              Pending Rides
+            </Text>
+          </View>
         )}
 
         {shouldDisplayPendingRides && (
@@ -486,10 +499,21 @@ function HitchLandingPage({ setChildIdx, token, page, background }) {
           </TouchableOpacity>
         )}
         <ScrollView key={rideRequestkey} style={{width: '100%', height: shouldDisplayPendingRides ? '100%': 300}}>
+
           {isDownloadingPendingRides ? (
-            <View style={{marginTop: 20, backgroundColor: 'white', padding: 20, width: 70, borderRadius: 5, marginLeft: 'auto', marginRight: 'auto' }}>
-              <ActivityIndicator size="large" color="#0000ff"  />
-              </View>
+            <View
+              style={{
+                marginTop: 20,
+                backgroundColor: "white",
+                padding: 20,
+                width: 70,
+                borderRadius: 5,
+                marginLeft: "auto",
+                marginRight: "auto",
+              }}
+            >
+              <ActivityIndicator size="large" color="#0000ff" />
+            </View>
           ) : (
             <View style={{ marginTop: 20 }}>
               {pendingRides.map((item, index) => (
@@ -500,54 +524,68 @@ function HitchLandingPage({ setChildIdx, token, page, background }) {
                     alignItems: "center",
                     padding: 10,
                     backgroundColor: "white",
-                    width: '90%',
-                    marginLeft: 'auto',
-                    marginRight: 'auto',
+                    width: "90%",
+                    marginLeft: "auto",
+                    marginRight: "auto",
                     marginTop: 20,
                     borderRadius: 5,
                     borderWidth: 2,
                   }}
                 >
-                  <View style={{ maxWidth: "50%" }}>
+                  <View style={{ maxWidth: "75%" }}>
                     <Text>
                       <Text style={{ fontWeight: "bold" }}>
                         Ride {index + 1}:{" "}
                       </Text>
-                      ${item.cost_per_rider}
+                      ${item.cost_per_rider}{"\n"}
                     </Text>
                     <Text>
-                      <Text style={{ fontWeight: "bold" }}>
-                        Pickup Spot: 
-                      </Text>{" "}
-                      {item["pickup_spot"].split(":")[0]}
+                      <Text style={{ fontWeight: "bold" }}>Pickup Spot:</Text>{" "}
+                      {item["pickup_spot"].split(":")[0]}{" \n"}
                     </Text>
                     <Text>
                       <Text style={{ fontWeight: "bold" }}>Destination: </Text>{" "}
                       {item["driver_dest"].split(":")[0]}
                     </Text>
                   </View>
-                  <View style={{ marginLeft: "auto" }}>
-                    <Text>{item.accepted == 0 ? "Pending" : "Accepted"}</Text>
-                  </View>
-
-                  <TouchableOpacity
-                    onPress={() => {
-                      RemoveRequest(token, item.ride_id).then(() =>
-                        ViewPendingRides()
-                      );
-                      setRideRequestKey(rideRequestkey + 1);
-                    }}
+                  <View
                     style={{
-                      borderColor: "black",
-                      borderWidth: 2,
-                      padding: 5,
-                      borderRadius: 5,
                       marginLeft: "auto",
-                      backgroundColor: '#f07575'
+                      height: "100%",
+                      justifyContent: "center",
+                      gap: 10,
+                      alignItems: "center",
                     }}
                   >
-                    <Text> Cancel</Text>
-                  </TouchableOpacity>
+                    <View
+                      style={{
+                        borderRadius: 5,
+                        paddingVertical: 2,
+                        paddingHorizontal: 5,
+                        backgroundColor: "#9ADE7B",
+                      }}
+                    >
+                      <Text>{item.accepted == 0 ? "Pending" : "Accepted"}</Text>
+                    </View>
+
+                    <TouchableOpacity
+                      onPress={() => {
+                        RemoveRequest(token, item.ride_id).then(() =>
+                          ViewPendingRides()
+                        );
+                        setRideRequestKey(rideRequestkey + 1);
+                      }}
+                      style={{
+                        borderColor: "black",
+                        borderWidth: 2,
+                        padding: 5,
+                        borderRadius: 5,
+                        backgroundColor: "#f07575",
+                      }}
+                    >
+                      <Text> Cancel</Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
               ))}
             </View>
@@ -929,13 +967,18 @@ export default function HitchLandingPageContainer({
   setChildIdx,
   token,
   page,
-  background
+  background,
 }) {
   return (
     <NavigationContainer>
       <View style={{ flex: 1 }}>
         {/* <AccountSettings /> */}
-        <HitchLandingPage setChildIdx={setChildIdx} token={token} page={page}  background={background}/>
+        <HitchLandingPage
+          setChildIdx={setChildIdx}
+          token={token}
+          page={page}
+          background={background}
+        />
         {/* <Inputs /> */}
       </View>
     </NavigationContainer>
