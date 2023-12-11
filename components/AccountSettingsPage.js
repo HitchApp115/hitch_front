@@ -6,7 +6,7 @@ import {
   StyleSheet,
   Image,
   ScrollView,
-  ActivityIndicator
+  ActivityIndicator,
 } from "react-native";
 import { Icon } from "react-native-elements"; // You might need to install react-native-elements
 import account_icon from "../assets/account_icon.png";
@@ -19,7 +19,8 @@ const AccountSettings = ({ setChilDIdx, removeToken, token, page }) => {
   const [email, setEmail] = useState("Loading...");
   const [phone, setPhone] = useState("Loading...");
 
-  const [shouldDisplayCompletedRides, setShouldDisplayCompletedRides] = useState(false);
+  const [shouldDisplayCompletedRides, setShouldDisplayCompletedRides] =
+    useState(false);
   const [isLoadingCompletedRides, setIsLoadingCompletedRides] = useState(false);
   const [completedRides, setCompletedRides] = useState([]);
   const [completedDrives, setCompletedDrives] = useState([]);
@@ -112,55 +113,124 @@ const AccountSettings = ({ setChilDIdx, removeToken, token, page }) => {
             <View>
               <Text style={[styles.accountInfoTitle]}>Completed Rides</Text>
             </View>
-            
-            {isLoadingCompletedRides ? 
-              <ActivityIndicator  size="large" color="#0000ff" style={{marginTop: 20}} />: 
-              
-              <View style={{marginTop: 50, height: '70%', flexDirection: 'column'}}>
-                <View>
 
-              <Text style={[styles.accountInfoText]}>Rides Taken</Text>
-              <ScrollView>
-                {completedRides.map((ride, idx) => (
-                  <View key={idx} style={{borderColor: 'black'}}>
-                    <Text><Text style={styles.rideDataTitle}>Ride Id: </Text>{ride["ride_id"]}</Text>
-                    <Text><Text style={styles.rideDataTitle}>Start Point: </Text>{ride["start_point"].split(":")[0]}</Text>
-                    <Text><Text style={styles.rideDataTitle}>End Point: </Text>{ride["destination"].split(":")[0]}</Text>
-                    <Text><Text style={styles.rideDataTitle}>Ride Cost: </Text>{ride["rider_cost"]}</Text>
-                  </View>
-                ))}
-              </ScrollView>
+            {isLoadingCompletedRides ? (
+              <ActivityIndicator
+                size="large"
+                color="#0000ff"
+                style={{ marginTop: 20 }}
+              />
+            ) : (
+              <View
+                style={{
+                  marginTop: 50,
+                  height: "70%",
+                  flexDirection: "column",
+                }}
+              >
+                <View style={{ flex: 1 }}>
+                  <Text style={[styles.accountInfoText]}>Rides Taken</Text>
+                  <ScrollView>
+                    {!completedRides.length ? (
+                      <Text
+                        style={{
+                          ...styles.rideDataTitle,
+                          fontSize: 16,
+                          textAlign: "center",
+                          marginTop: 20,
+                        }}
+                      >
+                        No Rides Taken Yet
+                      </Text>
+                    ) : null}
+                    {completedRides.map((ride, idx) => (
+                      <View key={idx} style={styles.completedRideBox}>
+                        <Text style={styles.rideInfoText}>
+                          <Text style={styles.rideDataTitle}>Ride Id: </Text>
+                          {ride["ride_id"]}
+                        </Text>
+                        <Text style={styles.rideInfoText}>
+                          <Text style={styles.rideDataTitle}>
+                            Start Point:{" "}
+                          </Text>
+                          {ride["start_point"].split(":")[0]}
+                        </Text>
+                        <Text style={styles.rideInfoText}>
+                          <Text style={styles.rideDataTitle}>End Point: </Text>
+                          {ride["destination"].split(":")[0]}
+                        </Text>
+                        <Text style={styles.rideInfoText}>
+                          <Text style={styles.rideDataTitle}>Ride Cost: </Text>$
+                          {ride["rider_cost"]}
+                        </Text>
+                      </View>
+                    ))}
+                  </ScrollView>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ ...styles.accountInfoText }}>Drives Made</Text>
+                  <ScrollView>
+                    {!completedDrives.length ? (
+                      <Text
+                        style={{
+                          ...styles.rideDataTitle,
+                          fontSize: 16,
+                          textAlign: "center",
+                          marginTop: 20,
+                        }}
+                      >
+                        No Drives Taken Yet
+                      </Text>
+                    ) : null}
+
+                    {completedDrives.map((ride, idx) => (
+                      <View key={idx} style={styles.completedRideBox}>
+                        <Text style={styles.rideInfoText}>
+                          <Text style={styles.rideDataTitle}>Ride Id: </Text>
+                          {ride["ride_id"]}
+                        </Text>
+                        <Text style={styles.rideInfoText}>
+                          <Text style={styles.rideDataTitle}>
+                            Start Point:{" "}
+                          </Text>
+                          {ride["start_point"].split(":")[0]}
+                        </Text>
+                        <Text style={styles.rideInfoText}>
+                          <Text style={styles.rideDataTitle}>End Point: </Text>
+                          {ride["destination"].split(":")[0]}
+                        </Text>
+                        <Text style={styles.rideInfoText}>
+                          <Text style={styles.rideDataTitle}>
+                            Amount Made:{" "}
+                          </Text>
+                          ${ride["driver_earnings"]}
+                        </Text>
+                        <Text style={styles.rideInfoText}>
+                          <Text style={styles.rideDataTitle}>Time Taken: </Text>
+                          {ride["duration"]}
+                        </Text>
+                      </View>
+                    ))}
+                  </ScrollView>
+                </View>
               </View>
-              <View>
-              <Text style={{...styles.accountInfoText, marginTop: 50}}>Drives Made</Text>
-              <ScrollView>
-                {completedDrives.map((ride, idx) => (
-                  <View key={idx} style={styles.completedRideBox}>
-                    <Text><Text style={styles.rideDataTitle}>Ride Id: </Text>{ride["ride_id"]}</Text>
-                    <Text><Text style={styles.rideDataTitle}>Start Point: </Text>{ride["start_point"].split(":")[0]}</Text>
-                    <Text><Text style={styles.rideDataTitle}>End Point: </Text>{ride["destination"].split(":")[0]}</Text>
-                    <Text><Text style={styles.rideDataTitle}>Amount Made: </Text>{ride['driver_earnings']}</Text>
-                    <Text><Text style={styles.rideDataTitle}>Time Taken: </Text>{ride['duration']}</Text>
-                  </View>
-                ))}
-              </ScrollView>
-              </View>
-            </View>}
+            )}
             <View>
-
-            <TouchableOpacity
-              onPress={() => setShouldDisplayCompletedRides(false)}
-              style={{...styles.completedRidesButton, marginTop: 50}}
-            >
-              <Text>Show Account Info</Text>
-            </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => setShouldDisplayCompletedRides(false)}
+                style={{ ...styles.completedRidesButton, marginTop: 20 }}
+              >
+                <Text>Show Account Info</Text>
+              </TouchableOpacity>
             </View>
           </View>
         ) : (
           <View style={styles.accountInfo}>
             <View style={styles.account_container}>
               <View>
-                <Text style={[styles.accountInfoTitle]}>Account Information</Text>
+                <Text style={[styles.accountInfoTitle]}>
+                  Account Information
+                </Text>
               </View>
               <View style={styles.info_container}>
                 <Text style={styles.header}>Username</Text>
@@ -278,11 +348,16 @@ const styles = StyleSheet.create({
   },
   completedRideBox: {
     marginTop: 10,
-    borderColor: '#2345d'
+    padding: 10,
+    borderWidth: 2,
+    borderRadius: 5,
   },
   rideDataTitle: {
-    fontWeight: 'bold'
-  }
+    fontWeight: "bold",
+  },
+  rideInfoText: {
+    marginBottom: 2,
+  },
 });
 
 export default AccountSettings;
