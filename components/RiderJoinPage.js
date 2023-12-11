@@ -624,7 +624,7 @@ function HitchLandingPage({ setChildIdx, token, page, background }) {
         source={background}
         style={{ flex: 1, resizeMode: "cover" }}
       >
-        <View style={{ ...googleStyles.test2, marginTop: 20 }}>
+        <View style={{ ...googleStyles.test2, marginTop: 0 }}>
           <View
             style={{
               ...styles.SelectionMenu,

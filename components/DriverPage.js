@@ -289,7 +289,7 @@ function MapWithCurrentLocation({ setChildIdx, token, page, background }) {
               height: 40,
               width: "80%",
               marginLeft: "10%",
-              marginTop: 65,
+              marginTop: 45,
             }}
           >
             <Text style={{ fontSize: 16, textAlign: "center", marginTop: 10 }}>
@@ -334,7 +334,7 @@ function MapWithCurrentLocation({ setChildIdx, token, page, background }) {
     <View style={styles.container}>
       {/* //below is the input field for the start and end location */}
 
-      <View style={{ ...googleStyles.test, marginTop: 20 }}>
+      <View style={{ ...googleStyles.test, marginTop: 0 }}>
         <TouchableOpacity
           onPress={() => {
             setShouldDisplayPage(true);
