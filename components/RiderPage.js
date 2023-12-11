@@ -625,7 +625,7 @@ function HitchLandingPage({ setChildIdx, token, page, background }) {
     <View style={styles.container}>
       {/* //below is the input field for the start and end location */}
 
-      <View style={{ ...googleStyles.test, marginTop: 20 }}>
+      <View style={{ ...googleStyles.test, marginTop: 0 }}>
         <View style={[showscreen < 2 ? styles : googleStyles.container]}>
           <View
             style={{
