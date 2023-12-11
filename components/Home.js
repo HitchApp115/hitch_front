@@ -61,7 +61,7 @@ export default function HomePage({ setChildIdx, removeToken, token, page, showAc
               source={require("../assets/Hitch.png")}
               style={{ width: 100, height: 100 }}
             />
-            <Text style={{ color: "white" }}>Hitch a Ride</Text>
+            <Text style={{ color: "white", fontSize:25, fontWeight: 700,textShadowRadius: 8 ,textShadowColor: 'black', }}>Hitch a Ride</Text>
           </Pressable>
         </View>
         <View style={[MenuStyle.select_box, {margin: getMargin()}]}>
@@ -89,7 +89,7 @@ export default function HomePage({ setChildIdx, removeToken, token, page, showAc
               source={require("../assets/post.png")}
               style={{ width: 100, height: 100 }}
             />
-            <Text style={{ color: "white" }}>Drivers</Text>
+            <Text style={{ color: "white", fontSize:25, fontWeight: 700,textShadowRadius: 8 ,textShadowColor: 'black', }}>Drivers</Text>
           </Pressable>
         </View>
         {showActiveDrives &&(
@@ -118,7 +118,7 @@ export default function HomePage({ setChildIdx, removeToken, token, page, showAc
               source={require('../assets/activeDrive.png')}
               style={{ width: 100, height: 100 }}
             />
-            <Text style={{ color: "white" }}>Active Drive</Text>
+            <Text style={{ color: "white",fontSize:25, fontWeight: 700,textShadowRadius: 8 ,textShadowColor: 'black', }}>Active Drive</Text>
           </Pressable>
         </View>
         )    
@@ -149,7 +149,7 @@ export default function HomePage({ setChildIdx, removeToken, token, page, showAc
                   source={require("../assets/post.png")}
                   style={{ width: 100, height: 100 }}
                 />
-                <Text style={{ color: "white" }}>Active Passenger</Text>
+                <Text style={{ color: "white",fontSize:25, fontWeight: 700,textShadowRadius: 8 ,textShadowColor: 'black', }}>Active Passenger</Text>
               </Pressable>
             </View>
         )}
