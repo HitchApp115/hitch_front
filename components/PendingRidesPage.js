@@ -93,12 +93,12 @@ export default PendingRidesPage = ({ setChildIdx, page, token }) => {
 
   return (
     <>
-      <TouchableOpacity
+      {/* <TouchableOpacity
         onPress={() => setChildIdx(2)}
         style={AccountStyles.backBtnContainer}
       >
         <Image source={back} style={AccountStyles.backbtn} />
-      </TouchableOpacity>
+      </TouchableOpacity> */}
       <ScrollView contentContainerStyle={{ paddingBottom: 50 }}>
         {isDownloadingCreatedRides ? (
           <View style={{marginTop: 20, backgroundColor: 'white', padding: 20, width: 70, borderRadius: 5, marginLeft: 'auto', marginRight: 'auto' }}>

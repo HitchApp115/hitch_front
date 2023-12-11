@@ -297,7 +297,14 @@ function MapWithCurrentLocation({ setChildIdx, token, page, background }) {
             </Text>
           </TouchableOpacity>
 
-          <View
+          <View style={{flexDirection:"row"}}>
+            <TouchableOpacity
+        onPress={() => setChildIdx(2)}
+        style={styles.backBtnContainer}
+      >
+        <Image source={back} style={styles.backbtn} />
+      </TouchableOpacity>
+             <View
             style={{
               padding: 5,
               borderRadius: 5,
@@ -305,7 +312,7 @@ function MapWithCurrentLocation({ setChildIdx, token, page, background }) {
               textAlign: "center",
               backgroundColor: "white",
               width: "70%",
-              marginLeft: "auto",
+              marginLeft: "0%",
               marginRight: "auto",
               marginTop: 5,
             }}
@@ -319,6 +326,8 @@ function MapWithCurrentLocation({ setChildIdx, token, page, background }) {
               Created Rides
             </Text>
           </View>
+          </View>
+       
 
           <PendingRidesPage
             setChildIdx={setChildIdx}
