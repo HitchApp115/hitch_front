@@ -16,6 +16,20 @@ export default function HomePage({ setChildIdx, removeToken, token, page, showAc
 
   };
 
+  const getMargin = () => {
+    if (showActiveDrives || showActivePassenger) {
+      return 10;
+    } else {
+      return 40;
+    }
+  };
+  const getMarginTop = () => {
+    if (showActiveDrives || showActivePassenger) {
+      return 80;
+    } else {
+      return 40;
+    }
+  };
 
   handlePendingRidesPress = () => {
     setChildIdx(5)
@@ -27,8 +41,8 @@ export default function HomePage({ setChildIdx, removeToken, token, page, showAc
       style={MenuStyle.backgroundImage}
     >
       <AccountSettings setChilDIdx={setChildIdx} removeToken={removeToken} token={token} page={page}/>
-      <View style={MenuStyle.container}>
-        <View style={MenuStyle.select_box}>
+      <View style={[MenuStyle.container, {marginTop: getMarginTop()}]}>
+        <View style={[MenuStyle.select_box, {margin: getMargin()}]}>
           <Pressable
             style={({ pressed }) => [
               {
@@ -51,12 +65,12 @@ export default function HomePage({ setChildIdx, removeToken, token, page, showAc
           >
             <Image
               source={require("../assets/Hitch.png")}
-              style={{ width: 50, height: 50 }}
+              style={{ width: 100, height: 100 }}
             />
             <Text style={{ color: "white" }}>Hitch a Ride</Text>
           </Pressable>
         </View>
-        <View style={MenuStyle.select_box}>
+        <View style={[MenuStyle.select_box, {margin: getMargin()}]}>
           <Pressable
             onPress={() => setChildIdx(3)}
             style={({ pressed }) => [
@@ -79,13 +93,13 @@ export default function HomePage({ setChildIdx, removeToken, token, page, showAc
           >
             <Image
               source={require("../assets/post.png")}
-              style={{ width: 50, height: 50 }}
+              style={{ width: 100, height: 100 }}
             />
             <Text style={{ color: "white" }}>Drivers</Text>
           </Pressable>
         </View>
         {showActiveDrives &&(
-          <View style={MenuStyle.select_box}>
+          <View style={[MenuStyle.select_box, {margin: getMargin()}]}>
           <Pressable
             onPress={()=>{setChildIdx(6)}}
             style={({ pressed }) => [
@@ -108,7 +122,7 @@ export default function HomePage({ setChildIdx, removeToken, token, page, showAc
           >
             <Image
               source={require("../assets/post.png")}
-              style={{ width: 50, height: 50 }}
+              style={{ width: 100, height: 100 }}
             />
             <Text style={{ color: "white" }}>Active Drive</Text>
           </Pressable>
@@ -116,7 +130,7 @@ export default function HomePage({ setChildIdx, removeToken, token, page, showAc
         )    
         }
         {showActivePassenger &&(
-              <View style={MenuStyle.select_box}>
+              <View style={[MenuStyle.select_box, {margin: getMargin()}]}>
               <Pressable
                 onPress={()=>{setChildIdx(7)}}
                 style={({ pressed }) => [
@@ -139,7 +153,7 @@ export default function HomePage({ setChildIdx, removeToken, token, page, showAc
               >
                 <Image
                   source={require("../assets/post.png")}
-                  style={{ width: 50, height: 50 }}
+                  style={{ width: 100, height: 100 }}
                 />
                 <Text style={{ color: "white" }}>Active Passenger</Text>
               </Pressable>
