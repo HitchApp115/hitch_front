@@ -11,6 +11,9 @@ import RiderPage from "./components/RiderPage";
 import ActiveDrivePage from "./components/ActiveDrivePage";
 import ActivePassengerPage from "./components/ActivePassengerPage";
 
+import background from './assets/background.png'
+import backgroundVideo from './assets/video_background.mp4'
+
 // where to find the backend
 const page = "https://dolphin-app-7udnd.ondigitalocean.app";
 
@@ -114,13 +117,14 @@ export default function App() {
   };
 
   const children = [
-    <LoginPage setChildIdx={setChildIdx} storeToken={storeToken} page={page} />,
+    <LoginPage setChildIdx={setChildIdx} storeToken={storeToken} page={page} backgroundVideo={backgroundVideo} />,
     <AccountCreationPage
       setChildIdx={setChildIdx}
       storeToken={storeToken}
       removeToken={removeToken}
       token={token}
       page={page}
+      background={background}
     />,
     <HomePage
       setChildIdx={setChildIdx}
@@ -129,11 +133,13 @@ export default function App() {
       token={token}
       showActivePassenger={!!activeRides.length}
       showActiveDrives={!!Object.keys(activeDrives).length}
+      background={background}
     />,
     <DriverPage
       setChildIdx={setChildIdx}
       token={token}
       page={page}
+      background={background}
     />,
     <RiderPage setChildIdx={setChildIdx} token={token} page={page} />,
     <PendingRidesPage setChildIdx={setChildIdx} page={page} token={token} />,

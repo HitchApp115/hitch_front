@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import AccountSettings from "./AccountSettingsPage";
 
-export default function HomePage({ setChildIdx, removeToken, token, page, showActivePassenger, showActiveDrives}) {
+export default function HomePage({ setChildIdx, removeToken, token, page, showActivePassenger, showActiveDrives, background}) {
   
   const handleHitchPress = () => {
     setChildIdx(4);
@@ -23,7 +23,7 @@ export default function HomePage({ setChildIdx, removeToken, token, page, showAc
 
   return (
     <ImageBackground
-      source={require("../assets/background.png")}
+      source={background}
       style={MenuStyle.backgroundImage}
     >
       <AccountSettings setChilDIdx={setChildIdx} removeToken={removeToken} token={token} page={page}/>

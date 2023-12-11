@@ -19,8 +19,7 @@ const AccountSettings = ({ setChilDIdx, removeToken, token, page }) => {
   const [email, setEmail] = useState("Loading...");
   const [phone, setPhone] = useState("Loading...");
 
-  const [shouldDisplayCompletedRides, setShouldDisplayCompletedRides] =
-    useState(false);
+  const [shouldDisplayCompletedRides, setShouldDisplayCompletedRides] = useState(false);
   const [isLoadingCompletedRides, setIsLoadingCompletedRides] = useState(false);
   const [completedRides, setCompletedRides] = useState([]);
   const [completedDrives, setCompletedDrives] = useState([]);
@@ -115,9 +114,9 @@ const AccountSettings = ({ setChilDIdx, removeToken, token, page }) => {
             </View>
             
             {isLoadingCompletedRides ? 
-              <ActivityIndicator  size="large" color="#0000ff" />: 
+              <ActivityIndicator  size="large" color="#0000ff" style={{marginTop: 20}} />: 
               
-              <View style={{marginTop: 50}}>
+              <View style={{marginTop: 50, height: '70%'}}>
 
               <Text style={[styles.accountInfoText]}>Rides Taken</Text>
               <ScrollView>
@@ -256,18 +255,20 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFC5C5",
     padding: 10,
     height: 50,
-    borderRadius: 30,
+    borderRadius: 5,
     justifyContent: "center",
     alignItems: "center",
+    borderWidth: 2,
   },
   completedRidesButton: {
     marginTop: 20,
     backgroundColor: "#FFC5C5",
     padding: 10,
     height: 50,
-    borderRadius: 30,
+    borderRadius: 5,
     justifyContent: "center",
     alignItems: "center",
+    borderWidth: 2,
   },
   completedRideBox: {
     marginTop: 10,

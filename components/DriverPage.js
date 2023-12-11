@@ -28,7 +28,6 @@ import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplet
 import AccountSettings from "./AccountSettingsPage";
 import axios from "axios";
 import PendingRidesPage from "./PendingRidesPage";
-import background from '../assets/background.png'
 /* 
 MapView: displays the actual maps
 Polyline: used to draw the route between the two points
@@ -102,7 +101,7 @@ function decodePolyline(encoded) {
   return poly;
 }
 
-function MapWithCurrentLocation({ setChildIdx, token, page }) {
+function MapWithCurrentLocation({ setChildIdx, token, page, background }) {
   const domain = "https://dolphin-app-7udnd.ondigitalocean.app";
 
   const [showscreen, setShowScreen] = useState(0);
@@ -279,12 +278,35 @@ function MapWithCurrentLocation({ setChildIdx, token, page }) {
             resizeMode: "cover"}}
       >
           <View style={styles.container}>
-          <View style={{...styles.SelectionMenu, marginTop: 65, width: '80%', borderRadius: 5, marginHorizontal: '10%', backgroundColor: '#A7D0F1' }}>
-              <TouchableOpacity onPress={() => setShouldDisplayPage(false)} style={{...styles.SelectionButton, borderRadius: 5}}>
-                <Text style={{fontSize: 16, textAlign: 'center', marginTop: 10}}>Create a ride</Text>
-              </TouchableOpacity> 
-            </View>           
-            <Text style={{fontSize: 30, textAlign: 'center', }}>Created Rides</Text>
+          <TouchableOpacity
+              onPress={() => {
+                setShouldDisplayPage(false)
+              }}
+              style={{ ...styles.SelectionButton, flexGrow: 0, borderRadius: 5, backgroundColor: '#A7D0F1', height: 40, width: '80%', marginLeft: '10%', marginTop: 65 }}
+            >
+              <Text style={{ fontSize: 16, textAlign: "center", marginTop: 10}}>
+                Create a Ride
+              </Text>
+            </TouchableOpacity>
+              
+
+            <View style={{
+                padding: 5,
+                borderRadius: 5,
+                fontSize: 30, 
+                textAlign: 'center', 
+                backgroundColor: 'white',
+                width: '70%',
+                marginLeft: 'auto', 
+                marginRight: 'auto',
+                marginTop: 5
+            }}>
+            <Text style={{
+                fontSize: 30,
+                textAlign: 'center'
+                  }}>Created Rides</Text>
+            </View>          
+            
             
         <PendingRidesPage setChildIdx={setChildIdx} token={token} page={page} />
       </View>
@@ -309,6 +331,7 @@ function MapWithCurrentLocation({ setChildIdx, token, page }) {
                 View Created Rides
               </Text>
             </TouchableOpacity>
+            
             <Text style={{textAlign: 'center', fontSize: 30}}>Create a Ride</Text>
 
             <GooglePlacesAutocomplete
@@ -575,12 +598,12 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function PostLandingPage({ setChildIdx, token, page }) {
+export default function PostLandingPage({ setChildIdx, token, page, background }) {
   return (
     <NavigationContainer>
       <View style={{ flex: 1 }}>
         {/* <AccountSettings /> */}
-        <MapWithCurrentLocation setChildIdx={setChildIdx} token={token} page={page} />
+        <MapWithCurrentLocation setChildIdx={setChildIdx} token={token} page={page} background={background}/>
         {/* <Inputs /> */}
       </View>
     </NavigationContainer>

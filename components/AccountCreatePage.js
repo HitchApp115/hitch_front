@@ -15,7 +15,7 @@ import axios from "axios";
 import back from "../assets/back.png";
 // set where the backend is running here
 
-const AccountCreationPage = ({ setChildIdx, storeToken, page }) => {
+const AccountCreationPage = ({ setChildIdx, storeToken, page, background }) => {
   const [create_first_name, SetCreateFirstName] = useState("");
   const [create_last_name, SetCreateLastName] = useState("");
   const [create_username, SetCreateUsername] = useState("");
@@ -113,7 +113,7 @@ const AccountCreationPage = ({ setChildIdx, storeToken, page }) => {
 
   return (
     <ImageBackground
-      source={require("../assets/background.png")}
+      source={background}
       style={AccountStyles.backgroundImage}
     >
       

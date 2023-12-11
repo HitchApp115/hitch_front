@@ -7,11 +7,13 @@ import {
   TouchableOpacity,
   ScrollView,
   Image,
+  ImageBackground
 } from "react-native";
-import back from "../assets/back.png";
 import axios from "axios";
 
-import MapWithPolyline from "./ActiveRideMap";
+import ActiveRideMap from "./ActiveRideMap";
+import back from "../assets/back.png";
+import background from '../assets/background.png'
 
 function decodePolyline(encoded) {
   if (!encoded) {
@@ -65,10 +67,14 @@ const parseCoordinates = (coordString) => {
   };
 };
 
-export default function ActiveRide({ setChildIdx, removeToken, token, page, activeDrives }) {
-
-  const [start, setStart] = useState([]);
-  const [destination, setDestination] = useState([]);
+export default function ActiveRide({
+  setChildIdx,
+  token,
+  page,
+  activeDrives,
+}) {
+  const [start, setStart] = useState(":");
+  const [destination, setDestination] = useState(":");
   const [waypoints, setWaypoints] = useState([]);
   const [showMap, setShowMap] = useState(false);
   const [coords, setCoords] = useState([]);
@@ -80,7 +86,7 @@ export default function ActiveRide({ setChildIdx, removeToken, token, page, acti
   const [driver_id, setDriver_id] = useState([]);
   const [ride_start_time, setRide_start_time] = useState([]);
   const [accepted_riders, setAccepted_riders] = useState([]);
-  const [cost_per_rider, setCost_per_rider] = useState([]);
+  const [cost_per_rider, setCost_per_rider] = useState(0);
   const [maximum_riders, setMaximum_riders] = useState([]);
   const [is_active, setIs_active] = useState([]);
   const [pickup_dist, setPickup_dist] = useState([]);
@@ -88,9 +94,8 @@ export default function ActiveRide({ setChildIdx, removeToken, token, page, acti
   const [directionsCalled, setDirectionsCalled] = useState(false);
 
   useEffect(() => {
-    console.log("222:", activeDrives)
-    extractRoutePoints(activeDrives)
-  }, [])
+    extractRoutePoints(activeDrives);
+  }, []);
 
   const getDirections = async (startLocation, endLocation, waypoints) => {
     //convert the input to a format that the API can understand y extracting value before colon
@@ -180,7 +185,6 @@ export default function ActiveRide({ setChildIdx, removeToken, token, page, acti
     // Combine the points into a single flat array
   }
 
-  const startText = "start\n" + start + "\n";
   const ArrayToTextWithLineBreaks = ({ items }) => {
     return (
       <View>
@@ -195,45 +199,45 @@ export default function ActiveRide({ setChildIdx, removeToken, token, page, acti
     );
   };
 
-  const endText = "end\n" + destination;
-
-  
   async function CompletedRides() {
-    const config = {
-        headers: {
-            'Authorization': token
+    axios
+      .post(
+        `${page}/rides/end`,
+        {
+          rideId: ride_id,
+        },
+        {
+          headers: {
+            Authorization: token,
+          },
         }
-    };
-  
-  // Data to be sent in the body of the POST request
-    const data = {
-        rideId: ride_id
-    };
-    
-  // Making the POST request
-    axios.post(`${page}/rides/end`, data, config)
-      .then(response => {
-          alert("Ride Completed!");
-          setChildIdx(2); 
+      )
+      .then((response) => {
+        alert("Ride Completed!");
+        setChildIdx(2);
       })
-      .catch(error => {
-          console.error('Error:', error.response ? error.response.data : error.message);
+      .catch((error) => {
+        console.error(
+          "Error:",
+          error.response ? error.response.data : error.message
+        );
       });
   }
-    
+
   return (
+    <ImageBackground source={background} style={{flex: 1,
+        resizeMode: "cover"}} >
     <View style={styles.container}>
       <View>
         <TouchableOpacity onPress={() => setChildIdx(2)}>
           <Image source={back} />
         </TouchableOpacity>
       </View>
-      
+
       <View style={styles.btnContainer}>
         <TouchableOpacity
           style={styles.btn}
           onPress={() => {
-
             if (!directionsCalled) {
               getDirections(start, destination, waypoints);
               setDirectionsCalled(true);
@@ -242,8 +246,7 @@ export default function ActiveRide({ setChildIdx, removeToken, token, page, acti
             setShowMap((showMap) => !showMap);
           }}
         >
-          {showMap && <Text>Show pickup Info</Text>}
-          {!showMap && <Text>show map</Text>}
+          <Text>{showMap ? "Show Pickup Info" : "Show Map"}</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.btn}
@@ -255,39 +258,52 @@ export default function ActiveRide({ setChildIdx, removeToken, token, page, acti
           <Text>Completed Ride!</Text>
         </TouchableOpacity>
       </View>
-      {showMap && (
-        <MapWithPolyline
+      {showMap ? (
+        <ActiveRideMap
           polylineCoordinates={coords}
           startMarkerCoord={startCoord}
           endMarkerCoord={endCoord}
           waypointsCoord={waypointsCoord}
+        extraStyle={{
+            width:'100%',
+            marginTop: 10
+        }}
         />
-       )}
-      {!showMap && (
-        <ScrollView>
-          <View style={styles.container}>
-            <Text>Ride ID: {ride_id}</Text>
-            <Text>Driver ID: {driver_id}</Text>
-            <Text>Ride Start Time: {ride_start_time}</Text>
-            <Text>Accepted Riders: {accepted_riders}</Text>
-            <Text>Cost Per Rider: {cost_per_rider}</Text>
-            <Text>Maximum Riders: {maximum_riders}</Text>
-            <Text>Is Active: {is_active}</Text>
-            <Text>Pickup Distance: {pickup_dist} Km</Text>
+      ) : (
+        <ScrollView style={{padding: 10}}>
+          <View style={styles.miniContainer}>
+            <Text><Text style={styles.bold}>Ride ID: </Text>{ride_id}</Text>
+            <Text><Text style={styles.bold}>Ride Start Time: </Text>{new Date(ride_start_time).toLocaleString()}</Text>
+            <Text><Text style={styles.bold}>Ride Filled: </Text>{accepted_riders}/{maximum_riders} Riders</Text>
+            <Text><Text style={styles.bold}>Cost Per Rider: </Text>${cost_per_rider.toFixed(2)}</Text>
+            <Text><Text style={styles.bold}>Amount Made for trip: </Text>${(accepted_riders * cost_per_rider).toFixed(2)}</Text>
+            <Text><Text style={styles.bold}>Pickup Distance: </Text>{pickup_dist} Km</Text>
           </View>
-          <View style={styles.rideInfo}>
-            <Text style={styles.rideInfoText}>Pickup Information</Text>
-          </View>
-          <View style={styles.rideInfo}>
-            <Text style={styles.rideInfoText}>{startText}</Text>
-          </View>
-          <ArrayToTextWithLineBreaks items={waypoints} />
-          <View style={styles.rideInfo}>
-            <Text style={styles.rideInfoText}>{endText}</Text>
-          </View>
+        <View style={styles.miniContainer}>
+            <View style={styles.rideInfo}>
+                <Text style={styles.rideInfoTitle}>Pickup Information</Text>
+            </View>
+            <View style={styles.rideInfo}>
+                <Text style={styles.rideInfoText}>Drive Start: </Text>
+                <Text style={styles.rideInfoTextSmall}>{start.split(":")[0]}</Text>
+            </View>
+            <View style={styles.rideInfo}>
+                <Text style={styles.rideInfoText}>Pickup Spots: </Text>
+                {waypoints.concat(waypoints).map((item, index) => (
+                <Text style={styles.rideInfoTextSmall} key={index}>
+                    {item.split(':')[0]}
+                </Text>
+                ))}
+            </View>
+            <View style={styles.rideInfo}>
+                <Text style={styles.rideInfoText}>Drive End: </Text>
+                <Text style={styles.rideInfoTextSmall }>{destination.split(":")[0]}</Text>
+            </View>
+        </View>
         </ScrollView>
       )}
     </View>
+    </ImageBackground>
   );
 }
 
@@ -295,8 +311,15 @@ const styles = StyleSheet.create({
   container: {
     paddingTop: 50,
     flex: 1,
+    //backgroundColor: "#fff",
+    // padding: 10,
+  },
+  miniContainer: {
+    marginTop: 50,
+    flex: 1,
     backgroundColor: "#fff",
     padding: 10,
+    borderRadius: 5
   },
   displayInfo: {
     height: 50,
@@ -315,31 +338,42 @@ const styles = StyleSheet.create({
     marginTop: 5,
     backgroundColor: "#E5D4FF",
     borderRadius: 10,
+    borderRadius: 5
   },
   btn: {
     height: 50,
-    width: "50%",
     marginTop: 5,
     backgroundColor: "#E5D4FF",
     justifyContent: "center",
     alignItems: "center",
-
+    padding: 10,
     borderRadius: 10,
   },
   btnContainer: {
     flexDirection: "row",
+    gap: 10,
+    justifyContent: "center"
   },
   rideInfo: {
-    // height: 40,
     width: "100%",
-    marginTop: 30,
-    // backgroundColor: "#E5D4FF",
-    borderRadius: 10,
+    marginBottom: 30,
   },
   rideInfoText: {
     fontFamily: "Helvetica",
-    fontSize: 20,
+    fontSize: 18,
   },
+  rideInfoTextSmall: {
+    fontFamily: "Helvetica",
+    fontSize: 14,
+    marginTop: 5
+  },
+  rideInfoTitle: {
+    fontFamily: "Helvetica",
+    fontSize: 24,
+  },
+  bold: {
+    fontWeight: 'bold'
+  }
   // container: {
   //   padding: 20,
   // },

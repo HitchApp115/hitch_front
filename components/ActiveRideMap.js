@@ -148,7 +148,7 @@ const createMapMarkers = (coordinatesArray, markerImage) => {
   return null;
 };
 
-const MapWithPolyline = ({ polylineCoordinates,  startMarkerCoord, endMarkerCoord, waypointsCoord}) => {
+const MapWithPolyline = ({ polylineCoordinates,  startMarkerCoord, endMarkerCoord, waypointsCoord, extraStyle = {}}) => {
   const [region, setRegion] = useState(null);
 
   useEffect(() => {
@@ -184,7 +184,7 @@ const MapWithPolyline = ({ polylineCoordinates,  startMarkerCoord, endMarkerCoor
   
   return (
     <MapView
-      style={{ flex: 1 }}
+      style={{ flex: 1, ...extraStyle }}
       region={region}
       customMapStyle={RetroMapStyle}
       provider={PROVIDER_GOOGLE}

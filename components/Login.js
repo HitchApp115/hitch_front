@@ -16,7 +16,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // where to find the backend
 
-function LoginPage({ setChildIdx, storeToken, page }) {
+function LoginPage({ setChildIdx, storeToken, page, backgroundVideo }) {
   const [login, SetLogin] = useState("");
   const [password, SetPassword] = useState("");
 
@@ -24,10 +24,6 @@ function LoginPage({ setChildIdx, storeToken, page }) {
     return login.trim() === "" || password.trim() === "";
   }
 
-  const loginData = () => ({
-    username: login,
-    password: password,
-  });
 
   const handleLogin = async () => {
     // check if any of the fields are empty
@@ -38,7 +34,10 @@ function LoginPage({ setChildIdx, storeToken, page }) {
     } else {
       try {
         
-        const response = axios.post(page + "/account/login", loginData())
+        const response = axios.post(page + "/account/login", {
+            username: login,
+            password: password,
+          })
           .then(response => {
             storeToken(response.data.loginToken);
             setChildIdx(2);
@@ -47,10 +46,7 @@ function LoginPage({ setChildIdx, storeToken, page }) {
             alert(response.response.data)
           })
 
-        // if the login is successful, set the token and go to the home page
-
       } catch (e) {
-        // e is an object with a response property that has data and status
       }
     }
   };
@@ -60,7 +56,7 @@ function LoginPage({ setChildIdx, storeToken, page }) {
     <View style={{ flex: 1 }}>
       <Video
         ref={(ref) => (this.videoRef = ref)}
-        source={require("../assets/video_background.mp4")} // Can be a URL or a local file.
+        source={backgroundVideo} // Can be a URL or a local file.
         style={styles.backgroundVideo}
         muted={true}
         resizeMode={"cover"}
