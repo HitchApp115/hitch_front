@@ -124,7 +124,7 @@ const AccountSettings = ({ setChilDIdx, removeToken, token, page }) => {
               <View
                 style={{
                   marginTop: 50,
-                  height: "70%",
+                  height: "75%",
                   flexDirection: "column",
                 }}
               >

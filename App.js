@@ -15,6 +15,7 @@ import ActivePassengerPage from "./components/ActivePassengerPage";
 import background from './assets/background.png'
 import backgroundVideo from './assets/video_background.mp4'
 
+
 // where to find the backend
 const page = "https://dolphin-app-7udnd.ondigitalocean.app";
 
@@ -46,7 +47,8 @@ export default function App() {
           require('./assets/video_background.mp4'),
           require('./assets/Hitch.png'),
           require('./assets/logo.png'),
-          require('./assets/post.png')
+          require('./assets/post.png'),
+          require('./assets/activeDrive.png')
         ]);
 
 

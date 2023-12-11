@@ -10,12 +10,6 @@ import {
 import AccountSettings from "./AccountSettingsPage";
 
 export default function HomePage({ setChildIdx, removeToken, token, page, showActivePassenger, showActiveDrives, background}) {
-  
-  const handleHitchPress = () => {
-    setChildIdx(4);
-
-  };
-
   const getMargin = () => {
     if (showActiveDrives || showActivePassenger) {
       return 10;
@@ -121,7 +115,7 @@ export default function HomePage({ setChildIdx, removeToken, token, page, showAc
             ]}
           >
             <Image
-              source={require("../assets/post.png")}
+              source={require('../assets/activeDrive.png')}
               style={{ width: 100, height: 100 }}
             />
             <Text style={{ color: "white" }}>Active Drive</Text>

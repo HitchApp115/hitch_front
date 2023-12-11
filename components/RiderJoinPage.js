@@ -101,6 +101,7 @@ function HitchLandingPage({ setChildIdx, token, page, background }) {
   const [isDownloadingJoinableRides, setIsDownloadingJoinableRides] =
     useState(false);
   const [maxPrice, setMaxPrice] = useState("");
+  const [maxDropoffDistance, setMaxDropoffDistance] = useState("");
   const [rides, setRides] = useState([]);
   const [pendingRides, setPendingRides] = useState([]);
   const [showChild, setShowChild] = useState(0);
@@ -228,11 +229,11 @@ function HitchLandingPage({ setChildIdx, token, page, background }) {
 
   async function ViewOpenRides() {
     setIsDownloadingJoinableRides(true);
-    const floatNumber = parseFloat(maxPrice);
-
     const params = {
       startPoint: `${startId}:${startRegion.latitude},${startRegion.longitude}`,
-      maxPrice: floatNumber,
+      endPoint:  `${endId}:${endingRegion.latitude},${endingRegion.longitude}`,
+      maxPrice: parseFloat(maxPrice),
+      maxDropoffDist: parseFloat(maxDropoffDistance)
     };
     axios
       .get(`${page}/rides/view`, { params })
@@ -769,6 +770,14 @@ function HitchLandingPage({ setChildIdx, token, page, background }) {
               placeholder="Enter maximum price"
               // onChangeText={(val) => setMaxPrice(parseFloat(val))}
               onChangeText={(val) => setMaxPrice(val)}
+              keyboardType="numeric" // This ensures a numeric keyboard is shown
+            ></TextInput>
+            <TextInput
+              value={maxDropoffDistance}
+              style={styles.postInputTextInputs}
+              placeholder="Max Distance from destination"
+              // onChangeText={(val) => setMaxPrice(parseFloat(val))}
+              onChangeText={(val) => setMaxDropoffDistance(val)}
               keyboardType="numeric" // This ensures a numeric keyboard is shown
             ></TextInput>
 
