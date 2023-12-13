@@ -50,7 +50,10 @@ export default function App() {
           require('./assets/post.png'),
           require('./assets/activeDrive.png'),
           require('./assets/openCar.png'),
-          require('./assets/background2.png')
+          require('./assets/background2.png'),
+          require('./assets/back.png'),
+          require('./assets/x_fill.png'),
+          require('./assets/account_icon.png')
         ]);
 
 

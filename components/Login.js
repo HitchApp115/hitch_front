@@ -35,16 +35,18 @@ function LoginPage({ setChildIdx, storeToken, page, backgroundVideo }) {
       return;
     } else {
       try {
-        
-        const response = axios.post(page + "/account/login", {
+        setIsLoggingIn(true)
+        axios.post(page + "/account/login", {
             username: login,
             password: password,
           })
           .then(response => {
+            setIsLoggingIn(false)
             storeToken(response.data.loginToken);
             setChildIdx(2);
           })
           .catch(response => {
+            setIsLoggingIn(false)
             alert(response.response.data)
           })
 
